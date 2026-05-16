@@ -402,14 +402,10 @@
                     }
                 }, 500);
 
-                // Check health warning
+                // Check health warning (Calorie limit exceeded)
                 const userId = localStorage.getItem('userId');
-                const isOilyFood = (food.category && food.category.toLowerCase() === "đồ ăn nhanh") ||
-                                 (food.name && ['chiên', 'rán', 'dầu', 'mỡ', 'hamburger', 'pizza', 'fast food'].some(k => food.name.toLowerCase().includes(k))) ||
-                                 (food.tags && food.tags.some(t => ['chiên', 'rán', 'dầu', 'mỡ', 'nhanh'].some(k => t.toLowerCase().includes(k)))) ||
-                                 (food.taste && food.taste.some(t => t.toLowerCase().includes('béo')));
 
-                if (userId && isOilyFood) {
+                if (userId) {
                     try {
                         const warnRes = await fetch(`/api/users/${userId}/history`);
                         if (warnRes.ok) {
@@ -418,6 +414,10 @@
                                 setTimeout(() => {
                                     if (typeof showTopRightWarning === 'function') {
                                         showTopRightWarning(warnData.warning);
+                                    } else if (typeof showToast === 'function') {
+                                        showToast(warnData.warning, 'error');
+                                    } else {
+                                        alert(warnData.warning);
                                     }
                                 }, 800);
                             }

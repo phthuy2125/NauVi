@@ -99,8 +99,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             html += `</div></section>`;
         }
-        
-        container.innerHTML = html;
+        if (data.warning) {
+            const warningHtml = `
+            <div class="mb-10 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-3xl flex items-start gap-4 shadow-sm animate-pulse-slow">
+                <div class="p-3 bg-red-100 dark:bg-red-800 text-red-600 dark:text-red-300 rounded-full shrink-0">
+                    <span class="material-symbols-outlined" data-icon="warning">warning</span>
+                </div>
+                <div>
+                    <h4 class="text-red-700 dark:text-red-400 font-extrabold text-lg mb-1">Cảnh báo lượng Calo</h4>
+                    <p class="text-red-600 dark:text-red-300 font-medium leading-relaxed">${data.warning}</p>
+                </div>
+            </div>`;
+            container.innerHTML = warningHtml + html;
+        } else {
+            container.innerHTML = html;
+        }
         
         // Update header count if possible
         const countSpan = document.getElementById('header-count');

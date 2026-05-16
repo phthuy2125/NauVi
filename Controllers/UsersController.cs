@@ -519,7 +519,7 @@ public sealed class UsersController : ControllerBase
                 .Sum(f => f!.Calories);
 
             string? warning = null;
-            if (dailyCalories >= 3000)
+            if (dailyCalories > 3000)
             {
                 warning = $"Cảnh báo sức khỏe: Bạn đã nạp {dailyCalories} kcal trong ngày hôm nay (vượt ngưỡng 3000 kcal). Hãy chú ý cân bằng dinh dưỡng nhé!";
             }
