@@ -1,0 +1,207 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="/Account/style.css">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        /* Thêm CSS cho nút Google đồng bộ với trang Login */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--outline-variant, #86b3cc);
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--outline-variant, #86b3cc);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .google-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body class="auth-page">
+    <div class="food-bg">
+        <span>🍎</span><span>🍕</span><span>🍔</span><span>🍣</span>
+        <span>🥗</span><span>🍦</span><span>🍜</span><span>🌮</span>
+        <span>🍩</span><span>🍤</span><span>🥑</span><span>🥐</span>
+    </div>
+
+    <div class="container">
+        <h2>Đăng ký</h2>
+        <span class="subtitle">Tạo tài khoản để khám phá ẩm thực</span>
+
+        <p>Tên đăng ký</p>
+        <input type="text" id="username" placeholder="Username...">
+
+        <p>Mật khẩu</p>
+        <div style="position: relative; display: flex; align-items: center; margin-bottom: 20px;">
+            <input type="password" id="password" placeholder="Password..."
+                style="width: 100%; padding-right: 50px; margin: 0;">
+            <span onclick="togglePassword('password', this)"
+                style="position: absolute; right: 15px; cursor: pointer; color: #86b3cc; font-size: 0.85rem; font-weight: 700; user-select: none; transition: color 0.2s;">Hiện</span>
+        </div>
+
+        <button onclick="nextStep()">Tiếp tục ➔</button>
+
+        <div class="divider"><span>Hoặc</span></div>
+        <div class="google-btn-container">
+            <div id="g_id_onload"
+                data-client_id="922860268029-nf97erjuv87dtfuqpdq6decjglkrs38p.apps.googleusercontent.com"
+                data-context="signup" data-ux_mode="popup" data-callback="handleGoogleRegister"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signup_with"
+                data-size="large" data-logo_alignment="left">
+            </div>
+        </div>
+        <p class="footer-text">
+            Đã có tài khoản? <a href="/Account/Login">Đăng nhập</a>
+        </p>
+    </div>
+
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerText = "Ẩn";
+                icon.style.color = "#007ea4";
+            } else {
+                input.type = "password";
+                icon.innerText = "Hiện";
+                icon.style.color = "#86b3cc";
+            }
+        }
+
+        // HÀM XỬ LÝ CHUYỂN BƯỚC (ĐĂNG KÝ THƯỜNG - ĐÃ CẬP NHẬT TỰ ĐỘNG LOGIN)
+        async function nextStep() {
+            const usernameEl = document.getElementById("username");
+            const passwordEl = document.getElementById("password");
+
+            if (!usernameEl.value) {
+                showToast("Vui lòng nhập tên đăng ký!");
+                shakeInput("username");
+                return;
+            }
+            if (passwordEl.value.length < 6) {
+                showToast("Mật khẩu phải có ít nhất 6 ký tự!");
+                shakeInput("password");
+                return;
+            }
+
+            const finalData = {
+                username: usernameEl.value,
+                password: passwordEl.value,
+                isGoogle: false,
+                preferences: { taste: [], type: "kho" } // Mặc định trống
+            };
+
+            try {
+                const res = await fetch("/api/users/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(finalData)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    showToast("Đăng ký thành công! Đang vào hệ thống... 🎉", "success");
+                    // TỰ ĐỘNG LOGIN
+                    localStorage.setItem("token", result.token);
+                    localStorage.setItem("username", result.username);
+                    localStorage.setItem("userId", result.userId);
+
+                    setTimeout(() => {
+                        window.location.href = "/Home/Index";
+                    }, 1500);
+                } else {
+                    showToast(result.message || "Lỗi đăng ký!");
+                }
+            } catch (err) {
+                showToast("Lỗi kết nối server!");
+            }
+        }
+
+        // HÀM XỬ LÝ KHI NGƯỜI DÙNG BẤM ĐĂNG KÝ BẰNG GOOGLE
+        async function handleGoogleRegister(response) {
+            const finalData = {
+                isGoogle: true,
+                googleToken: response.credential,
+                preferences: { taste: [], type: "kho" }
+            };
+
+            try {
+                const res = await fetch("/api/users/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(finalData)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    showToast("Xác thực Google thành công! 🎉", "success");
+                    // TỰ ĐỘNG LOGIN
+                    localStorage.setItem("token", result.token);
+                    localStorage.setItem("username", result.username);
+                    localStorage.setItem("userId", result.userId);
+
+                    setTimeout(() => {
+                        window.location.href = "/Home/Index";
+                    }, 1500);
+                } else {
+                    showToast(result.message || "Lỗi từ Server!");
+                }
+            } catch (err) {
+                showToast("Lỗi kết nối server!");
+            }
+        }
+
+        // Hàm tạo thông báo Toast
+        function showToast(message, type = "error") {
+            const toast = document.createElement("div");
+            toast.className = `toast ${type === "success" ? "success" : ""}`;
+            toast.innerText = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 100);
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Hàm rung lắc ô nhập liệu khi lỗi
+        function shakeInput(id) {
+            const el = document.getElementById(id);
+            el.classList.add("shake");
+            setTimeout(() => el.classList.remove("shake"), 400);
+            el.focus();
+        }
+    </script>
+</body>
+
+</html>
+

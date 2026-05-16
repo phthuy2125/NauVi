@@ -1,0 +1,821 @@
+[
+  {
+    "name": "Th\u1ECBt b\u00F2",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:03.4510408Z",
+      "priceSource": "Copilot",
+      "coopmart": 130000,
+      "bachhoaxanh": 120000
+    },
+    "imageUrl": "https://thitbonhat.vn/wp-content/uploads/2024/05/Tai-sao-thit-bo-bi-hoi.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "1 kg",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8190579Z",
+    "updatedAt": "2026-05-16T05:18:20.819058Z"
+  },
+  {
+    "name": "Th\u1ECBt g\u00E0",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 60000,
+      "bachhoaxanh": 55000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:12.6425926Z",
+      "priceSource": "Copilot",
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?ixlib=rb-4.0.3\u0026auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215409Z",
+    "updatedAt": "2026-05-16T05:18:20.821541Z"
+  },
+  {
+    "name": "Th\u1ECBt heo",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 62000,
+      "bachhoaxanh": 60000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:21.8344514Z",
+      "priceSource": "Copilot",
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "khay 200g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215534Z",
+    "updatedAt": "2026-05-16T05:18:20.8215534Z"
+  },
+  {
+    "name": "T\u00F4m",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:30.9739884Z",
+      "priceSource": "Copilot",
+      "coopmart": 62000,
+      "bachhoaxanh": 60000
+    },
+    "imageUrl": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?ixlib=rb-4.0.3\u0026auto=format\u0026fit=crop\u0026w=800\u0026q=80",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "khay 200g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215583Z",
+    "updatedAt": "2026-05-16T05:18:20.8215583Z"
+  },
+  {
+    "name": "Tr\u1EE9ng",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:40.2915216Z",
+      "priceSource": "Copilot",
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "qu\u1EA3",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215631Z",
+    "updatedAt": "2026-05-16T05:18:20.8215631Z"
+  },
+  {
+    "name": "\u0110\u1EADu ph\u1EE5",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:49.6161282Z",
+      "priceSource": "Copilot",
+      "coopmart": 6000,
+      "bachhoaxanh": 5000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "mi\u1EBFng",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215684Z",
+    "updatedAt": "2026-05-16T05:18:20.8215684Z"
+  },
+  {
+    "name": "M\u1EF1c",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:00:59.0297918Z",
+      "priceSource": "Copilot",
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "con/khay",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215732Z",
+    "updatedAt": "2026-05-16T05:18:20.8215732Z"
+  },
+  {
+    "name": "C\u00E1",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:01:08.5538962Z",
+      "priceSource": "Copilot",
+      "coopmart": 65000,
+      "bachhoaxanh": 60000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "con/khay",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215778Z",
+    "updatedAt": "2026-05-16T05:18:20.8215778Z"
+  },
+  {
+    "name": "Rau c\u1EA3i",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:01:18.0783771Z",
+      "priceSource": "Copilot",
+      "coopmart": 30000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "b\u00F3 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215824Z",
+    "updatedAt": "2026-05-16T05:18:20.8215825Z"
+  },
+  {
+    "name": "X\u00E0 l\u00E1ch",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:01:27.6975731Z",
+      "priceSource": "Copilot",
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "b\u00F3 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8215873Z",
+    "updatedAt": "2026-05-16T05:18:20.8215873Z"
+  },
+  {
+    "name": "C\u00E0 chua",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:01:36.8620106Z",
+      "priceSource": "Copilot",
+      "coopmart": 30000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "b\u00F3 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.821607Z",
+    "updatedAt": "2026-05-16T05:18:20.821607Z"
+  },
+  {
+    "name": "N\u1EA5m",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:01:46.0320278Z",
+      "priceSource": "Copilot",
+      "coopmart": 40000,
+      "bachhoaxanh": 35000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "b\u00F3 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216116Z",
+    "updatedAt": "2026-05-16T05:18:20.8216116Z"
+  },
+  {
+    "name": "C\u00E0 r\u1ED1t",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:01:55.2484832Z",
+      "priceSource": "Copilot",
+      "coopmart": 27000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "khay 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216162Z",
+    "updatedAt": "2026-05-16T05:18:20.8216162Z"
+  },
+  {
+    "name": "Gi\u00E1 \u0111\u1ED7",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:02:05.0547878Z",
+      "priceSource": "Copilot",
+      "coopmart": 30000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "b\u00F3 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216208Z",
+    "updatedAt": "2026-05-16T05:18:20.8216208Z"
+  },
+  {
+    "name": "D\u01B0a leo",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:02:14.1913096Z",
+      "priceSource": "Copilot",
+      "coopmart": 27000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "khay 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216255Z",
+    "updatedAt": "2026-05-16T05:18:20.8216255Z"
+  },
+  {
+    "name": "Khoai t\u00E2y",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:02:23.289501Z",
+      "priceSource": "Copilot",
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "c\u1EE7/tr\u00E1i",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.82163Z",
+    "updatedAt": "2026-05-16T05:18:20.82163Z"
+  },
+  {
+    "name": "Khoai lang",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:02:32.5579212Z",
+      "priceSource": "Copilot",
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "c\u1EE7/tr\u00E1i",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216347Z",
+    "updatedAt": "2026-05-16T05:18:20.8216348Z"
+  },
+  {
+    "name": "Rau d\u1EC1n",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:02:41.6614302Z",
+      "priceSource": "Copilot",
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "b\u00F3 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216396Z",
+    "updatedAt": "2026-05-16T05:18:20.8216397Z"
+  },
+  {
+    "name": "X\u00FAp l\u01A1 xanh",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:02:50.9529869Z",
+      "priceSource": "Copilot",
+      "coopmart": 40000,
+      "bachhoaxanh": 35000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "c\u00E2y 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216442Z",
+    "updatedAt": "2026-05-16T05:18:20.8216442Z"
+  },
+  {
+    "name": "\u1EDAt chu\u00F4ng",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:00.2988295Z",
+      "priceSource": "Copilot",
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "khay 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216488Z",
+    "updatedAt": "2026-05-16T05:18:20.8216489Z"
+  },
+  {
+    "name": "B\u00ED \u0111\u1ECF",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:09.4596434Z",
+      "priceSource": "Copilot",
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "c\u1EE7/tr\u00E1i",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216535Z",
+    "updatedAt": "2026-05-16T05:18:20.8216535Z"
+  },
+  {
+    "name": "B\u1EAFp",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:18.7041251Z",
+      "priceSource": "Copilot",
+      "coopmart": 16000,
+      "bachhoaxanh": 15000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "c\u1EE7/tr\u00E1i",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216581Z",
+    "updatedAt": "2026-05-16T05:18:20.8216581Z"
+  },
+  {
+    "name": "H\u00E0nh t\u00E2y",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:27.7837543Z",
+      "priceSource": "Copilot",
+      "coopmart": 27000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "khay 500g",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216659Z",
+    "updatedAt": "2026-05-16T05:18:20.8216659Z"
+  },
+  {
+    "name": "C\u01A1m",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:36.941304Z",
+      "priceSource": "Copilot",
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "ph\u1EA7n",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216708Z",
+    "updatedAt": "2026-05-16T05:18:20.8216709Z"
+  },
+  {
+    "name": "B\u00FAn",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:46.2484776Z",
+      "priceSource": "Copilot",
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": "https://cdn.tgdd.vn/2020/12/content/meo-chon-mua-cach-che-bien-thit-bo-khong-hoi-va-cac-mon-ngon-5-800x494.jpg",
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "ph\u1EA7n",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216756Z",
+    "updatedAt": "2026-05-16T05:18:20.8216757Z"
+  },
+  {
+    "name": "Ph\u1EDF",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 55000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:03:55.4660808Z",
+      "priceSource": "Copilot",
+      "coopmart": 55000,
+      "bachhoaxanh": 50000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "ph\u1EA7n",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216803Z",
+    "updatedAt": "2026-05-16T05:18:20.8216803Z"
+  },
+  {
+    "name": "M\u00EC t\u00F4m",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 13000,
+      "bachhoaxanh": 12000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:04:04.6826756Z",
+      "priceSource": "Copilot",
+      "coopmart": 3500,
+      "bachhoaxanh": 3000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.821684Z",
+    "updatedAt": "2026-05-16T05:18:20.821684Z"
+  },
+  {
+    "name": "M\u00EC \u00DD",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 52000,
+      "bachhoaxanh": 50000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:04:14.4384196Z",
+      "priceSource": "Copilot",
+      "coopmart": 27000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216877Z",
+    "updatedAt": "2026-05-16T05:18:20.8216877Z"
+  },
+  {
+    "name": "B\u00E1nh m\u00EC",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:04:23.6252594Z",
+      "priceSource": "Copilot",
+      "coopmart": 16000,
+      "bachhoaxanh": 15000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "\u1ED5",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216912Z",
+    "updatedAt": "2026-05-16T05:18:20.8216912Z"
+  },
+  {
+    "name": "Mi\u1EBFn",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 27000,
+      "bachhoaxanh": 25000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:04:33.232174Z",
+      "priceSource": "Copilot",
+      "coopmart": 27000,
+      "bachhoaxanh": 25000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "ph\u1EA7n",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216948Z",
+    "updatedAt": "2026-05-16T05:18:20.8216948Z"
+  },
+  {
+    "name": "H\u00E0nh l\u00E1",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:04:42.1606793Z",
+      "priceSource": "Copilot",
+      "coopmart": 6000,
+      "bachhoaxanh": 5000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8216983Z",
+    "updatedAt": "2026-05-16T05:18:20.8216983Z"
+  },
+  {
+    "name": "\u1EDAt",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:04:51.2720717Z",
+      "priceSource": "Copilot",
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.821702Z",
+    "updatedAt": "2026-05-16T05:18:20.821702Z"
+  },
+  {
+    "name": "T\u1ECFi",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 42000,
+      "bachhoaxanh": 40000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:00.3854408Z",
+      "priceSource": "Copilot",
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217057Z",
+    "updatedAt": "2026-05-16T05:18:20.8217058Z"
+  },
+  {
+    "name": "G\u1EEBng",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 42000,
+      "bachhoaxanh": 40000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:09.8950837Z",
+      "priceSource": "Copilot",
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217284Z",
+    "updatedAt": "2026-05-16T05:18:20.8217284Z"
+  },
+  {
+    "name": "H\u00E0nh t\u00EDm",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:19.8182428Z",
+      "priceSource": "Copilot",
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217342Z",
+    "updatedAt": "2026-05-16T05:18:20.8217342Z"
+  },
+  {
+    "name": "S\u1EA3",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 32000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:29.1610192Z",
+      "priceSource": "Copilot",
+      "coopmart": 25000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217377Z",
+    "updatedAt": "2026-05-16T05:18:20.8217378Z"
+  },
+  {
+    "name": "L\u00E1 chanh",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:38.0038646Z",
+      "priceSource": "Copilot",
+      "coopmart": 25000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217413Z",
+    "updatedAt": "2026-05-16T05:18:20.8217414Z"
+  },
+  {
+    "name": "Rau m\u00F9i (ng\u00F2)",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 22000,
+      "bachhoaxanh": 20000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:47.1542544Z",
+      "priceSource": "Copilot",
+      "coopmart": 6000,
+      "bachhoaxanh": 5000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217449Z",
+    "updatedAt": "2026-05-16T05:18:20.821745Z"
+  },
+  {
+    "name": "H\u00FAng qu\u1EBF",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 35000,
+      "bachhoaxanh": 30000
+    },
+    "currentPrice": {
+      "updatedAt": "2026-05-16T06:05:56.0912486Z",
+      "priceSource": "Copilot",
+      "coopmart": 25000,
+      "bachhoaxanh": 20000
+    },
+    "imageUrl": null,
+    "prepImageUrl": null,
+    "isAvailable": true,
+    "unit": "g\u00F3i/b\u00F3 nh\u1ECF",
+    "id": null,
+    "createdAt": "2026-05-16T05:18:20.8217486Z",
+    "updatedAt": "2026-05-16T05:18:20.8217486Z"
+  }
+]

@@ -1,0 +1,632 @@
+@{
+    ViewData["Title"] = "Chi tiết món ăn";
+}
+
+<div class="pt-24 pb-12 px-8 max-w-7xl mx-auto">
+    <!-- Hero Section -->
+    <section class="relative h-[500px] rounded-xl overflow-hidden mb-12 flex items-end">
+        <img id="detail-img" alt="Hình ảnh món ăn" class="absolute inset-0 w-full h-full object-cover" src="https://via.placeholder.com/1200x800?text=Đang+tải..."/>
+        <div class="absolute inset-0 bg-gradient-to-t from-on-surface/80 via-on-surface/20 to-transparent"></div>
+        <div class="relative z-10 p-12 w-full flex flex-col md:flex-row justify-between items-end gap-6">
+            <div class="max-w-2xl">
+                <div class="flex items-center gap-2 mb-4">
+                    <span id="detail-category" class="bg-secondary text-on-secondary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Đang tải</span>
+                    <div class="flex items-center gap-1 bg-surface-container-lowest/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm">
+                        <span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span id="detail-rating" class="font-bold">0.0</span>
+                        <span id="detail-reviews" class="opacity-70">(0 đánh giá)</span>
+                    </div>
+                </div>
+                <h2 id="detail-title" class="text-5xl font-extrabold text-white mb-4 tracking-tight leading-tight">Đang tải...</h2>
+                <p id="detail-desc" class="text-white/90 text-lg leading-relaxed max-w-xl">
+                    ...
+                </p>
+            </div>
+            <div class="flex gap-4 mb-2">
+                <button id="btn-favorite" class="bg-white/10 backdrop-blur-xl hover:bg-white/20 text-white p-4 rounded-full transition-all" title="Lưu món" onclick="toggleFavoriteCurrent()">
+                    <span class="material-symbols-outlined pb-1">favorite</span>
+                </button>
+                <button class="bg-white/10 backdrop-blur-xl hover:bg-white/20 text-white p-4 rounded-full transition-all" title="Chia sẻ">
+                    <span class="material-symbols-outlined pb-1">share</span>
+                </button>
+                <button class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-full font-bold shadow-xl shadow-primary/30 text-lg hover:brightness-110 active:scale-95 transition-all"
+                    onclick="window.location.href='/Home/CookMode?id=' + currentFoodId">
+                    Nấu Ngay
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-4 gap-6 mb-12">
+        <div class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-4 shadow-sm border border-sky-100/50">
+            <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">timer</span>
+            </div>
+            <div>
+                <p class="text-xs text-sky-600 font-bold uppercase tracking-widest">Chuẩn bị</p>
+                <p class="text-lg font-black">15 Phút</p>
+            </div>
+        </div>
+        <div class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-4 shadow-sm border border-sky-100/50">
+            <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">skillet</span>
+            </div>
+            <div>
+                <p class="text-xs text-sky-600 font-bold uppercase tracking-widest">Thời gian nấu</p>
+                <p class="text-lg font-black">20 Phút</p>
+            </div>
+        </div>
+        <div class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-4 shadow-sm border border-sky-100/50">
+            <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">fitness_center</span>
+            </div>
+            <div>
+                <p class="text-xs text-sky-600 font-bold uppercase tracking-widest">Độ khó</p>
+                <p class="text-lg font-black">Trung bình</p>
+            </div>
+        </div>
+        <div class="bg-surface-container-lowest p-6 rounded-lg flex items-center gap-4 shadow-sm border border-sky-100/50">
+            <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">groups</span>
+            </div>
+            <div>
+                <p class="text-xs text-sky-600 font-bold uppercase tracking-widest">Khẩu phần</p>
+                <p class="text-lg font-black"><span id="detail-servings">2</span> Người</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-12">
+        <!-- Left Column: Main Content -->
+        <div class="col-span-8 space-y-12">
+            <!-- Ingredients -->
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-extrabold flex items-center gap-3">
+                        <span class="w-1.5 h-8 bg-primary rounded-full"></span>
+                        Nguyên liệu cần thiết
+                    </h3>
+                    <span id="detail-ingredients-count" class="text-sm font-medium text-sky-700 bg-sky-100 px-4 py-1.5 rounded-full">0 thành phần</span>
+                </div>
+                <div id="detail-ingredients-grid" class="bg-surface-container-lowest rounded-xl p-8 grid grid-cols-2 gap-y-4 gap-x-8 shadow-sm border border-sky-100/50">
+                    <!-- JS populated -->
+                </div>
+            </section>
+
+            <!-- Instructions (Statics placeholder since db doesn't have steps right now) -->
+            <section>
+                <h3 class="text-2xl font-extrabold flex items-center gap-3 mb-8">
+                    <span class="w-1.5 h-8 bg-primary rounded-full"></span>
+                    Các bước thực hiện
+                </h3>
+                <div class="space-y-6">
+                    <div class="flex gap-6">
+                        <div class="flex-shrink-0 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center font-black">1</div>
+                        <div class="bg-white/50 backdrop-blur-sm p-6 rounded-2xl flex-1 border border-sky-100/50">
+                            <h4 class="font-bold text-lg mb-2 text-sky-900">Sơ chế nguyên liệu</h4>
+                            <p class="text-on-surface-variant leading-relaxed">Chuẩn bị đầy đủ nguyên liệu, sơ chế sạch sẽ và để ráo nước chuẩn bị cho việc nấu nướng. Cắt thái đúng kích thước đề nghị.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="flex-shrink-0 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center font-black">2</div>
+                        <div class="bg-white/50 backdrop-blur-sm p-6 rounded-2xl flex-1 border border-sky-100/50">
+                            <h4 class="font-bold text-lg mb-2 text-sky-900">Chế biến</h4>
+                            <p class="text-on-surface-variant leading-relaxed">Thực hiện nấu, nêm nếm gia vị kết hợp với những nguyên liệu bí mật đặc trưng của món để tạo nên hương vị thuần túy nhất.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="flex-shrink-0 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center font-black">3</div>
+                        <div class="bg-white/50 backdrop-blur-sm p-6 rounded-2xl flex-1 border border-sky-100/50">
+                            <h4 class="font-bold text-lg mb-2 text-sky-900">Trình bày</h4>
+                            <p class="text-on-surface-variant leading-relaxed">Bày món ăn ra đĩa thật đẹp mắt, trang trí thêm một ít rau thơm và thưởng thức món do tự tay bạn chế biến trực tiếp tại nhà.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews -->
+            <section id="reviews-section">
+                <h3 class="text-2xl font-extrabold flex items-center gap-3 mb-8">
+                    <span class="w-1.5 h-8 bg-primary rounded-full"></span>
+                    Đánh giá từ thực thần
+                </h3>
+                
+                <div id="comment-block-msg" class="bg-sky-50 text-sky-800 p-4 rounded-xl text-center font-medium text-sm mb-8 hidden">
+                    Vui lòng đăng nhập và <a href="#" onclick="window.location.href='/Home/CookMode?id=' + currentFoodId" class="font-bold underline">hoàn thành nấu món này</a> để gửi đánh giá!
+                </div>
+
+                <div id="comment-form-container" class="bg-surface-container-lowest rounded-xl p-8 shadow-sm border border-sky-100/50 mb-8 hidden">
+                    <div class="flex gap-4">
+                        <img id="current-user-avatar" alt="User" class="w-12 h-12 rounded-full object-cover" src="https://via.placeholder.com/150"/>
+                        <div class="flex-1">
+                            <textarea id="comment-input" class="w-full bg-surface-container-low border-none rounded-xl p-4 focus:ring-2 focus:ring-primary/20 text-sm h-24 mb-3" placeholder="Chia sẻ cảm nhận của bạn về món ăn này..."></textarea>
+                            <div class="flex justify-between items-center">
+                                <div class="flex gap-1 cursor-pointer" id="rating-stars">
+                                    <span class="material-symbols-outlined text-yellow-400 text-xl star-select" data-val="1" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-yellow-400 text-xl star-select" data-val="2" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-yellow-400 text-xl star-select" data-val="3" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-yellow-400 text-xl star-select" data-val="4" style="font-variation-settings: 'FILL' 1;">star</span>
+                                    <span class="material-symbols-outlined text-yellow-400 text-xl star-select" data-val="5" style="font-variation-settings: 'FILL' 1;">star</span>
+                                </div>
+                                <button onclick="submitComment()" id="submit-cmt-btn" class="bg-primary text-on-primary px-6 py-2 rounded-full font-bold text-sm hover:brightness-110 active:scale-95 transition-all">Gửi bình luận</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="comments-list" class="space-y-6">
+                    <!-- Comments will be rendered here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Column: Sidebar Info -->
+        <aside class="col-span-4 space-y-8">
+            <!-- Nutrition Info -->
+            <section class="bg-primary text-on-primary rounded-xl p-8 shadow-xl shadow-primary/20">
+                <h4 class="text-xl font-black mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined">analytics</span>
+                    Thông tin dinh dưỡng
+                </h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/10 p-4 rounded-lg backdrop-blur-md border border-white/10">
+                        <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1">Calo</p>
+                        <p class="text-2xl font-black"><span id="detail-cal">0</span> <span class="text-sm font-medium">kcal</span></p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-lg backdrop-blur-md border border-white/10">
+                        <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1">Protein</p>
+                        <p class="text-2xl font-black"><span id="detail-protein">0</span> <span class="text-sm font-medium">g</span></p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-lg backdrop-blur-md border border-white/10">
+                        <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1">Chất béo</p>
+                        <p class="text-2xl font-black"><span id="detail-fat">0</span> <span class="text-sm font-medium">g</span></p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-lg backdrop-blur-md border border-white/10">
+                        <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest mb-1">Carbs</p>
+                        <p class="text-2xl font-black"><span id="detail-carb">0</span> <span class="text-sm font-medium">g</span></p>
+                    </div>
+                </div>
+                <p class="text-[10px] mt-6 opacity-70 italic leading-tight">* Khẩu phần cung cấp cho <span id="nutrition-servings-note">1</span> người lớn, tính toán tự động bằng AI.</p>
+            </section>
+
+            <!-- Market Comparison -->
+            <section class="bg-surface-container-high rounded-xl p-8 border border-sky-100/50">
+                <h4 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary">shopping_cart</span>
+                    Giá nguyên liệu ước tính
+                </h4>
+                <div class="space-y-4">
+                    <div class="bg-surface-container-lowest p-4 rounded-xl flex justify-between items-center shadow-sm border border-sky-100/30">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold text-[10px]">Coop</div>
+                            <span class="font-bold text-sm">Coopmart</span>
+                        </div>
+                        <span id="price-coop" class="text-lg font-black text-on-surface">Đang tải...</span>
+                    </div>
+                    <div class="bg-surface-container-lowest p-4 rounded-xl flex justify-between items-center border-2 border-secondary/30 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600 font-bold text-[10px]">BHX</div>
+                            <div>
+                                <span class="font-bold block text-sm">Bách Hóa Xanh</span>
+                            </div>
+                        </div>
+                        <span id="price-bhx" class="text-lg font-black text-on-surface">Đang tải...</span>
+                    </div>
+                </div>
+                <button class="w-full mt-6 py-3 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-on-primary transition-all text-sm mb-3">
+                    Đặt Mua Khối Nguyên Liệu
+                </button>
+                <button onclick="showPriceBreakdown()" class="w-full py-2 bg-surface-container-low text-on-surface-variant font-bold rounded-full hover:bg-surface-container-highest transition-all text-xs flex items-center justify-center gap-2 border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-sm">analytics</span>
+                    Chi tiết bảng giá
+                </button>
+            </section>
+        </aside>
+    </div>
+</div>
+
+<!-- Modal Bảng giá chi tiết -->
+<div id="modal-price-breakdown" class="fixed inset-0 z-[60] hidden">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closePriceBreakdown()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-surface rounded-[2rem] shadow-2xl overflow-hidden border border-white/50">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-black text-on-surface flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">receipt_long</span>
+                    Chi tiết tính giá
+                </h3>
+                <button onclick="closePriceBreakdown()" class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="max-h-[60vh] overflow-y-auto pr-2 space-y-4" id="price-breakdown-list">
+                <!-- JS Populated -->
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-surface-container-highest">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Tổng cộng ước tính</p>
+                        <h4 id="breakdown-total" class="text-3xl font-black text-primary">0đ</h4>
+                    </div>
+                    <p class="text-[10px] text-on-surface-variant italic text-right max-w-[200px]">
+                        * Giá tính dựa trên khối lượng trung bình và đơn giá thị trường hiện tại.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentFoodId = '@ViewBag.FoodId';
+        let currentFoodName = '';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!currentFoodId) {
+                document.getElementById('detail-title').innerText = "Vui lòng cung cấp ID Món ăn";
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/foods/${currentFoodId}`);
+                if (!res.ok) throw new Error('Load failed');
+                const food = await res.json();
+                
+                currentFoodName = food.name;
+                document.getElementById('detail-title').innerText = food.name;
+                document.getElementById('detail-desc').innerText = food.description || "Gợi ý tuyệt vời cho bữa ăn hàng ngày. Thêm ngay vào yêu thích.";
+                document.getElementById('detail-category').innerText = food.category || "Nổi bật";
+                document.getElementById('detail-rating').innerText = food.rating ? food.rating.toFixed(1) : "5.0";
+                document.getElementById('detail-reviews').innerText = `(${food.reviewCount || 0} đánh giá)`;
+                
+                if (food.imageUrl) {
+                    document.getElementById('detail-img').src = food.imageUrl;
+                }
+
+                // Render Comments
+                const commentsList = document.getElementById('comments-list');
+                commentsList.innerHTML = '';
+                if (food.comments && food.comments.length > 0) {
+                    food.comments.slice().reverse().forEach(c => {
+                        let starsHtml = '';
+                        for(let i = 1; i <= 5; i++) {
+                            starsHtml += `<span class="material-symbols-outlined text-yellow-400 text-sm" style="font-variation-settings: 'FILL' ${i <= c.rating ? 1 : 0};">star</span>`;
+                        }
+                        const date = new Date(c.createdAt).toLocaleDateString('vi-VN');
+                        commentsList.innerHTML += `
+                            <div class="bg-surface-container-lowest p-6 rounded-xl border border-sky-50 shadow-sm flex gap-4">
+                                <img src="${c.avatarUrl || 'https://via.placeholder.com/150'}" class="w-10 h-10 rounded-full object-cover" />
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h5 class="font-bold text-sm">${c.username}</h5>
+                                            <div class="flex gap-0.5 mt-1">${starsHtml}</div>
+                                        </div>
+                                        <span class="text-[10px] text-on-surface-variant">${date}</span>
+                                    </div>
+                                    <p class="text-sm text-on-surface-variant leading-relaxed">${c.content}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    commentsList.innerHTML = '<p class="text-sm text-on-surface-variant italic text-center py-4">Chưa có đánh giá nào. Hãy là người đầu tiên nấu và đánh giá món này!</p>';
+                }
+
+                // Extract or generate quantity logic
+                function extractOrGenerateQuantity(ingredientName) {
+                    const match = ingredientName.match(/(\d+(?:\.\d+)?)\s*(g|kg|ml|l|muỗng|thìa|quả|trái|tép|tán|gr)/i);
+                    if (match) {
+                        let name = ingredientName.replace(match[0], '').trim();
+                        name = name.replace(/^-+/, '').trim(); // clear leading dash
+                        return { name: name || ingredientName, qty: match[0].toLowerCase() };
+                    }
+                    
+                    let hash = 0;
+                    for (let i = 0; i < ingredientName.length; i++) {
+                        hash = ((hash << 5) - hash) + ingredientName.charCodeAt(i);
+                        hash |= 0;
+                    }
+                    const absHash = Math.abs(hash);
+                    
+                    const lower = ingredientName.toLowerCase();
+                    if(lower.includes('mắm') || lower.includes('đường') || lower.includes('muối') || lower.includes('tiêu') || lower.includes('dầu') || lower.includes('tỏi') || lower.includes('hành') || lower.includes('xốt') || lower.includes('tương') || lower.includes('dấm') || lower.includes('chanh')) {
+                        const units = ['1 muỗng', '2 muỗng', '3 muỗng', '1/2 muỗng', '1 quả', '50g', '20g'];
+                        return { name: ingredientName, qty: units[absHash % units.length] };
+                    }
+                    
+                    const weights = ['100g', '200g', '300g', '500g', '150g', '250g', '50g'];
+                    return { name: ingredientName, qty: weights[absHash % weights.length] };
+                }
+
+                // Fetch all real ingredients to get real prices
+                let dbIngredients = [];
+                try {
+                    const ingRes = await fetch("/api/foods/ingredients");
+                    if (ingRes.ok) {
+                        const ingData = await ingRes.json();
+                        dbIngredients = ingData.ingredients || [];
+                    }
+                } catch(e) { console.error("Could not load real prices:", e); }
+
+                // Render Ingredients & Dynamic Pricing
+                let indGrid = document.getElementById('detail-ingredients-grid');
+                let calculatedBasePrice = 0;
+                let ingredientPriceItems = [];
+                
+                // Get servings multiplier
+                const servingsText = document.getElementById('detail-servings').innerText;
+                const servingsMultiplier = parseInt(servingsText) || 1;
+
+                const parseGrams = (qty) => {
+                    const num = parseFloat(qty) || 1;
+                    if (qty.includes('kg') || qty.includes('lít') || qty.includes('l')) return num * 1000;
+                    if (qty.includes('g') || qty.includes('ml')) return num;
+                    if (qty.includes('muỗng') || qty.includes('thìa')) return num * 15;
+                    if (qty.includes('quả') || qty.includes('trái')) return num * 50;
+                    if (qty.includes('tép')) return num * 5;
+                    return 100;
+                };
+
+                if (food.ingredients && Array.isArray(food.ingredients)) {
+                    document.getElementById('detail-ingredients-count').innerText = `${food.ingredients.length} thành phần`;
+                    indGrid.innerHTML = '';
+                    
+                    food.ingredients.forEach(i => {
+                        const parsed = extractOrGenerateQuantity(i);
+                        const grams = parseGrams(parsed.qty);
+                        
+                        // Try to find REAL price from DB ingredients
+                        let ppg = 50; // default 50đ/g
+                        const lowerName = parsed.name.toLowerCase();
+                        const realIng = dbIngredients.find(di => lowerName.includes(di.name.toLowerCase()) || di.name.toLowerCase().includes(lowerName));
+                        
+                        if (realIng && realIng.currentPrice) {
+                            // Calculate ppg from real ingredient
+                            const refPrice = realIng.currentPrice.coopmart || realIng.currentPrice.bachhoaxanh || 10000;
+                            let refGrams = 200;
+                            if (realIng.unit) {
+                                const unitLower = realIng.unit.toLowerCase();
+                                const numMatch = unitLower.match(/(\d+(?:\.\d+)?)/);
+                                const num = numMatch ? parseFloat(numMatch[1]) : 1;
+                                
+                                if (unitLower.includes('kg') || unitLower.includes('lít') || unitLower.match(/(^|\s|\d)l($|\s)/)) {
+                                    refGrams = num * 1000;
+                                } else if (unitLower.match(/(^|\s|\d)g($|\s)/) || unitLower.includes('ml')) {
+                                    refGrams = num;
+                                } else if (unitLower.includes('muỗng') || unitLower.includes('thìa')) {
+                                    refGrams = num * 15;
+                                } else if (unitLower.includes('quả') || unitLower.includes('trái')) {
+                                    refGrams = num * 50;
+                                } else if (unitLower.includes('tép')) {
+                                    refGrams = num * 5;
+                                } else if (unitLower.includes('phần') || unitLower.includes('gói') || unitLower.includes('ổ') || unitLower.includes('bó') || unitLower.includes('khay')) {
+                                    refGrams = num * 500; // Assume these units are ~500g for base price scaling
+                                }
+                            }
+                            ppg = Math.round(refPrice / refGrams);
+                        } else {
+                            // Fallback prices
+                            const fallbackPrices = {
+                                'bò': 280, 'gà': 175, 'heo': 150, 'lợn': 150, 'cá': 180, 'tôm': 300, 'cua': 400, 'mực': 250,
+                                'rau': 40, 'nấm': 150, 'hành': 50, 'tỏi': 80, 'tiêu': 200, 'ớt': 80,
+                                'gạo': 30, 'phở': 40, 'bún': 30, 'mì': 35,
+                                'đường': 25, 'mắm': 50, 'muối': 10, 'dầu': 60, 'sữa': 45, 'trứng': 60
+                            };
+                            for (const [key, val] of Object.entries(fallbackPrices)) {
+                                if (lowerName.includes(key)) { ppg = val; break; }
+                            }
+                        }
+                        
+                        // Scale quantity string for both UI and modal
+                        let displayQty = parsed.qty;
+                        const qtyNumMatch = parsed.qty.match(/^(\d+(?:\.\d+)?)/);
+                        if (qtyNumMatch && servingsMultiplier > 1) {
+                            const scaledNum = parseFloat(qtyNumMatch[1]) * servingsMultiplier;
+                            displayQty = parsed.qty.replace(qtyNumMatch[1], scaledNum);
+                        }
+
+                        const ingCost = grams * ppg * servingsMultiplier;
+                        calculatedBasePrice += ingCost;
+                        
+                        ingredientPriceItems.push({
+                            name: parsed.name,
+                            qty: displayQty, // Scaled label for consistency
+                            grams: Math.round(grams * servingsMultiplier), 
+                            ppg: ppg,
+                            cost: Math.round(ingCost)
+                        });
+
+                        indGrid.innerHTML += `
+                            <div class="flex items-center justify-between border-b border-sky-50 pb-3">
+                                <span class="text-on-surface font-medium capitalize text-sm flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm text-green-500">check_circle</span>
+                                    ${parsed.name}
+                                </span>
+                                <span class="text-sky-700 font-bold text-sm">${displayQty}</span>
+                            </div>
+                        `;
+                    });
+                }
+
+                // Modal Price Breakdown Logic
+                window.showPriceBreakdown = () => {
+                    const list = document.getElementById('price-breakdown-list');
+                    list.innerHTML = '';
+                    
+                    ingredientPriceItems.forEach(item => {
+                        list.innerHTML += `
+                            <div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-2xl border border-surface-container-high">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-on-surface capitalize">${item.name}</span>
+                                    <span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-widest">
+                                        ${item.qty} × ${item.ppg}đ/g
+                                    </span>
+                                </div>
+                                <span class="text-base font-black text-on-surface">${item.cost.toLocaleString('vi-VN')}đ</span>
+                            </div>
+                        `;
+                    });
+
+                    document.getElementById('breakdown-total').innerText = Math.round(calculatedBasePrice).toLocaleString('vi-VN') + 'đ';
+                    document.getElementById('modal-price-breakdown').classList.remove('hidden');
+                };
+
+                window.closePriceBreakdown = () => {
+                    document.getElementById('modal-price-breakdown').classList.add('hidden');
+                };
+
+                // Setup Nutrition Data (Scaled by servings)
+                const cc = (food.calories || 300) * servingsMultiplier;
+                document.getElementById('detail-cal').innerText = cc;
+                document.getElementById('detail-protein').innerText = Math.round(cc * 0.05); 
+                document.getElementById('detail-carb').innerText = Math.round(cc * 0.1); 
+                document.getElementById('detail-fat').innerText = Math.round(cc * 0.03); 
+                document.getElementById('nutrition-servings-note').innerText = servingsMultiplier;
+
+                // Set final display prices based on the exact calculated base
+                let coopPrice = Math.round(calculatedBasePrice);
+                let bhxPrice = Math.round(calculatedBasePrice * 0.98); // Assuming BHX is slightly cheaper
+
+                // Fallback to DB if calculated is 0
+                if (coopPrice === 0) coopPrice = food.currentPrice?.coopmart || food.basePrice?.coopmart || 0;
+                if (bhxPrice === 0) bhxPrice = food.currentPrice?.bachhoaxanh || food.basePrice?.bachhoaxanh || 0;
+
+                document.getElementById('price-coop').innerText = coopPrice > 0 ? coopPrice.toLocaleString('vi-VN') + 'đ' : 'Không có';
+                document.getElementById('price-bhx').innerText = bhxPrice > 0 ? bhxPrice.toLocaleString('vi-VN') + 'đ' : 'Không có';
+
+                // Favorites State Check
+                setTimeout(() => {
+                    const btn = document.getElementById('btn-favorite');
+                    if (typeof applyFavoriteState === 'function') {
+                        applyFavoriteState(btn, currentFoodId);
+                    }
+                }, 500);
+
+                // Check health warning
+                const userId = localStorage.getItem('userId');
+                const isOilyFood = (food.category && food.category.toLowerCase() === "đồ ăn nhanh") ||
+                                 (food.name && ['chiên', 'rán', 'dầu', 'mỡ', 'hamburger', 'pizza', 'fast food'].some(k => food.name.toLowerCase().includes(k))) ||
+                                 (food.tags && food.tags.some(t => ['chiên', 'rán', 'dầu', 'mỡ', 'nhanh'].some(k => t.toLowerCase().includes(k)))) ||
+                                 (food.taste && food.taste.some(t => t.toLowerCase().includes('béo')));
+
+                if (userId && isOilyFood) {
+                    try {
+                        const warnRes = await fetch(`/api/users/${userId}/history`);
+                        if (warnRes.ok) {
+                            const warnData = await warnRes.json();
+                            if (warnData.warning) {
+                                setTimeout(() => {
+                                    if (typeof showTopRightWarning === 'function') {
+                                        showTopRightWarning(warnData.warning);
+                                    }
+                                }, 800);
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Lỗi khi tải cảnh báo:", e);
+                    }
+                }
+
+                // Check Cooking History to enable comments
+                const msgBox = document.getElementById('comment-block-msg');
+                const formBox = document.getElementById('comment-form-container');
+                if (userId) {
+                    // Cập nhật avatar current user
+                    fetch(`/api/users/profile/${userId}`).then(r => r.ok ? r.json() : null).then(u => {
+                        if (u && u.avatar) document.getElementById('current-user-avatar').src = u.avatar;
+                    });
+
+                    // Kiểm tra xem user đã đánh giá chưa
+                    const alreadyReviewed = food.comments && food.comments.some(c => c.userId === userId);
+                    if (alreadyReviewed) {
+                        msgBox.innerHTML = "Cảm ơn bạn đã đánh giá món ăn này! ❤️";
+                        msgBox.classList.remove('hidden');
+                        formBox.classList.add('hidden');
+                    } else {
+                        // Gọi api kiểm tra history
+                        const hRes = await fetch(`/api/users/${userId}/history`);
+                        if (hRes.ok) {
+                            const hData = await hRes.json();
+                            const hasCooked = hData.history && hData.history.some(h => h.id === currentFoodId);
+                            if (hasCooked) {
+                                msgBox.classList.add('hidden');
+                                formBox.classList.remove('hidden');
+                            } else {
+                                msgBox.classList.remove('hidden');
+                                formBox.classList.add('hidden');
+                            }
+                        }
+                    }
+                } else {
+                    msgBox.classList.remove('hidden');
+                    formBox.classList.add('hidden');
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('detail-title').innerText = "Oops, có lỗi xảy ra!";
+            }
+        });
+
+        function toggleFavoriteCurrent() {
+            const btn = document.getElementById('btn-favorite');
+            if (typeof toggleFavorite === 'function') {
+                toggleFavorite(btn, { id: currentFoodId, name: currentFoodName });
+            }
+        }
+
+        // --- Rating & Comment Logic ---
+        let currentRating = 5;
+        document.querySelectorAll('.star-select').forEach(star => {
+            star.addEventListener('click', (e) => {
+                currentRating = parseInt(e.target.getAttribute('data-val'));
+                document.querySelectorAll('.star-select').forEach(s => {
+                    const val = parseInt(s.getAttribute('data-val'));
+                    s.style.fontVariationSettings = `'FILL' ${val <= currentRating ? 1 : 0}`;
+                });
+            });
+        });
+
+        async function submitComment() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+            const content = document.getElementById('comment-input').value.trim();
+            if (!content) {
+                if (typeof showTopRightInfo === 'function') showTopRightInfo('Lỗi', 'Vui lòng nhập nội dung đánh giá!');
+                else alert('Vui lòng nhập nội dung đánh giá!');
+                return;
+            }
+
+            const btn = document.getElementById('submit-cmt-btn');
+            btn.disabled = true;
+            btn.innerText = 'Đang gửi...';
+
+            try {
+                const res = await fetch(`/api/foods/${currentFoodId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, rating: currentRating, content })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    if (typeof showTopRightInfo === 'function') showTopRightInfo('Thành công', 'Cảm ơn bạn đã đánh giá món ăn!');
+                    setTimeout(() => window.location.reload(), 1000); // Tải lại để hiện đánh giá mới
+                } else {
+                    if (typeof showTopRightInfo === 'function') showTopRightInfo('Lỗi', data.message || 'Không thể gửi đánh giá.');
+                    btn.disabled = false;
+                    btn.innerText = 'Gửi bình luận';
+                }
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btn.innerText = 'Gửi bình luận';
+            }
+        }
+    </script>
+}

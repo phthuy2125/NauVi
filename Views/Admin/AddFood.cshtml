@@ -1,0 +1,282 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html class="light" lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>FoodWise Admin - Tự Thêm Món</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 min-h-screen flex">
+    <!-- Sidebar Admin -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col hidden md:flex">
+        <div class="p-6">
+            <h1 class="text-2xl font-black text-white tracking-tighter">FoodWise Admin</h1>
+            <p class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold mt-1">Hệ thống quản lý</p>
+        </div>
+        <nav class="flex-1 px-4 space-y-2 mt-6">
+            <a href="#" class="flex items-center gap-3 bg-emerald-500/10 text-emerald-400 rounded-lg px-4 py-3 font-semibold transition-all">
+                <span class="material-symbols-outlined">add_circle</span>
+                Thêm món ăn
+            </a>
+            <a href="/Home/Index" class="flex items-center gap-3 hover:bg-slate-800 rounded-lg px-4 py-3 font-semibold transition-all">
+                <span class="material-symbols-outlined">home</span>
+                Về trang chủ
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-black text-slate-900 mb-2">Thêm món ăn mới</h2>
+            <p class="text-slate-500 mb-8">Điền thông tin và hình ảnh để đăng sản phẩm lên hệ thống giả lập Coopmart/Bách Hóa Xanh.</p>
+            
+            <form id="add-food-form" class="bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 space-y-6">
+                <!-- Tên món & Tên Tiếng Anh -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Tên món ăn <span class="text-red-500">*</span></label>
+                        <input type="text" id="name" required class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="VD: Phở Bò Tái Chín">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Tên Tiếng Anh</label>
+                        <input type="text" id="nameEn" class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="VD: Beef Pho">
+                    </div>
+                </div>
+
+                <!-- Tên Nhà hàng -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Nhà hàng bán</label>
+                    <input type="text" id="restaurant" class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="VD: Phở Thìn Hà Nội">
+                </div>
+
+                <!-- Mô tả -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Mô tả ngắn gọn <span class="text-red-500">*</span></label>
+                    <textarea id="description" required rows="3" class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="Mô tả hấp dẫn về món ăn..."></textarea>
+                </div>
+
+                <!-- Giá -->
+                <div class="grid grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                    <div>
+                        <label class="block text-sm font-bold text-blue-700 mb-2 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-[10px]">C</span>
+                            Giá gốc Coopmart <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="basePriceCoop" required class="w-full rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500 bg-white" placeholder="VD: 65000">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-green-700 mb-2 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-[10px]">B</span>
+                            Giá gốc Bách Hóa Xanh <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="basePriceBHX" required class="w-full rounded-xl border-slate-200 focus:border-green-500 focus:ring-green-500 bg-white" placeholder="VD: 62000">
+                    </div>
+                </div>
+
+                <!-- Phân loại & Tags -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Category</label>
+                        <input type="text" id="category" class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="VD: Phở, Bún, Cơm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Tags (Ngăn cách bằng dấu phẩy)</label>
+                        <input type="text" id="tags" class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="VD: phổ biến, bestseller">
+                    </div>
+                </div>
+
+                <!-- Hình ảnh đa năng -->
+                <div class="pt-4 border-t border-slate-100">
+                    <label class="block text-sm font-bold text-slate-700 mb-4">Hình ảnh món ăn <span class="text-red-500">*</span></label>
+                    
+                    <div class="flex gap-4 mb-4">
+                        <button type="button" id="btn-tab-url" class="px-4 py-2 font-semibold text-sm rounded-lg bg-emerald-100 text-emerald-700 transition" onclick="switchImageTab('url')">Sử dụng Link (URL)</button>
+                        <button type="button" id="btn-tab-upload" class="px-4 py-2 font-semibold text-sm rounded-lg bg-slate-100 text-slate-600 transition" onclick="switchImageTab('upload')">Tải ảnh từ máy lên</button>
+                    </div>
+
+                    <!-- Tab URL -->
+                    <div id="tab-url" class="block">
+                        <input type="url" id="imageUrl" class="w-full rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 bg-slate-50" placeholder="https://images.unsplash.com/... (Nên dùng ảnh tỉ lệ 4:3)">
+                    </div>
+
+                    <!-- Tab Upload -->
+                    <div id="tab-upload" class="hidden">
+                        <div class="flex items-center justify-center w-full">
+                            <label for="imageFile" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 border-slate-300">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <span class="material-symbols-outlined text-3xl text-slate-400 mb-2">cloud_upload</span>
+                                    <p class="text-sm text-slate-500 font-semibold" id="file-name-display">Click để chọn file ảnh (< 5MB)</p>
+                                </div>
+                                <input id="imageFile" type="file" class="hidden" accept="image/*" onchange="document.getElementById('file-name-display').innerText = this.files[0].name" />
+                            </label>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div id="error-message" class="hidden p-4 rounded-xl bg-red-50 text-red-600 font-semibold text-sm border border-red-100"></div>
+
+                <!-- Bấm tạo -->
+                <div class="flex justify-end pt-6 border-t border-slate-100 gap-4">
+                    <button type="reset" class="px-6 py-3 rounded-full font-bold text-slate-500 hover:bg-slate-100 transition-colors">Hủy</button>
+                    <button type="submit" id="submit-btn" class="px-8 py-3 rounded-full font-bold text-white bg-emerald-600 shadow-xl shadow-emerald-500/30 hover:bg-emerald-700 transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">add_task</span>
+                        Tạo món ăn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Toast Component -->
+    <div id="toast" class="fixed bottom-10 right-10 bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span id="toast-msg">Đã thêm thành công!</span>
+    </div>
+
+    <!-- Script xử lý -->
+    <script>
+        // Check quyền ở Client
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Vui lòng đăng nhập để truy cập trang quản trị!");
+                window.location.href = "/Account/Login";
+            }
+        });
+
+        // Xử lý Tab ẩn hiện
+        let isUploadMode = false;
+        function switchImageTab(mode) {
+            isUploadMode = (mode === 'upload');
+            
+            if(isUploadMode){
+                document.getElementById('tab-upload').classList.remove('hidden');
+                document.getElementById('tab-url').classList.add('hidden');
+                
+                document.getElementById('btn-tab-upload').classList.replace('bg-slate-100', 'bg-emerald-100');
+                document.getElementById('btn-tab-upload').classList.replace('text-slate-600', 'text-emerald-700');
+                
+                document.getElementById('btn-tab-url').classList.replace('bg-emerald-100', 'bg-slate-100');
+                document.getElementById('btn-tab-url').classList.replace('text-emerald-700', 'text-slate-600');
+            } else {
+                document.getElementById('tab-url').classList.remove('hidden');
+                document.getElementById('tab-upload').classList.add('hidden');
+                
+                document.getElementById('btn-tab-url').classList.replace('bg-slate-100', 'bg-emerald-100');
+                document.getElementById('btn-tab-url').classList.replace('text-slate-600', 'text-emerald-700');
+                
+                document.getElementById('btn-tab-upload').classList.replace('bg-emerald-100', 'bg-slate-100');
+                document.getElementById('btn-tab-upload').classList.replace('text-emerald-700', 'text-slate-600');
+            }
+        }
+
+        // Xử lý nộp Form
+        const form = document.getElementById('add-food-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorMsg = document.getElementById('error-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.classList.add('hidden');
+            
+            // Thay đổi nút submitting
+            submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">cycle</span> Đang xử lý...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70');
+
+            const token = localStorage.getItem("token");
+            try {
+                let bodyData;
+                let fetchHeaders = {
+                    "Authorization": `Bearer ${token}`
+                };
+
+                if (isUploadMode) {
+                    // DÙNG FORMDATA (vừa file, vừa text)
+                    const formData = new FormData();
+                    formData.append("name", document.getElementById('name').value);
+                    formData.append("nameEn", document.getElementById('nameEn').value);
+                    formData.append("restaurant", document.getElementById('restaurant').value);
+                    formData.append("description", document.getElementById('description').value);
+                    formData.append("basePriceCoop", document.getElementById('basePriceCoop').value);
+                    formData.append("basePriceBHX", document.getElementById('basePriceBHX').value);
+                    formData.append("category", document.getElementById('category').value);
+                    formData.append("tags", document.getElementById('tags').value);
+                    
+                    const fileInput = document.getElementById('imageFile');
+                    if(fileInput.files.length > 0) {
+                        formData.append("imageFile", fileInput.files[0]);
+                    } else {
+                        throw new Error("Vui lòng chọn hình ảnh để tải lên");
+                    }
+                    
+                    bodyData = formData; // fetch sẽ tự sinh Content-Type multipart/form-data
+                } else {
+                    // DÙNG JSON
+                    const imageUrl = document.getElementById('imageUrl').value;
+                    if(!imageUrl) throw new Error("Vui lòng nhập đường link hình ảnh");
+
+                    const jsonData = {
+                        name: document.getElementById('name').value,
+                        nameEn: document.getElementById('nameEn').value,
+                        restaurant: document.getElementById('restaurant').value,
+                        description: document.getElementById('description').value,
+                        basePriceCoop: document.getElementById('basePriceCoop').value,
+                        basePriceBHX: document.getElementById('basePriceBHX').value,
+                        category: document.getElementById('category').value,
+                        tags: document.getElementById('tags').value,
+                        imageUrl: imageUrl
+                    };
+                    bodyData = JSON.stringify(jsonData);
+                    fetchHeaders["Content-Type"] = "application/json";
+                }
+
+                const res = await fetch('/api/foods', {
+                    method: 'POST',
+                    headers: fetchHeaders,
+                    body: bodyData
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast("Đã thêm " + data.food.name + " thành công!");
+                    form.reset();
+                    document.getElementById('file-name-display').innerText = "Click để chọn file ảnh (< 5MB)";
+                } else {
+                    throw new Error(data.message || data.error || "Có lỗi từ máy chủ");
+                }
+            } catch (err) {
+                errorMsg.innerText = "Lỗi: " + err.message;
+                errorMsg.classList.remove('hidden');
+            } finally {
+                submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm">add_task</span> Tạo món ăn';
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70');
+            }
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
+

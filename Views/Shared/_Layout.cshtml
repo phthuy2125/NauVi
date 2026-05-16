@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>@ViewData["Title"] - FoodWise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="/home/tailwind-config.js"></script>
+    <link rel="stylesheet" href="/home/shared.css" />
+    @RenderSection("Styles", required: false)
+</head>
+<body class="font-body text-on-surface home-bg-pattern">
+    <aside
+        class="fixed left-0 top-0 h-full flex flex-col p-6 h-screen w-64 border-r-0 bg-sky-50/70 dark:bg-sky-950/70 backdrop-blur-xl z-50">
+        <div class="mb-10 px-4">
+            <h1 class="text-2xl font-black text-sky-900 dark:text-sky-100 tracking-tighter">FoodWise</h1>
+            <p class="text-[10px] uppercase tracking-widest text-primary font-bold mt-1">Gợi ý món ăn theo sở thích của
+                bạn</p>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full"
+                id="nav-home" href="/Home/Index">
+                <span class="material-symbols-outlined" data-icon="home">home</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Trang chủ</span>
+            </a>
+            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
+                id="nav-listfood" href="/Home/ListFood">
+                <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Tất cả món ăn</span>
+            </a>
+            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
+                id="nav-taste" href="/Home/TasteProfile">
+                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Khẩu vị cá nhân</span>
+            </a>
+            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
+                id="nav-favorites" href="/Home/Favorites">
+                <span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Yêu thích</span>
+            </a>
+            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
+                id="nav-history" href="/Home/History">
+                <span class="material-symbols-outlined" data-icon="history">history</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Lịch sử</span>
+            </a>
+            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
+                id="nav-ingred" href="/Home/IngredSuggestion">
+                <span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Gợi ý nguyên liệu</span>
+            </a>
+        </nav>
+        <div class="mt-auto">
+            <button onclick="toggleChat()"
+                class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full font-bold text-sm shadow-xl shadow-primary/10 hover:brightness-110 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1;">magic_button</span>
+                Nhận gợi ý
+            </button>
+            <a href="/Account/Profile" title="Chỉnh sửa hồ sơ" id="user-profile-link"
+                class="mt-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer no-underline">
+                <img alt="Đầu bếp" id="sidebar-avatar" class="w-10 h-10 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc-oaHadaAgXfNPAU1uKHh-1ERTSvsO2mPHDZFxAKBhuFtWTQA1_pDt9GpeQytfJFS1n9FukXgO7UCpPsZepxyUdHyBwRQDFoa-hsWDOpGUcF7i_XMx9fHJlRTcS3ZzDJb_os1eK9_Q1UHzeFzleVKBQx4vK3aEbN0HF4BggWE-6vHezu63aoofKQ19Y7azRVQd8CxA7fYx5BZNpUvBS-m4DkVfP3hGZw69X0lz11527IODR5Z85fYBQWlemMD8_mmZk7jjc_uqA" />
+                <div>
+                    <p class="text-xs font-bold" id="display-username">Đang tải...</p>
+                    <p class="text-[10px] text-outline">Chuyên gia hương vị</p>
+                </div>
+            </a>
+        </div>
+    </aside>
+
+    <main class="ml-64 min-h-screen relative pb-20">
+        <header
+            class="fixed top-0 right-0 left-64 h-20 flex items-center justify-between px-8 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
+            <div class="relative w-full max-w-md" id="global-search-wrapper">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary z-10"
+                    data-icon="search">search</span>
+                <input id="global-search-input" autocomplete="off"
+                    class="w-full pl-12 pr-10 py-3 bg-surface-container-lowest border-none rounded-full focus:ring-2 focus:ring-primary-fixed-dim/30 font-medium text-on-surface placeholder:text-outline-variant"
+                    placeholder="Bạn đang thèm vị gì?" type="text" />
+                <!-- Clear button -->
+                <button id="global-search-clear" onclick="clearGlobalSearch()"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface transition-colors hidden"
+                    title="Xóa tìm kiếm">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+                <!-- Suggestion Dropdown -->
+                <div id="search-suggestion-dropdown"
+                    style="display:none; position:absolute; top:calc(100% + 10px); left:0; right:0; z-index:9999;"
+                    class="bg-white rounded-2xl shadow-2xl border border-sky-100 overflow-hidden">
+                    <!-- Header -->
+                    <div class="px-5 py-3 bg-sky-50/80 border-b border-sky-100 flex items-center justify-between">
+                        <span id="search-suggestion-label" class="text-xs font-bold text-sky-700 uppercase tracking-wider">Gợi ý món ăn</span>
+                        <span id="search-suggestion-count" class="text-[10px] text-outline font-medium"></span>
+                    </div>
+                    <!-- List -->
+                    <div id="search-suggestion-list" class="max-h-[400px] overflow-y-auto divide-y divide-sky-50"></div>
+                    <!-- Footer: View all -->
+                    <div id="search-suggestion-footer" class="hidden px-5 py-3 bg-sky-50/60 border-t border-sky-100">
+                        <button id="search-view-all-btn"
+                            class="w-full text-center text-xs font-bold text-primary hover:underline flex items-center justify-center gap-1"
+                            onclick="goToListFoodSearch()">
+                            <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            Xem tất cả kết quả trong Danh sách món ăn
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <button onclick="document.getElementById('notification-dropdown').classList.toggle('hidden')" id="bell-btn"
+                        class="relative text-sky-600 hover:text-sky-800 transition-colors p-2 rounded-full hover:bg-surface-container-low">
+                        <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                        <span id="notification-badge" class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <!-- Notification Dropdown -->
+                    <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-sky-100 overflow-hidden z-50 origin-top-right transition-all">
+                        <div class="bg-surface-container-lowest p-4 border-b border-sky-50 flex items-center justify-between">
+                            <h4 class="font-bold text-sky-900">Thông báo</h4>
+                            <button class="text-xs text-sky-600 font-medium hover:underline" onclick="clearNotifications()">Đánh dấu đã đọc</button>
+                        </div>
+                        <div id="notification-list" class="max-h-96 overflow-y-auto">
+                            <!-- Empty State -->
+                            <div id="notification-empty" class="p-6 text-center text-on-surface-variant text-sm">
+                                Bạn chưa có thông báo nào.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="logout()" title="Đăng xuất" id="logout-btn" style="display:none;"
+                    class="text-sky-600 hover:text-sky-800 transition-colors p-2 rounded-full hover:bg-surface-container-low">
+                    <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                </button>
+                <div class="h-8 w-[1px] bg-outline-variant/30"></div>
+            </div>
+        </header>
+
+        @RenderBody()
+
+    </main>
+
+    <!-- ===== GEMINI AI CHAT PANEL ===== -->
+    <div id="ai-chat-overlay" onclick="closeChat(event)"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.3); z-index:998; backdrop-filter:blur(4px);">
+    </div>
+
+    <div id="ai-chat-panel" style="
+        display: none;
+        position: fixed;
+        bottom: 100px;
+        right: 24px;
+        width: 400px;
+        height: 560px;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 32px 80px rgba(0,100,121,0.25), 0 8px 24px rgba(0,0,0,0.12);
+        z-index: 999;
+        flex-direction: column;
+        overflow: hidden;
+        transform: translateY(20px) scale(0.95);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    ">
+        <!-- Header -->
+        <div style="
+            background: linear-gradient(135deg, #006479 0%, #40cef3 100%);
+            padding: 20px 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        ">
+            <div style="
+                width: 42px; height: 42px;
+                background: rgba(255,255,255,0.2);
+                border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 20px;
+            ">✨</div>
+            <div style="flex:1">
+                <div style="color:white; font-weight:800; font-size:15px; font-family:'Plus Jakarta Sans',sans-serif;">
+                    FoodWise AI</div>
+                <div style="color:rgba(255,255,255,0.75); font-size:11px; font-family:'Plus Jakarta Sans',sans-serif;">
+                    Powered by Gemini • Chuyên gia ẩm thực</div>
+            </div>
+            <button onclick="toggleChat()" style="
+                background: rgba(255,255,255,0.2);
+                border: none; cursor: pointer;
+                width: 32px; height: 32px;
+                border-radius: 50%;
+                color: white; font-size: 18px;
+                display: flex; align-items: center; justify-content: center;
+                transition: background 0.2s;
+            " onmouseover="this.style.background='rgba(255,255,255,0.35)'"
+                onmouseout="this.style.background='rgba(255,255,255,0.2)'">✕</button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="ai-messages" style="
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8fcff;
+            scroll-behavior: smooth;
+        ">
+            <!-- Welcome message -->
+            <div style="display:flex; gap:10px; align-items:flex-start;">
+                <div
+                    style="width:32px;height:32px;background:linear-gradient(135deg,#006479,#40cef3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">
+                    🍜</div>
+                <div style="
+                    background: white;
+                    border-radius: 4px 18px 18px 18px;
+                    padding: 12px 16px;
+                    font-size: 13px;
+                    color: #003345;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    line-height: 1.6;
+                    max-width: 85%;
+                    box-shadow: 0 2px 8px rgba(0,100,121,0.08);
+                ">
+                    Xin chào! 👋 Tôi là <strong>FoodWise AI</strong>, trợ lý ẩm thực của bạn.<br><br>
+                    Hãy hỏi tôi về bất kỳ món ăn nào — công thức, dinh dưỡng, hay gợi ý theo khẩu vị nhé! 🍽️
+                </div>
+            </div>
+
+            <!-- Quick suggestions -->
+            <div id="ai-suggestions" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;">
+                <button onclick="sendSuggestion(this)" data-msg="Gợi ý món ăn ít calo cho bữa tối" style="
+                    background: white;
+                    border: 1.5px solid #cdedff;
+                    border-radius: 20px;
+                    padding: 6px 14px;
+                    font-size: 11.5px;
+                    color: #006479;
+                    cursor: pointer;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                " onmouseover="this.style.background='#e1f3ff'" onmouseout="this.style.background='white'">🥗 Món ít
+                    calo</button>
+                <button onclick="sendSuggestion(this)" data-msg="Phở bò là gì? Cách nấu như thế nào?" style="
+                    background: white;
+                    border: 1.5px solid #cdedff;
+                    border-radius: 20px;
+                    padding: 6px 14px;
+                    font-size: 11.5px;
+                    color: #006479;
+                    cursor: pointer;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                " onmouseover="this.style.background='#e1f3ff'" onmouseout="this.style.background='white'">🍜 Nấu Phở
+                    bò</button>
+                <button onclick="sendSuggestion(this)" data-msg="Món ăn cay ngon nhất Việt Nam là gì?" style="
+                    background: white;
+                    border: 1.5px solid #cdedff;
+                    border-radius: 20px;
+                    padding: 6px 14px;
+                    font-size: 11.5px;
+                    color: #006479;
+                    cursor: pointer;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                " onmouseover="this.style.background='#e1f3ff'" onmouseout="this.style.background='white'">🌶️ Món
+                    cay</button>
+                <button onclick="sendSuggestion(this)" data-msg="Tôi có thịt gà, rau cải và tỏi, nên nấu món gì?" style="
+                    background: white;
+                    border: 1.5px solid #cdedff;
+                    border-radius: 20px;
+                    padding: 6px 14px;
+                    font-size: 11.5px;
+                    color: #006479;
+                    cursor: pointer;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                " onmouseover="this.style.background='#e1f3ff'" onmouseout="this.style.background='white'">🍗 Nấu từ
+                    nguyên liệu</button>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div style="
+            padding: 14px 16px;
+            background: white;
+            border-top: 1px solid #e1f3ff;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        ">
+            <textarea id="ai-input" placeholder="Hỏi về món ăn..." rows="1" style="
+                flex: 1;
+                border: 1.5px solid #cdedff;
+                border-radius: 16px;
+                padding: 10px 16px;
+                font-size: 13px;
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                resize: none;
+                outline: none;
+                color: #003345;
+                background: #f8fcff;
+                max-height: 100px;
+                overflow-y: auto;
+                transition: border-color 0.2s;
+                line-height: 1.5;
+            " onfocus="this.style.borderColor='#006479'" onblur="this.style.borderColor='#cdedff'"
+                onkeydown="handleChatKeyDown(event)" oninput="autoResizeTextarea(this)"></textarea>
+            <button id="ai-send-btn" onclick="sendChatMessage()" style="
+                width: 42px; height: 42px;
+                background: linear-gradient(135deg, #006479, #40cef3);
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: all 0.2s;
+                box-shadow: 0 4px 12px rgba(0,100,121,0.3);
+            " onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="white" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Float Button -->
+    <button id="ai-fab-btn" onclick="toggleChat()"
+        class="fixed bottom-10 right-10 w-16 h-16 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform active:scale-95 z-50"
+        style="box-shadow: 0 8px 32px rgba(0,100,121,0.4);">
+        <span class="material-symbols-outlined text-3xl" data-icon="magic_button"
+            style="font-variation-settings: 'FILL' 1;">magic_button</span>
+    </button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const path = window.location.pathname.toLowerCase();
+            const links = {
+                "/home/index": "nav-home",
+                "/home": "nav-home",
+                "/": "nav-home",
+                "/home/listfood": "nav-listfood",
+                "/home/tasteprofile": "nav-taste",
+                "/home/favorites": "nav-favorites",
+                "/home/history": "nav-history",
+                "/home/ingredsuggestion": "nav-ingred"
+            };
+            const activeId = links[path];
+            if (activeId) {
+                const el = document.getElementById(activeId);
+                if (el) {
+                    el.classList.add("bg-sky-200", "dark:bg-sky-800", "text-sky-900", "dark:text-sky-50", "font-bold");
+                    el.classList.remove("text-sky-600", "dark:text-sky-400");
+                }
+            }
+
+            // =====================================================
+            // GLOBAL SEARCH: AUTOCOMPLETE + SUGGESTION DROPDOWN
+            // =====================================================
+            const searchInput = document.getElementById("global-search-input");
+            const searchDropdown = document.getElementById("search-suggestion-dropdown");
+            const searchList = document.getElementById("search-suggestion-list");
+            const searchCount = document.getElementById("search-suggestion-count");
+            const searchFooter = document.getElementById("search-suggestion-footer");
+            const searchClearBtn = document.getElementById("global-search-clear");
+
+            let _globalFoodsCache = null;
+            let _searchDebounceTimer = null;
+
+            async function loadGlobalFoodsCache() {
+                if (_globalFoodsCache) return _globalFoodsCache;
+                try {
+                    const res = await fetch('/api/foods/all');
+                    const data = await res.json();
+                    _globalFoodsCache = data.foods || [];
+                } catch {
+                    _globalFoodsCache = [];
+                }
+                return _globalFoodsCache;
+            }
+
+            function matchFood(food, query) {
+                const q = query.toLowerCase();
+                if (food.name && food.name.toLowerCase().includes(q)) return true;
+                if (food.category && food.category.toLowerCase().includes(q)) return true;
+                const tastes = food.taste || food.Taste || [];
+                if (tastes.some(t => t.toLowerCase().includes(q))) return true;
+                const tags = food.tags || food.Tags || [];
+                const tagsList = typeof tags === 'string' ? tags.split(',') : tags;
+                if (tagsList.some(t => t.toLowerCase().trim().includes(q))) return true;
+                return false;
+            }
+
+            function renderSuggestions(foods, query) {
+                const matched = foods.filter(f => matchFood(f, query));
+                const top6 = matched.slice(0, 6);
+
+                searchCount.textContent = matched.length > 0 ? `${matched.length} món phù hợp` : '';
+
+                if (top6.length === 0) {
+                    searchList.innerHTML = `
+                        <div style="padding:24px; text-align:center; color:#64748b; font-size:13px;">
+                            <span class="material-symbols-outlined" style="font-size:36px; display:block; margin-bottom:8px; opacity:0.4;">search_off</span>
+                            Không tìm thấy món nào với "<strong>${query}</strong>"
+                        </div>`;
+                    searchFooter.classList.add('hidden');
+                } else {
+                    searchList.innerHTML = top6.map(food => {
+                        const id = food.id || food._id || '';
+                        const name = food.name || '';
+                        const img = food.imageUrl || food.ImageUrl || 'https://via.placeholder.com/80';
+                        const cat = food.category || '';
+                        const tastes = (food.taste || food.Taste || []).slice(0, 2);
+                        const tasteHtml = tastes.map(t =>
+                            `<span style="background:#e0f2fe; color:#0369a1; border-radius:99px; padding:2px 10px; font-size:10px; font-weight:700;">${t}</span>`
+                        ).join('');
+
+                        // Highlight matched text in name
+                        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        const highlightedName = name.replace(regex, '<mark style="background:#bae6fd; color:#0c4a6e; border-radius:3px; padding:0 2px;">$1</mark>');
+
+                        return `
+                        <div onclick="window.location.href='/Home/FoodDetail?id=${id}'"
+                            style="display:flex; align-items:center; gap:14px; padding:12px 18px; cursor:pointer; transition:background 0.15s;"
+                            onmouseover="this.style.background='#f0f9ff'" onmouseout="this.style.background=''">
+                            <img src="${img}" alt="${name}"
+                                style="width:52px; height:52px; border-radius:12px; object-fit:cover; flex-shrink:0; border:2px solid #e0f2fe;" />
+                            <div style="flex:1; min-width:0;">
+                                <div style="font-weight:800; font-size:14px; color:#0c4a6e; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Plus Jakarta Sans',sans-serif;">${highlightedName}</div>
+                                ${cat ? `<div style="font-size:11px; color:#64748b; margin-top:1px; font-family:'Plus Jakarta Sans',sans-serif;">${cat}</div>` : ''}
+                                <div style="display:flex; gap:5px; margin-top:5px; flex-wrap:wrap;">${tasteHtml}</div>
+                            </div>
+                            <span class="material-symbols-outlined" style="color:#bae6fd; font-size:18px; flex-shrink:0;">arrow_forward_ios</span>
+                        </div>`;
+                    }).join('');
+
+                    if (matched.length > 6) {
+                        searchFooter.classList.remove('hidden');
+                    } else {
+                        searchFooter.classList.add('hidden');
+                    }
+                }
+
+                searchDropdown.style.display = 'block';
+            }
+
+            function hideSearchDropdown() {
+                if (searchDropdown) searchDropdown.style.display = 'none';
+            }
+
+            window.goToListFoodSearch = function() {
+                const val = searchInput ? searchInput.value.trim() : '';
+                hideSearchDropdown();
+                if (val) {
+                    window.location.href = `/Home/ListFood?search=${encodeURIComponent(val)}`;
+                } else {
+                    window.location.href = `/Home/ListFood`;
+                }
+            };
+
+            window.clearGlobalSearch = function() {
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchInput.focus();
+                }
+                hideSearchDropdown();
+                if (searchClearBtn) searchClearBtn.classList.add('hidden');
+            };
+
+            if (searchInput) {
+                // Pre-fill from URL query param
+                const urlParams = new URLSearchParams(window.location.search);
+                const query = urlParams.get('search');
+                if (query) {
+                    searchInput.value = query;
+                    if (searchClearBtn) searchClearBtn.classList.remove('hidden');
+                }
+
+                // Debounce input for suggestions
+                searchInput.addEventListener('input', async function () {
+                    const val = this.value.trim();
+
+                    // Show/hide clear button
+                    if (searchClearBtn) {
+                        searchClearBtn.classList.toggle('hidden', val === '');
+                    }
+
+                    clearTimeout(_searchDebounceTimer);
+                    if (val.length < 1) {
+                        hideSearchDropdown();
+                        return;
+                    }
+
+                    _searchDebounceTimer = setTimeout(async () => {
+                        // Show loading state
+                        searchList.innerHTML = `
+                            <div style="padding:20px; text-align:center;">
+                                <span class="material-symbols-outlined" style="font-size:28px; color:#7dd3fc; animation:spin 1s linear infinite; display:block;">refresh</span>
+                            </div>`;
+                        searchDropdown.style.display = 'block';
+
+                        const foods = await loadGlobalFoodsCache();
+                        renderSuggestions(foods, val);
+                    }, 220);
+                });
+
+                // Enter key: navigate or apply filter
+                searchInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        hideSearchDropdown();
+                        const val = this.value.trim();
+                        if (window.location.pathname.toLowerCase().includes('/listfood') && typeof window.applyFilters === 'function') {
+                            const newUrl = new URL(window.location);
+                            if (val) newUrl.searchParams.set('search', val);
+                            else newUrl.searchParams.delete('search');
+                            window.history.pushState({}, '', newUrl);
+                            window.applyFilters();
+                        } else {
+                            goToListFoodSearch();
+                        }
+                    }
+                    if (e.key === 'Escape') {
+                        hideSearchDropdown();
+                    }
+                });
+
+                // Hide dropdown on outside click
+                document.addEventListener('click', function (e) {
+                    const wrapper = document.getElementById('global-search-wrapper');
+                    if (wrapper && !wrapper.contains(e.target)) {
+                        hideSearchDropdown();
+                    }
+                });
+
+                // Show again on focus if has value
+                searchInput.addEventListener('focus', async function () {
+                    const val = this.value.trim();
+                    if (val.length >= 1) {
+                        const foods = await loadGlobalFoodsCache();
+                        renderSuggestions(foods, val);
+                    }
+                });
+            }
+        });
+
+        // ===== CHAT GEMINI AI =====
+        let chatHistory = [];
+        let isChatOpen = false;
+        let isAiTyping = false;
+
+        function toggleChat() {
+            const panel = document.getElementById("ai-chat-panel");
+            const overlay = document.getElementById("ai-chat-overlay");
+            const fab = document.getElementById("ai-fab-btn");
+
+            isChatOpen = !isChatOpen;
+
+            if (isChatOpen) {
+                panel.style.display = "flex";
+                overlay.style.display = "block";
+                fab.innerHTML = '<span class="material-symbols-outlined text-3xl" style="font-variation-settings: \'FILL\' 1;">close</span>';
+                setTimeout(() => {
+                    panel.style.opacity = "1";
+                    panel.style.transform = "translateY(0) scale(1)";
+                }, 10);
+                document.getElementById("ai-input").focus();
+            } else {
+                panel.style.opacity = "0";
+                panel.style.transform = "translateY(20px) scale(0.95)";
+                overlay.style.display = "none";
+                fab.innerHTML = '<span class="material-symbols-outlined text-3xl" data-icon="magic_button" style="font-variation-settings: \'FILL\' 1;">magic_button</span>';
+                setTimeout(() => {
+                    panel.style.display = "none";
+                }, 300);
+            }
+        }
+
+        function closeChat(event) {
+            if (event.target === document.getElementById("ai-chat-overlay")) {
+                if (isChatOpen) toggleChat();
+            }
+        }
+
+        function handleChatKeyDown(event) {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function autoResizeTextarea(el) {
+            el.style.height = "auto";
+            el.style.height = Math.min(el.scrollHeight, 100) + "px";
+        }
+
+        function appendMessage(role, text) {
+            const container = document.getElementById("ai-messages");
+            const suggestions = document.getElementById("ai-suggestions");
+            if (suggestions) suggestions.style.display = "none";
+
+            const isUser = role === "user";
+            const wrapper = document.createElement("div");
+            wrapper.style.cssText = `display:flex; gap:10px; align-items:flex-start; ${isUser ? "flex-direction:row-reverse;" : ""}`;
+
+            const avatar = document.createElement("div");
+            avatar.style.cssText = `width:32px; height:32px; background: ${isUser ? "linear-gradient(135deg,#40cef3,#006479)" : "linear-gradient(135deg,#006479,#40cef3)"}; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 14px; flex-shrink:0;`;
+            avatar.textContent = isUser ? "👤" : "🍜";
+
+            const bubble = document.createElement("div");
+            bubble.style.cssText = `background: ${isUser ? "linear-gradient(135deg,#006479,#40cef3)" : "white"}; color: ${isUser ? "white" : "#003345"}; border-radius: ${isUser ? "18px 4px 18px 18px" : "4px 18px 18px 18px"}; padding: 12px 16px; font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.6; max-width: 85%; box-shadow: 0 2px 8px rgba(0,100,121,0.1); white-space: pre-wrap; word-break: break-word;`;
+            
+            // Format markdown-like syntax
+            let formattedText = text
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/\[(.*?)\]\(id:(.*?)\)/g, '<a href="/Home/FoodDetail?id=$2" class="ai-food-link" style="color:#006479; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:2px;">$1 <span class="material-symbols-outlined" style="font-size:12px">open_in_new</span></a>')
+                .replace(/\n/g, "<br>");
+                
+            bubble.innerHTML = formattedText;
+
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+            return bubble;
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById("ai-messages");
+            const wrapper = document.createElement("div");
+            wrapper.id = "typing-indicator";
+            wrapper.style.cssText = "display:flex; gap:10px; align-items:flex-start;";
+
+            const avatar = document.createElement("div");
+            avatar.style.cssText = `width:32px;height:32px;background:linear-gradient(135deg,#006479,#40cef3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;`;
+            avatar.textContent = "🍜";
+
+            const bubble = document.createElement("div");
+            bubble.style.cssText = `background:white;border-radius:4px 18px 18px 18px;padding:14px 18px;box-shadow:0 2px 8px rgba(0,100,121,0.1);display:flex; gap:5px; align-items:center;`;
+            bubble.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#40cef3;animation:bounce 1s infinite;"></span><span style="width:7px;height:7px;border-radius:50%;background:#40cef3;animation:bounce 1s 0.15s infinite;"></span><span style="width:7px;height:7px;border-radius:50%;background:#40cef3;animation:bounce 1s 0.3s infinite;"></span>`;
+
+            if (!document.getElementById("bounce-style")) {
+                const style = document.createElement("style");
+                style.id = "bounce-style";
+                style.textContent = `@@keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-6px); opacity: 1; } }`;
+                document.head.appendChild(style);
+            }
+
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const el = document.getElementById("typing-indicator");
+            if (el) el.remove();
+        }
+
+        async function sendChatMessage() {
+            if (isAiTyping) return;
+            const input = document.getElementById("ai-input");
+            const message = input.value.trim();
+            if (!message) return;
+            input.value = "";
+            input.style.height = "auto";
+            appendMessage("user", message);
+            chatHistory.push({ role: "user", text: message });
+            isAiTyping = true;
+            const sendBtn = document.getElementById("ai-send-btn");
+            sendBtn.style.opacity = "0.5";
+            sendBtn.style.cursor = "not-allowed";
+            showTypingIndicator();
+            try {
+                const userId = localStorage.getItem("userId");
+                const res = await fetch("/api/ai/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId, message, history: chatHistory.slice(-10) })
+                });
+                const data = await res.json();
+                hideTypingIndicator();
+                if (res.ok) {
+                    const reply = data.reply;
+                    appendMessage("ai", reply);
+                    chatHistory.push({ role: "ai", text: reply });
+                } else {
+                    appendMessage("ai", "⚠️ Xin lỗi, tôi gặp sự cố: " + (data.error || "Lỗi không xác định"));
+                }
+            } catch (err) {
+                hideTypingIndicator();
+                appendMessage("ai", "⚠️ Không kết nối được server. Vui lòng kiểm tra backend đang chạy!");
+            }
+            isAiTyping = false;
+            sendBtn.style.opacity = "1";
+            sendBtn.style.cursor = "pointer";
+            input.focus();
+        }
+
+        function sendSuggestion(btn) {
+            const message = btn.dataset.msg;
+            document.getElementById("ai-input").value = message;
+            sendChatMessage();
+        }
+
+        // Shared Auth logic
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            const username = localStorage.getItem("username");
+            const userId = localStorage.getItem("userId");
+            const nameEl = document.getElementById("display-username");
+            const avatarEl = document.getElementById("sidebar-avatar");
+            const logoutBtn = document.getElementById("logout-btn");
+
+            if (token && username) {
+                if (nameEl) nameEl.innerText = username;
+                if (logoutBtn) logoutBtn.style.display = "block";
+                if (userId && avatarEl) {
+                    fetch(`/api/users/profile/${userId}`)
+                        .then(r => {
+                            if (r.status === 404) {
+                                // Nếu không tìm thấy user trong DB (có thể do reset DB), thì đăng xuất luôn
+                                logout();
+                                return null;
+                            }
+                            return r.ok ? r.json() : null;
+                        })
+                        .then(data => {
+                            if (data && data.avatar) avatarEl.src = data.avatar;
+                            if (data && data.username && nameEl) nameEl.innerText = data.username;
+                        })
+                        .catch(() => {});
+                }
+            } else {
+                if (nameEl) nameEl.innerHTML = '<a href="/Account/Login" style="color:inherit;text-decoration:underline;">Đăng nhập</a>';
+                if (logoutBtn) logoutBtn.style.display = "none";
+            }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "/Account/Login";
+        }
+
+        // ===========================
+        // FAVORITES (API + MongoDB)
+        // ===========================
+        let _userFavIds = new Set();
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = localStorage.getItem('userId');
+            if (!userId) return;
+            
+            try {
+                const res = await fetch(`/api/users/${userId}/favorites`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.favoriteFoodIds) {
+                        _userFavIds = new Set(data.favoriteFoodIds);
+                        // Refresh UI cho các nút đã hiển thị
+                        document.querySelectorAll('.fav-btn').forEach(btn => {
+                            let foodId = btn.id.replace('fav-btn-', '').replace('fp-', '');
+                            applyFavoriteState(btn, foodId);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Không thể tải danh sách yêu thích:', err);
+            }
+        });
+
+        function isFavorite(foodId) {
+            return _userFavIds.has(foodId);
+        }
+
+        async function toggleFavorite(btn, food) {
+            if (!food || !food.id) return;
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                showFavToast('Vui lòng đăng nhập để lưu món yêu thích!');
+                return;
+            }
+
+            const foodId = food.id;
+            const icon = btn.querySelector('.material-symbols-outlined') || btn;
+            const currentlyFav = _userFavIds.has(foodId);
+
+            // Optimistic Update UI (Cập nhật giao diện lập tức cho nhanh)
+            if (currentlyFav) {
+                _userFavIds.delete(foodId);
+                icon.style.fontVariationSettings = "'FILL' 0";
+                icon.style.color = '';
+                btn.title = 'Thêm vào yêu thích';
+            } else {
+                _userFavIds.add(foodId);
+                icon.style.fontVariationSettings = "'FILL' 1";
+                icon.style.color = '#ef4444';
+                btn.title = 'Xóa khỏi yêu thích';
+                btn.style.transform = 'scale(1.4)';
+                setTimeout(() => btn.style.transform = '', 300);
+            }
+
+            // Sync with backend API
+            try {
+                const res = await fetch('/api/users/toggle-favorite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, foodId })
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    showFavToast(data.message || (data.isFavorite ? `Đã thêm "${food.name}" vào yêu thích ❤️` : `Đã xóa "${food.name}" khỏi yêu thích`));
+                } else {
+                    throw new Error('API Failed');
+                }
+            } catch (err) {
+                console.error(err);
+                showFavToast('Lỗi khi cập nhật yêu thích!');
+                // Rollback UI if failed
+                if (currentlyFav) {
+                    _userFavIds.add(foodId);
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                    icon.style.color = '#ef4444';
+                } else {
+                    _userFavIds.delete(foodId);
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.style.color = '';
+                }
+            }
+        }
+
+        function applyFavoriteState(btn, foodId) {
+            const icon = btn.querySelector('.material-symbols-outlined') || btn;
+            if (isFavorite(foodId)) {
+                icon.style.fontVariationSettings = "'FILL' 1";
+                icon.style.color = '#ef4444';
+                btn.title = 'Xóa khỏi yêu thích';
+            } else {
+                icon.style.fontVariationSettings = "'FILL' 0";
+                icon.style.color = '';
+                btn.title = 'Thêm vào yêu thích';
+            }
+        }
+
+        function showFavToast(msg) {
+            let toast = document.getElementById('fav-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'fav-toast';
+                toast.style.cssText = `
+                    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px);
+                    background:#003345; color:white; padding:12px 24px; border-radius:999px;
+                    font-size:13px; font-weight:600; font-family:'Plus Jakarta Sans',sans-serif;
+                    box-shadow:0 8px 32px rgba(0,51,69,0.3); z-index:9999;
+                    transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+                    opacity:0; white-space:nowrap;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.textContent = msg;
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            toast.style.opacity = '1';
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.style.transform = 'translateX(-50%) translateY(80px)';
+                toast.style.opacity = '0';
+            }, 2500);
+        }
+
+        let unreadCount = 0;
+
+        function addNotification(title, message, isWarning = false) {
+            const list = document.getElementById('notification-list');
+            const emptyState = document.getElementById('notification-empty');
+            const badge = document.getElementById('notification-badge');
+
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+
+            const item = document.createElement('div');
+            item.className = `p-4 border-b border-sky-50 hover:bg-sky-50 transition-colors ${isWarning ? 'bg-red-50/50' : ''}`;
+            item.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <span class="material-symbols-outlined mt-0.5 ${isWarning ? 'text-red-500' : 'text-sky-500'} text-lg" data-icon="${isWarning ? 'warning' : 'notifications'}">${isWarning ? 'warning' : 'notifications'}</span>
+                    <div>
+                        <h5 class="font-bold text-sm ${isWarning ? 'text-red-800' : 'text-sky-900'}">${title}</h5>
+                        <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">${message}</p>
+                        <p class="text-[10px] text-sky-600 mt-2 font-medium">Vừa xong</p>
+                    </div>
+                </div>
+            `;
+            
+            list.insertBefore(item, list.firstChild);
+            
+            unreadCount++;
+            badge.innerText = unreadCount;
+            badge.classList.remove('hidden');
+        }
+
+        function clearNotifications() {
+            unreadCount = 0;
+            const badge = document.getElementById('notification-badge');
+            badge.innerText = 0;
+            badge.classList.add('hidden');
+            
+            const list = document.getElementById('notification-list');
+            list.innerHTML = `
+                <div id="notification-empty" class="p-6 text-center text-on-surface-variant text-sm">
+                    Bạn chưa có thông báo nào.
+                </div>
+            `;
+            
+            document.getElementById('notification-dropdown').classList.add('hidden');
+        }
+
+        function showTopRightInfo(title, message) {
+            addNotification(title, message, false);
+
+            let toast = document.getElementById('info-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'info-toast';
+                toast.innerHTML = `
+                    <div class="bg-sky-50 border border-sky-100 border-l-4 border-l-sky-500 p-4 rounded-xl shadow-2xl flex items-start gap-4" style="pointer-events: auto;">
+                        <span class="material-symbols-outlined text-sky-500 mt-0.5" data-icon="info">info</span>
+                        <div class="flex-1">
+                            <h4 id="info-toast-title" class="text-sky-800 font-extrabold text-sm"></h4>
+                            <p id="info-toast-text" class="text-sky-700 text-sm mt-1.5 leading-snug font-medium"></p>
+                        </div>
+                        <button onclick="this.closest('#info-toast').style.transform='translateX(120%)'; setTimeout(()=>this.closest('#info-toast').remove(), 400)" class="text-sky-400 hover:text-sky-600 ml-2 mt-0.5 transition-colors">
+                            <span class="material-symbols-outlined text-base">close</span>
+                        </button>
+                    </div>
+                `;
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 24px;
+                    z-index: 9999;
+                    width: 380px;
+                    transform: translateX(120%);
+                    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    pointer-events: none;
+                `;
+                document.body.appendChild(toast);
+            }
+            
+            document.getElementById('info-toast-title').innerText = title;
+            document.getElementById('info-toast-text').innerText = message;
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    toast.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        if (document.body.contains(toast)) toast.remove();
+                    }, 400);
+                }
+            }, 8000);
+        }
+
+        function showTopRightWarning(message) {
+            addNotification("Cảnh báo sức khỏe", message, true);
+
+            let toast = document.getElementById('health-warning-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'health-warning-toast';
+                toast.innerHTML = `
+                    <div class="bg-red-50 border border-red-100 border-l-4 border-l-red-500 p-4 rounded-xl shadow-2xl flex items-start gap-4" style="pointer-events: auto;">
+                        <span class="material-symbols-outlined text-red-500 mt-0.5" data-icon="warning">warning</span>
+                        <div class="flex-1">
+                            <h4 class="text-red-800 font-extrabold text-sm">Cảnh báo sức khỏe</h4>
+                            <p id="health-warning-text" class="text-red-700 text-sm mt-1.5 leading-snug font-medium"></p>
+                        </div>
+                        <button onclick="this.closest('#health-warning-toast').style.transform='translateX(120%)'; setTimeout(()=>this.closest('#health-warning-toast').remove(), 400)" class="text-red-400 hover:text-red-600 ml-2 mt-0.5 transition-colors">
+                            <span class="material-symbols-outlined text-base">close</span>
+                        </button>
+                    </div>
+                `;
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 24px;
+                    z-index: 9999;
+                    width: 380px;
+                    transform: translateX(120%);
+                    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    pointer-events: none;
+                `;
+                document.body.appendChild(toast);
+            }
+            
+            document.getElementById('health-warning-text').innerText = message;
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    toast.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        if (document.body.contains(toast)) toast.remove();
+                    }, 400);
+                }
+            }, 8000);
+        }
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

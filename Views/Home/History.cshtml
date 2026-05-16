@@ -1,0 +1,117 @@
+@{
+    ViewData["Title"] = "Lịch sử khám phá";
+}
+
+<div class="px-6 pb-6 pt-28 md:px-12 md:pb-12 md:pt-32 max-w-7xl mx-auto w-full">
+    <!-- Page Header -->
+    <div class="mb-12">
+        <h2 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2">Lịch sử khám phá</h2>
+        <p class="text-on-surface-variant font-medium flex items-center gap-2">
+            Hành trình trải nghiệm ẩm thực của bạn
+            <span class="w-1.5 h-1.5 rounded-full bg-primary/30"></span>
+            <span class="text-xs font-bold text-primary" id="header-count">0 món đã nấu</span>
+        </p>
+    </div>
+
+    <!-- Timeline Structure -->
+    <div class="space-y-16" id="history-container">
+        <!-- JS populated -->
+    </div>
+    <div class="mt-20 mb-12 flex justify-center">
+        <button class="flex items-center gap-4 px-10 py-5 bg-white border border-cyan-100 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 rounded-3xl text-primary font-black transition-all group active:scale-95">
+            Tải thêm lịch sử
+            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-y-1" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+            </div>
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const userId = localStorage.getItem('userId');
+    const container = document.getElementById('history-container');
+    
+    if (!userId) {
+        container.innerHTML = '<p class="text-center text-on-surface-variant font-bold">Vui lòng đăng nhập để xem lịch sử.</p>';
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/users/${userId}/history`);
+        if (!res.ok) throw new Error('API Error');
+        const data = await res.json();
+        
+        if (!data.history || data.history.length === 0) {
+            container.innerHTML = '<p class="text-center text-on-surface-variant font-bold">Bạn chưa có lịch sử nấu món nào.</p>';
+            return;
+        }
+
+        // Group history by date
+        const grouped = {};
+        data.history.forEach(item => {
+            const dateStr = new Date(item.completedAt).toLocaleDateString('vi-VN');
+            if (!grouped[dateStr]) grouped[dateStr] = [];
+            grouped[dateStr].push(item);
+        });
+
+        let html = '';
+        for (const [date, items] of Object.entries(grouped)) {
+            html += `
+            <section>
+                <div class="flex items-center gap-6 mb-8">
+                    <div class="bg-primary/10 text-primary border border-primary/20 px-6 py-2 rounded-full backdrop-blur-sm">
+                        <span class="font-black text-sm uppercase tracking-wider">${date}</span>
+                    </div>
+                    <div class="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            `;
+            
+            items.forEach(item => {
+                const timeStr = new Date(item.completedAt).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+                html += `
+                    <div class="group bg-white/60 hover:bg-white rounded-[2rem] p-5 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 border border-white/50 cursor-pointer" onclick="window.location.href='/Home/FoodDetail?id=${item.id}'">
+                        <div class="relative overflow-hidden rounded-[1.5rem] aspect-[4/3] mb-5">
+                            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="${item.imageUrl || 'https://via.placeholder.com/400'}" />
+                            <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm">
+                                <span class="material-symbols-outlined text-secondary text-base" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                <span class="text-xs font-bold text-on-surface">Đã nấu</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-xl font-extrabold text-on-surface line-clamp-1">${item.name}</h3>
+                            <span class="text-[10px] font-black uppercase tracking-tighter text-secondary bg-secondary-container px-2.5 py-1 rounded-lg">Hoàn thành</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-cyan-50">
+                            <div class="flex items-center gap-2 text-outline">
+                                <span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                                <span class="text-xs font-semibold">${timeStr}</span>
+                            </div>
+                            <button class="text-primary font-bold text-sm flex items-center gap-1 group/btn hover:translate-x-1 transition-transform">
+                                Chi tiết <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div></section>`;
+        }
+        
+        container.innerHTML = html;
+        
+        // Update header count if possible
+        const countSpan = document.getElementById('header-count');
+        if (countSpan) {
+            countSpan.textContent = `${data.history.length} món đã nấu`;
+        }
+        
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = '<p class="text-center text-error font-bold">Lỗi khi tải lịch sử.</p>';
+    }
+});
+</script>
+}

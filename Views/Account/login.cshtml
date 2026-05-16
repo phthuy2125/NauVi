@@ -1,0 +1,207 @@
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Food App</title>
+    <link rel="stylesheet" href="/Account/style.css">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        /* CSS nhẹ cho dòng kẻ chia cách "Hoặc" */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--outline-variant, #86b3cc);
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--outline-variant, #86b3cc);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .google-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body class="auth-page">
+
+    <div class="food-bg">
+        <span>🍎</span><span>🍕</span><span>🍔</span><span>🍣</span>
+        <span>🥗</span><span>🍦</span><span>🍜</span><span>🌮</span>
+        <span>🍩</span><span>🍤</span>
+    </div>
+
+    <div class="container">
+        <h2>Chào mừng!🍜 </h2>
+        <span class="subtitle">Đăng nhập để đặt món ngay thôi</span>
+
+        <div class="input-group">
+            <p>Tên đăng nhập</p>
+            <input type="text" id="login-username" placeholder="Nhập username...">
+        </div>
+
+        <div class="input-group">
+            <p>Mật khẩu</p>
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="login-password" placeholder="Nhập mật khẩu..."
+                    style="width: 100%; padding-right: 50px; margin: 0;">
+                <span onclick="togglePassword('login-password', this)"
+                    style="position: absolute; right: 15px; cursor: pointer; color: #86b3cc; font-size: 0.85rem; font-weight: 700; user-select: none; transition: color 0.2s;">Hiện</span>
+            </div>
+        </div>
+
+        <button onclick="login()">Đăng nhập ➔</button>
+
+        <div class="divider"><span>Hoặc</span></div>
+        <div class="google-btn-container">
+            <div id="g_id_onload"
+                data-client_id="922860268029-nf97erjuv87dtfuqpdq6decjglkrs38p.apps.googleusercontent.com"
+                data-context="signin" data-ux_mode="popup" data-callback="handleGoogleLogin" data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with"
+                data-size="large" data-logo_alignment="left">
+            </div>
+        </div>
+
+        <p class="footer-text">
+            Chưa có tài khoản? <a href="/Account/Register">Đăng ký ngay</a>
+        </p>
+    </div>
+
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerText = "Ẩn";
+                icon.style.color = "#007ea4"; // Primary color
+            } else {
+                input.type = "password";
+                icon.innerText = "Hiện";
+                icon.style.color = "#86b3cc";
+            }
+        }
+
+        // HÀM ĐĂNG NHẬP THƯỜNG CỦA BẠN (GIỮ NGUYÊN)
+        async function login() {
+            const usernameEl = document.getElementById("login-username");
+            const passwordEl = document.getElementById("login-password");
+
+            if (!usernameEl.value) {
+                showToast("Nhập tên đăng nhập bạn ơi!");
+                shakeInput("login-username");
+                return;
+            }
+            if (!passwordEl.value) {
+                showToast("Mật khẩu đâu nè?");
+                shakeInput("login-password");
+                return;
+            }
+
+            const loginData = { username: usernameEl.value, password: passwordEl.value };
+
+            try {
+                const res = await fetch("/api/users/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(loginData)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    showToast("Đăng nhập thành công! 🎉", "success");
+                    localStorage.setItem("token", result.token);
+                    localStorage.setItem("username", result.username || loginData.username);
+                    localStorage.setItem("userId", result.userId || result.user?._id || "");
+                    setTimeout(() => { window.location.href = "/Home/Index"; }, 1200);
+                } else {
+                    showToast(result.message || "Sai tài khoản hoặc mật khẩu!");
+                    shakeInput("login-password");
+                }
+            } catch (err) {
+                showToast("Server đang bận nấu ăn rồi, thử lại sau nhé!");
+            }
+        }
+
+        // BƯỚC 3: HÀM XỬ LÝ KHI ĐĂNG NHẬP GOOGLE THÀNH CÔNG TRÊN GIAO DIỆN
+        async function handleGoogleLogin(response) {
+            // response.credential chính là chuỗi mã hóa (Token) Google trả về
+            const googleToken = response.credential;
+
+            try {
+                // Thử đăng nhập trước
+                let res = await fetch("/api/users/google-login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ token: googleToken })
+                });
+
+                let result = await res.json();
+
+                // Nếu tài khoản chưa tồn tại, tự động chuyển sang đăng ký bằng Google
+                if (!res.ok && result.message === "Tài khoản Google này chưa đăng ký!") {
+                    res = await fetch("/api/users/register", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ isGoogle: true, googleToken: googleToken })
+                    });
+                    result = await res.json();
+                }
+
+                if (res.ok) {
+                    showToast("Đăng nhập Google thành công! 🎉", "success");
+                    localStorage.setItem("token", result.token);
+                    localStorage.setItem("username", result.username || "Google User");
+                    localStorage.setItem("userId", result.userId || result.user?._id || result.user?.id || "");
+                    setTimeout(() => { window.location.href = "/Home/Index"; }, 1200);
+                } else {
+                    showToast(result.message || "Lỗi xác thực Google từ server!");
+                }
+            } catch (err) {
+                showToast("Không kết nối được server!");
+            }
+        }
+
+        // Hàm tạo thông báo Toast tự động
+        function showToast(message, type = "error") {
+            const toast = document.createElement("div");
+            toast.className = `toast ${type === "success" ? "success" : ""}`;
+            toast.innerText = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 100);
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Hàm rung lắc ô nhập liệu khi lỗi
+        function shakeInput(id) {
+            const el = document.getElementById(id);
+            el.classList.add("shake");
+            setTimeout(() => el.classList.remove("shake"), 400);
+            el.focus();
+        }
+    </script>
+</body>
+</html>

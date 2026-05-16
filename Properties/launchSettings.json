@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "FoodWiseAi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7200;http://localhost:5200"
+    }
+  }
+}

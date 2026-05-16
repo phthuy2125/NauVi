@@ -1,0 +1,343 @@
+@{
+    ViewData["Title"] = "Hồ sơ khẩu vị";
+}
+
+<div class="max-w-6xl mx-auto px-8 pb-10 pt-28">
+    <!-- Hero Section -->
+    <section class="mb-12">
+        <h2 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2 leading-tight">Khẩu vị cá nhân</h2>
+        <p class="text-on-surface-variant text-lg">Thiết lập bản đồ hương vị của riêng bạn để nhận những gợi ý tinh tế nhất.</p>
+    </section>
+    <!-- Grid Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Main Controls: Five Tastes (Bento Large Card) -->
+        <div class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-8 shadow-sm">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-xl font-bold text-on-surface">Ngũ Vị Đặc Trưng</h3>
+                <span class="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full text-xs font-bold">CƠ BẢN</span>
+            </div>
+            <div class="space-y-10">
+                <!-- Slider Item -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-primary" data-icon="local_fire_department">local_fire_department</span>
+                            Cay (Spicy)
+                        </label>
+                        <span class="text-secondary font-bold" id="val-cay">Mạnh</span>
+                    </div>
+                    <input id="slider-cay" max="5" min="1" type="range" value="4" oninput="updateVal('cay', this.value)" />
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-primary" data-icon="icecream">icecream</span>
+                            Ngọt (Sweet)
+                        </label>
+                        <span class="text-secondary font-bold" id="val-ngot">Vừa phải</span>
+                    </div>
+                    <input id="slider-ngot" max="5" min="1" type="range" value="3" oninput="updateVal('ngot', this.value)" />
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-primary" data-icon="water_drop">water_drop</span>
+                            Mặn (Salty)
+                        </label>
+                        <span class="text-secondary font-bold" id="val-man">Nhẹ</span>
+                    </div>
+                    <input id="slider-man" max="5" min="1" type="range" value="2" oninput="updateVal('man', this.value)" />
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-primary" data-icon="lemon">sunny</span>
+                            Chua (Sour)
+                        </label>
+                        <span class="text-secondary font-bold" id="val-chua">Nhẹ</span>
+                    </div>
+                    <input id="slider-chua" max="5" min="1" type="range" value="2" oninput="updateVal('chua', this.value)" />
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold flex items-center gap-2 text-on-surface">
+                            <span class="material-symbols-outlined text-primary" data-icon="star">star</span>
+                            Umami
+                        </label>
+                        <span class="text-secondary font-bold" id="val-umami">Cực mạnh</span>
+                    </div>
+                    <input id="slider-umami" max="5" min="1" style="font-variation-settings: 'FILL' 1;" type="range" value="5" oninput="updateVal('umami', this.value)" />
+                </div>
+            </div>
+        </div>
+        <!-- Secondary Controls (Bento Side Cards) -->
+        <div class="lg:col-span-4 h-full flex flex-col">
+            <!-- Textures Section -->
+            <div class="bg-surface-container rounded-xl p-6 flex-1 flex flex-col">
+                <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined" data-icon="texture">texture</span>
+                    Kết cấu món ăn
+                </h3>
+                <div class="flex gap-3 mb-8">
+                    <button id="tex-nuoc" data-val="nuoc" onclick="selectTexture(this)"
+                        class="texture-btn flex-1 bg-primary text-on-primary rounded-xl py-3 text-sm font-bold transition-transform active:scale-95 shadow-md shadow-primary/20 hover:brightness-110">Nước</button>
+                    <button id="tex-kho" data-val="kho" onclick="selectTexture(this)"
+                        class="texture-btn flex-1 bg-surface-container-highest text-on-surface-variant rounded-xl py-3 text-sm font-bold hover:bg-primary/20 transition-all border border-outline-variant/30">Khô</button>
+                    <button id="tex-nhanh" data-val="nhanh" onclick="selectTexture(this)"
+                        class="texture-btn flex-1 bg-surface-container-highest text-on-surface-variant rounded-xl py-3 text-sm font-bold hover:bg-primary/20 transition-all border border-outline-variant/30">Nhanh</button>
+                </div>
+                <div class="mt-auto rounded-xl overflow-hidden h-full min-h-[220px] relative">
+                    <img alt="Texture visual" class="w-full h-full object-cover"
+                        src="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=2071&auto=format&fit=crop" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-5 flex flex-col justify-end">
+                        <span class="bg-secondary text-white text-[10px] font-bold px-2 py-0.5 rounded-full self-start mb-2">GỢI Ý</span>
+                        <p class="text-white text-base font-bold leading-tight">Khám phá các kết cấu ẩm thực đa dạng phù hợp với bạn.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Asymmetric Featured Selection Section -->
+    <section class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="relative rounded-xl overflow-hidden group">
+            <img alt="Healthy bowl" class="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-500"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCllK77tYxN1oZbVqcSf5BUy6NIfzIIEBamAeV1TGquOF906TwfBNT8cAwqNP0ScjdlkaC9RzAbrAjLnay41gp0BINedeIhw3g_pVv3qGP2g34qhweF-6Y0m6thCkL7rGGac67TWhMtc_j_eQx-Jkx6IJQEyGZpSMGMXY7KVBFPE_fktHPD9zbxZ0K9Jv-vSUv7GWArX6-U8mLNmCF0zhnQZyQzTdfh2_T5gXJr0zHYb5kBBWWqS_KUp4W6RzVWI7aknNKw0H-oXw" />
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/80 to-transparent p-10 flex flex-col justify-center max-w-sm">
+                <span class="label-md text-on-primary bg-secondary/80 self-start px-3 py-1 rounded-full mb-4">DÀNH RIÊNG CHO BẠN</span>
+                <h4 class="text-3xl font-bold text-on-primary mb-4 leading-tight">Dựa trên vị Umami bạn yêu thích</h4>
+                <p class="text-on-primary/80 mb-6">Khám phá bộ sưu tập món Á với nước tương ủ thủ công và nấm truffle đen.</p>
+                <button class="bg-surface-container-lowest text-primary px-8 py-3 rounded-full font-bold self-start shadow-xl active:scale-95 transition-transform">Xem ngay</button>
+            </div>
+        </div>
+        <div class="flex flex-col justify-between">
+            <div class="bg-white rounded-xl p-8 flex-1 mb-8 shadow-sm border border-outline-variant/10">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h4 class="text-xl font-bold text-on-surface">Cài đặt nâng cao</h4>
+                        <p class="text-on-surface-variant text-sm">Tối ưu hóa thuật toán đề xuất.</p>
+                    </div>
+                    <span class="material-symbols-outlined text-primary-fixed-dim text-4xl" data-icon="psychology">psychology</span>
+                </div>
+                <div class="space-y-4 mt-6">
+                    <div class="flex items-center justify-between p-4 bg-surface rounded-lg">
+                        <label class="flex items-center justify-between w-full cursor-pointer">
+                            <span class="font-medium">Ưu tiên nguyên liệu hữu cơ</span>
+                            <div class="relative">
+                                <input type="checkbox" id="organic-toggle" value="organic" class="sr-only peer" />
+                                <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-[100%]"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-surface rounded-lg">
+                        <label class="flex items-center justify-between w-full cursor-pointer">
+                            <span class="font-medium">Ưu tiên món thanh đạm</span>
+                            <div class="relative">
+                                <input type="checkbox" id="light-toggle" value="light" class="sr-only peer" />
+                                <div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-[100%]"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button id="btn-save" onclick="savePreferences()"
+                class="w-full py-6 bg-secondary text-on-secondary font-bold text-xl rounded-xl shadow-lg flex items-center justify-center gap-3 hover:bg-secondary-dim transition-colors group">
+                Lưu hồ sơ vị giác
+                <span class="material-symbols-outlined group-hover:translate-x-2 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+            </button>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <style>
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            color: white;
+            font-weight: bold;
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #00c853;
+        }
+
+        .toast.error {
+            background: #fb5151;
+        }
+
+        .toast.info {
+            background: #006479;
+        }
+    </style>
+
+    <script>
+        const LABELS = {
+            cay: ["Không ăn cay", "Nhẹ nhàng", "Vừa phải", "Mạnh", "Cực mạnh"],
+            ngot: ["Không hảo ngọt", "Nhẹ", "Vừa phải", "Đậm đà", "Rất ngọt"],
+            man: ["Nhạt", "Nhẹ", "Vừa phải", "Đậm đà", "Rất mặn"],
+            chua: ["Không chua", "Nhẹ", "Vừa phải", "Mạnh", "Rất chua"],
+            umami: ["Bình thường", "Rõ", "Mạnh", "Rất mạnh", "Cực mạnh"]
+        };
+
+        let selectedTexture = 'nuoc';
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        // Load preferences on page load
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (!userId) {
+                showToast("Vui lòng đăng nhập!", "error");
+                setTimeout(() => { window.location.href = '/Account/Login'; }, 1500);
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/users/profile/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.preferences) {
+                        // Load taste preferences
+                        setSliderValue('cay', data.preferences.spicy);
+                        setSliderValue('ngot', data.preferences.sweet);
+                        setSliderValue('man', data.preferences.salty);
+                        setSliderValue('chua', data.preferences.sour);
+                        setSliderValue('umami', data.preferences.umami);
+
+                        // Load texture preference
+                        if (data.preferences.texture) {
+                            const btn = document.getElementById(`tex-${data.preferences.texture}`);
+                            if (btn) selectTexture(btn);
+                        }
+
+                        // Load advanced preferences
+                        document.getElementById('organic-toggle').checked = !!data.preferences.organic;
+                        document.getElementById('light-toggle').checked = !!data.preferences.light;
+
+                        showToast("✓ Tải hồ sơ khẩu vị thành công!", "success");
+                    }
+                } else {
+                    console.error("Error loading profile:", res.status);
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                showToast("Lỗi tải dữ liệu: " + err.message, "error");
+            }
+        });
+
+        function setSliderValue(type, val) {
+            if (!val) val = 3;
+            const slider = document.getElementById(`slider-${type}`);
+            if (slider) {
+                slider.value = val;
+                updateVal(type, val);
+            }
+        }
+
+        function updateVal(type, val) {
+            const labelSpan = document.getElementById(`val-${type}`);
+            if (labelSpan && LABELS[type]) {
+                labelSpan.innerText = LABELS[type][parseInt(val) - 1];
+            }
+        }
+
+        function selectTexture(btn) {
+            document.querySelectorAll('.texture-btn').forEach(b => {
+                b.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/20');
+                b.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'border', 'border-outline-variant/30');
+            });
+            btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/20');
+            btn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'border', 'border-outline-variant/30');
+            selectedTexture = btn.getAttribute('data-val');
+        }
+
+        async function savePreferences() {
+            if (!userId) {
+                showToast("Vui lòng đăng nhập!", "error");
+                return;
+            }
+
+            if (!token) {
+                showToast("Token không hợp lệ. Vui lòng đăng nhập lại!", "error");
+                return;
+            }
+
+            const btnSave = document.getElementById('btn-save');
+            const originalHTML = btnSave.innerHTML;
+            btnSave.disabled = true;
+            btnSave.innerHTML = `Đang lưu...`;
+
+            const prefs = {
+                spicy: parseInt(document.getElementById('slider-cay').value),
+                sweet: parseInt(document.getElementById('slider-ngot').value),
+                salty: parseInt(document.getElementById('slider-man').value),
+                sour: parseInt(document.getElementById('slider-chua').value),
+                umami: parseInt(document.getElementById('slider-umami').value),
+                texture: selectedTexture,
+                organic: document.getElementById('organic-toggle').checked,
+                light: document.getElementById('light-toggle').checked
+            };
+
+            try {
+                const res = await fetch('/api/users/update-preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        preferences: prefs
+                    })
+                });
+
+                if (res.ok) {
+                    const result = await res.json();
+                    showToast("✓ Lưu hồ sơ khẩu vị thành công!", "success");
+                    console.log("Save result:", result);
+                } else {
+                    const error = await res.json();
+                    showToast("Lỗi: " + (error.message || "Không thể lưu dữ liệu"), "error");
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                showToast("Lỗi kết nối máy chủ: " + err.message, "error");
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerHTML = originalHTML;
+            }
+        }
+
+        function showToast(message, type = "info") {
+            const toast = document.createElement("div");
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 10);
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+}

@@ -1,0 +1,521 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="pt-28 px-10 space-y-12">
+    <!-- ===== HERO BANNER (dynamic) ===== -->
+    <section id="hero-section" class="relative h-[480px] rounded-xl overflow-hidden group">
+        <!-- Placeholder while loading -->
+        <div id="hero-placeholder" class="absolute inset-0 bg-gradient-to-br from-sky-100 to-sky-200 animate-pulse flex items-center justify-center">
+            <span class="material-symbols-outlined text-sky-300 text-6xl animate-spin">refresh</span>
+        </div>
+        <!-- Will be replaced by JS -->
+    </section>
+
+    <!-- ===== EXPLORE BY FLAVOR ===== -->
+    <section>
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-2xl font-black text-on-surface tracking-tight">Khám phá theo hương vị</h3>
+            <a class="text-sm font-bold text-primary flex items-center gap-1" href="/Home/ListFood">Tất cả hương vị
+                <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span></a>
+        </div>
+        <div class="grid grid-cols-4 gap-6" id="flavor-cards-grid">
+            <!-- Card: Cay & Đậm đà -->
+            <div class="flavor-card group cursor-pointer rounded-xl transition-all duration-300"
+                data-taste="cay,spicy,đậm đà,dam da"
+                data-label="Cay & Đậm đà"
+                data-color="from-orange-600 to-red-700"
+                onclick="selectFlavor(this)">
+                <div class="relative h-48 rounded-lg overflow-hidden mb-4 transition-all duration-300">
+                    <img alt="Cay & Đậm đà"
+                        class="w-full h-full object-cover transition-transform group-hover:scale-110"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuADuBiX9Zgg9TigxVn8Bs6gbDNd2vH5y5esFZr9CsLqYWvKxRvdTy3jS6kIzfycmdP6aoAYuNNi3-lyP5plJBFDrMr_zATbkYPZLA3IBkvTPzdr06J0ZvG99shycih5L2T7zK254KFay7nci1x6EHlOi9jQTYVGfZaJ9hmjy8FHXx2byKOTNJzMJ-yWKYaMNsqmcjhbmWfRykw0J9zum6ZexUIryFO93Xhg4NEIxTbE0VPNjbEUUI523ufIn3heftSU6jYlHXtFEA" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-tertiary-dim/80 to-transparent flex items-end p-6">
+                        <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                    </div>
+                    <!-- Checkmark khi được chọn -->
+                    <div class="flavor-check absolute top-3 left-3 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 scale-75 transition-all duration-300">
+                        <span class="material-symbols-outlined text-orange-500 text-sm" style="font-variation-settings:'FILL' 1">check_circle</span>
+                    </div>
+                </div>
+                <h4 class="text-lg font-bold text-on-surface group-hover:text-orange-600 transition-colors">Cay & Đậm đà</h4>
+                <p class="text-xs text-outline font-medium">Mạnh mẽ, cay nóng và phức hợp</p>
+            </div>
+            <!-- Card: Ngọt & Thanh mát -->
+            <div class="flavor-card group cursor-pointer rounded-xl transition-all duration-300"
+                data-taste="tráng miệng,kem,chè,bánh ngọt,dessert"
+                data-label="Ngọt & Thanh mát"
+                data-color="from-pink-500 to-rose-400"
+                onclick="selectFlavor(this)">
+                <div class="relative h-48 rounded-lg overflow-hidden mb-4 transition-all duration-300">
+                    <img alt="Ngọt & Thanh mát"
+                        class="w-full h-full object-cover transition-transform group-hover:scale-110"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqbSxu7fyoraXe0GdLXhsnt2OLV2W6MWiQGYpIZtUQ9TejT_eGYyWOHpyb7nrekSzrzUFbC66BBKxxgA-Tp5QrTOI68KdD2H-Wgzk8iEZbVEQtXMqwbVaFHEXlK3wPFYEWB2MiZ9UBz9C__TTMpA-o0rQlkJ6A7Rrq2tnAWgj2CfPzEAlC6NK4ayGQar01F525vjnKwSCwQIrASIo8-_puapQeyvheI3lMssVJy5zPaLaC14t8d6MvZXZVeSrAUPKAdxq_xzCjdA" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent flex items-end p-6">
+                        <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">icecream</span>
+                    </div>
+                    <div class="flavor-check absolute top-3 left-3 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 scale-75 transition-all duration-300">
+                        <span class="material-symbols-outlined text-pink-500 text-sm" style="font-variation-settings:'FILL' 1">check_circle</span>
+                    </div>
+                </div>
+                <h4 class="text-lg font-bold text-on-surface group-hover:text-pink-500 transition-colors">Ngọt & Thanh mát</h4>
+                <p class="text-xs text-outline font-medium">Tinh tế, hương hoa và tươi sáng</p>
+            </div>
+            <!-- Card: Mặn & Đậm đà -->
+            <div class="flavor-card group cursor-pointer rounded-xl transition-all duration-300"
+                data-taste="mặn,man,salty,umami,đậm đà,dam da"
+                data-label="Mặn & Đậm đà"
+                data-color="from-sky-600 to-blue-700"
+                onclick="selectFlavor(this)">
+                <div class="relative h-48 rounded-lg overflow-hidden mb-4 transition-all duration-300">
+                    <img alt="Mặn & Đậm đà"
+                        class="w-full h-full object-cover transition-transform group-hover:scale-110"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnATPerzQuiHvjrppyV6v6DlGziy5b-JObRDunyud6zDLCGUbhWa86s290YgGF8PQbBwL-um1YESmHlr26NNb0EJLNjQVzHxSlVc7gn0rb6abWonT-qmgo4RcZh00_8-I07AMVGOyoR8XXqE1laQHEZjsBeJJmSU-1PHNSkOwLVCYNH27RqpRsWLmqogr2ae-BaERegKaI-QZ8vHh5ppGpGzceQ890LUIRHvD4z0kCgOEzb7DX3TBeosJy6tgUWg6xPoxv-mUn4A" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary-dim/80 to-transparent flex items-end p-6">
+                        <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">ramen_dining</span>
+                    </div>
+                    <div class="flavor-check absolute top-3 left-3 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 scale-75 transition-all duration-300">
+                        <span class="material-symbols-outlined text-sky-500 text-sm" style="font-variation-settings:'FILL' 1">check_circle</span>
+                    </div>
+                </div>
+                <h4 class="text-lg font-bold text-on-surface group-hover:text-sky-600 transition-colors">Mặn & Đậm đà</h4>
+                <p class="text-xs text-outline font-medium">Giàu vị umami, đậm đà, sâu lắng</p>
+            </div>
+            <!-- Card: Nhẹ nhàng & Tươi mới -->
+            <div class="flavor-card group cursor-pointer rounded-xl transition-all duration-300"
+                data-taste="nhẹ,nhe,tươi,tuoi,thanh,light,eco,rau,organic"
+                data-label="Nhẹ nhàng & Tươi mới"
+                data-color="from-emerald-500 to-green-600"
+                onclick="selectFlavor(this)">
+                <div class="relative h-48 rounded-lg overflow-hidden mb-4 transition-all duration-300">
+                    <img alt="Nhẹ nhàng & Tươi mới"
+                        class="w-full h-full object-cover transition-transform group-hover:scale-110"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzDtBJqiatfpCsXZdXk4rNI9Td1H_ugqnDuRYfAQB195nTyk60jBDs-4ECe9xd6w4pEElHhW_spgoGqjSiInX8OZH5rEWil4BvJBAHUDyeQkymqhqMgKPLtZ-gsSf4kHPUtFIMwYxtoGLQyB5r-Rntm5QALpFm_SXSknsVBy9787VhCgg53Wv7Vz3MazEftdHpKgZO3ykqeo--8Fdr99fqBN7twm87rcIC4g3Q34A6t_-i6Epx2Mg5_LzEDuJjWR_RyiULdAhaFQ" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-6">
+                        <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">eco</span>
+                    </div>
+                    <div class="flavor-check absolute top-3 left-3 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-lg opacity-0 scale-75 transition-all duration-300">
+                        <span class="material-symbols-outlined text-emerald-500 text-sm" style="font-variation-settings:'FILL' 1">check_circle</span>
+                    </div>
+                </div>
+                <h4 class="text-lg font-bold text-on-surface group-hover:text-emerald-600 transition-colors">Nhẹ nhàng & Tươi mới</h4>
+                <p class="text-xs text-outline font-medium">Thanh đạm, vị cam chanh và sạch sẽ</p>
+            </div>
+        </div>
+
+        <!-- ===== FLAVOR RESULT PANEL (slide down) ===== -->
+        <div id="flavor-result-panel"
+            style="max-height:0; overflow:hidden; transition:max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease; opacity:0;"
+            class="mt-0">
+            <div class="mt-8 bg-surface-container-lowest rounded-2xl p-8 border border-sky-100">
+                <!-- Panel header -->
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div id="flavor-panel-dot" class="w-3 h-3 rounded-full bg-primary"></div>
+                        <h4 class="text-xl font-black text-on-surface" id="flavor-panel-title">Món ăn theo khẩu vị</h4>
+                        <span class="text-sm text-outline font-medium" id="flavor-panel-count"></span>
+                    </div>
+                    <button onclick="closeFlavorsPanel()"
+                        class="flex items-center gap-1 text-sm text-outline hover:text-on-surface font-bold transition-colors px-3 py-1.5 rounded-full hover:bg-surface-container">
+                        <span class="material-symbols-outlined text-sm">close</span> Đóng
+                    </button>
+                </div>
+                <!-- Food cards -->
+                <div id="flavor-result-grid" class="grid grid-cols-3 gap-6">
+                    <!-- populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== DAILY PERSONALIZED SUGGESTIONS ===== -->
+    <section>
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h3 class="text-2xl font-black text-on-surface tracking-tight flex items-center gap-3">
+                    Gợi ý cá nhân hóa hàng ngày
+                    <span id="time-status"></span>
+                </h3>
+                <p class="text-sm text-outline font-medium mt-1" id="personalize-hint">
+                    Đang phân tích khẩu vị và tải gợi ý...
+                </p>
+            </div>
+        </div>
+        <div id="daily-suggestions" class="grid grid-cols-3 gap-8">
+            <div class="col-span-3 text-center py-10 text-outline animate-pulse">
+                Đang phân tích khẩu vị của bạn...
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA: UPDATE TASTE PROFILE ===== -->
+    <section class="relative bg-secondary-container rounded-xl overflow-hidden p-12 flex items-center justify-between">
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-secondary-fixed opacity-50 blur-[80px] rounded-full"></div>
+        <div class="relative z-10 max-w-xl">
+            <h3 class="text-3xl font-black text-on-secondary-container leading-tight mb-4">
+                Khẩu vị của chúng tôi có khớp với bạn không?
+            </h3>
+            <p class="text-on-secondary-fixed-variant font-medium text-lg mb-8">
+                Càng hiểu rõ về các loại gia vị và kết cấu yêu thích của bạn, chúng tôi càng có thể chuẩn bị
+                trải nghiệm 'Bistro bay bổng' tốt hơn.
+            </p>
+            <a href="/Home/TasteProfile">
+                <button
+                    class="px-8 py-4 bg-on-secondary-container text-white rounded-full font-bold shadow-xl shadow-secondary/20 flex items-center gap-2 group hover:gap-4 transition-all">
+                    Cập nhật hồ sơ khẩu vị
+                    <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+                </button>
+            </a>
+        </div>
+        <div class="relative z-10 hidden lg:block">
+            <div class="flex gap-4">
+                <div class="w-32 h-32 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 flex flex-col items-center justify-center text-on-secondary-container">
+                    <span class="material-symbols-outlined text-4xl mb-2" data-icon="local_pizza">local_pizza</span>
+                    <span class="text-[10px] font-black tracking-widest uppercase">GIÒN</span>
+                </div>
+                <div class="w-32 h-32 rounded-xl bg-white/20 backdrop-blur-xl border border-white/30 flex flex-col items-center justify-center text-on-secondary-container mt-8">
+                    <span class="material-symbols-outlined text-4xl mb-2" data-icon="restaurant">restaurant</span>
+                    <span class="text-[10px] font-black tracking-widest uppercase">THẢO MỘC</span>
+                </div>
+                <div class="w-32 h-32 rounded-xl bg-on-secondary-container backdrop-blur-xl flex flex-col items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-4xl mb-2" data-icon="add">add</span>
+                    <span class="text-[10px] font-black tracking-widest uppercase">THÊM VỊ</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <!-- ===== PERSONALIZED HOME RECOMMENDATION SCRIPT ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const heroSection = document.getElementById('hero-section');
+            const suggestionsContainer = document.getElementById('daily-suggestions');
+            const statusContainer = document.getElementById('time-status');
+            const personalizeHint = document.getElementById('personalize-hint');
+
+            // Lấy userId từ localStorage (được lưu khi đăng nhập)
+            const userId = localStorage.getItem('userId');
+            const isLoggedIn = !!localStorage.getItem('token') && !!userId;
+
+            // Xây URL với userId nếu đã đăng nhập
+            const apiUrl = userId
+                ? `/api/foods/recommend-home?userId=${encodeURIComponent(userId)}`
+                : '/api/foods/recommend-home';
+
+            try {
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+
+                const { featured, suggestions, matchPercent, isPersonalized } = data;
+
+                // ===========================
+                // RENDER HERO BANNER ĐỘNG
+                // ===========================
+                if (featured) {
+                    const imgSrc = featured.imageUrl || featured.ImageUrl || 'https://via.placeholder.com/1200x500';
+                    const foodName = featured.name || featured.Name || 'Món ăn nổi bật';
+                    const foodDesc = featured.description || featured.Description || 'Một lựa chọn tuyệt vời cho bữa ăn của bạn hôm nay.';
+                    const tasteArr = featured.taste || featured.Taste || [];
+
+                    // Badge text
+                    let badgeText, badgeBg;
+                    if (isPersonalized && matchPercent > 0) {
+                        badgeText = `PHÙ HỢP ${matchPercent}% VỚI KHẨU VỊ CỦA BẠN`;
+                        badgeBg = 'bg-primary';
+                    } else {
+                        badgeText = 'GỢI Ý NỔI BẬT HÔM NAY';
+                        badgeBg = 'bg-secondary';
+                    }
+
+                    // Tags HTML
+                    const tagsHtml = tasteArr.slice(0, 3).map(t =>
+                        `<span class="px-5 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-sm font-semibold capitalize">${t}</span>`
+                    ).join('');
+
+                    heroSection.innerHTML = `
+                        <img alt="${foodName}"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            src="${imgSrc}" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-on-surface via-on-surface/40 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-12 w-full flex justify-between items-end">
+                            <div class="max-w-2xl text-on-primary">
+                                <div class="inline-flex items-center gap-2 px-4 py-1.5 ${badgeBg} rounded-full mb-6">
+                                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                                    <span class="text-xs font-bold tracking-wider uppercase">${badgeText}</span>
+                                </div>
+                                <h2 class="text-5xl font-black tracking-tighter mb-4 leading-tight">${foodName}</h2>
+                                <p class="text-lg text-surface-container-low font-medium mb-8 leading-relaxed">${foodDesc}</p>
+                                <div class="flex gap-4">${tagsHtml}</div>
+                            </div>
+                            <a href="/Home/CookMode?id=${featured.id || featured._id || ''}">
+                                <button class="px-10 py-5 bg-white text-primary rounded-full font-extrabold text-lg shadow-2xl hover:bg-primary-container hover:text-on-primary-container transition-all">
+                                    Xem chi tiết
+                                </button>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    // Fallback tĩnh
+                    heroSection.innerHTML = `
+                        <div class="absolute inset-0 bg-gradient-to-br from-sky-700 to-primary flex items-center justify-center">
+                            <div class="text-center text-white">
+                                <span class="material-symbols-outlined text-6xl mb-4" style="font-variation-settings:'FILL' 1;">restaurant_menu</span>
+                                <h2 class="text-4xl font-black">Chào mừng đến FoodWise</h2>
+                                <p class="mt-2 font-medium opacity-80">Khám phá hàng trăm món ăn ngon mỗi ngày</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // ===========================
+                // HINT TEXT
+                // ===========================
+                if (isPersonalized) {
+                    personalizeHint.innerHTML = `
+                        <span class="inline-flex items-center gap-1 text-primary font-semibold">
+                            <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                            Được cá nhân hóa theo hồ sơ khẩu vị của bạn
+                        </span>
+                        &nbsp;·&nbsp; Giá thay đổi theo khung giờ`;
+                } else {
+                    personalizeHint.innerHTML = isLoggedIn
+                        ? 'Chưa có dữ liệu khẩu vị — <a href="/Home/TasteProfile" class="text-primary font-bold underline">Cập nhật hồ sơ</a> để nhận gợi ý chính xác hơn'
+                        : 'Đang hiển thị ngẫu nhiên &nbsp;·&nbsp; <a href="/Account/Login" class="text-primary font-bold underline">Đăng nhập</a> để xem gợi ý theo khẩu vị cá nhân';
+                }
+
+                // ===========================
+                // RENDER DAILY SUGGESTIONS
+                // ===========================
+                if (suggestions && suggestions.length > 0) {
+                    suggestionsContainer.innerHTML = '';
+
+                    suggestions.forEach(food => {
+                        const currentCoop = (food.currentPrice?.coopmart ?? food.currentPrice?.Coopmart ?? food.basePrice?.coopmart ?? food.basePrice?.Coopmart ?? 0);
+                        const currentBHX = (food.currentPrice?.bachhoaxanh ?? food.currentPrice?.Bachhoaxanh ?? food.basePrice?.bachhoaxanh ?? food.basePrice?.Bachhoaxanh ?? 0);
+                        const foodId = food.id ?? food._id ?? '';
+                        const foodName = food.name ?? food.Name ?? '';
+                        const foodImg = food.imageUrl ?? food.ImageUrl ?? 'https://via.placeholder.com/500';
+                        const foodRating = food.rating ?? food.Rating ?? '4.5';
+                        const foodRestaurant = food.restaurant ?? food.Restaurant ?? 'Nhà hàng đối tác';
+                        const tagsRaw = food.tags ?? food.Tags ?? [];
+                        const tagsHtml = tagsRaw.slice(0, 2).map(tag =>
+                            `<span class="px-3 py-1 bg-surface-container text-[10px] font-bold rounded-full text-on-surface-variant">${tag}</span>`
+                        ).join('');
+
+                        const cardHtml = `
+                            <div class="bg-surface-container-lowest p-5 rounded-xl transition-shadow hover:shadow-2xl hover:shadow-primary/5" id="food-card-${foodId}">
+                                <div class="relative h-64 rounded-lg overflow-hidden mb-5">
+                                    <img alt="${foodName}" class="w-full h-full object-cover" src="${foodImg}" />
+                                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-black text-primary shadow-lg flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm text-yellow-500" style="font-variation-settings: 'FILL' 1;">star</span>
+                                        ${foodRating}
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h5 class="text-xl font-bold line-clamp-1" title="${foodName}">${foodName}</h5>
+                                        <p class="text-xs text-outline font-medium line-clamp-1">${foodRestaurant}</p>
+                                    </div>
+                                    <button class="fav-btn text-outline-variant hover:text-red-500 transition-all duration-300"
+                                        id="fav-btn-${foodId}"
+                                        title="Thêm vào yêu thích"
+                                        onclick="toggleFavorite(this, {id:'${foodId}', name:'${foodName.replace(/'/g,"\\'").replace(/"/g,'&quot;')}'})">
+                                        <span class="material-symbols-outlined">favorite</span>
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2 mb-4 h-6 overflow-hidden">${tagsHtml}</div>
+                                <button class="w-full py-3 bg-surface-container-low text-primary font-bold rounded-full hover:bg-primary hover:text-on-primary transition-all"
+                                    onclick="window.location.href='/Home/CookMode?id=${foodId}'">
+                                    Xem chi tiết
+                                </button>
+                            </div>
+                        `;
+                        suggestionsContainer.insertAdjacentHTML('beforeend', cardHtml);
+                        // Khôi phục trạng thái yêu thích từ localStorage
+                        const favBtn = document.getElementById(`fav-btn-${foodId}`);
+                        if (favBtn) applyFavoriteState(favBtn, foodId);
+                    });
+                } else {
+                    suggestionsContainer.innerHTML = '<div class="col-span-3 text-center py-10 text-outline">Chưa có dữ liệu món ăn. Hãy chạy lệnh seed để thêm dữ liệu.</div>';
+                }
+
+                // Lấy timeStatus từ API /api/foods/all
+                try {
+                    const allRes = await fetch('/api/foods/all');
+                    const allData = await allRes.json();
+                    if (allData.foods?.[0]?.timeStatus && statusContainer) {
+                        statusContainer.innerHTML = statusToHtml(allData.foods[0].timeStatus);
+                    }
+                } catch { /* bỏ qua nếu lỗi timeStatus */ }
+
+            } catch (err) {
+                console.error('Lỗi tải gợi ý trang chủ:', err);
+                suggestionsContainer.innerHTML = '<div class="col-span-3 text-center py-10 text-red-500">Lỗi kết nối máy chủ. Vui lòng thử lại sau.</div>';
+                heroSection.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-br from-sky-700 to-primary flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <span class="material-symbols-outlined text-6xl mb-4" style="font-variation-settings:'FILL' 1;">restaurant_menu</span>
+                            <h2 class="text-4xl font-black">Chào mừng đến FoodWise</h2>
+                            <p class="mt-2 font-medium opacity-80">Khám phá hàng trăm món ăn ngon mỗi ngày</p>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        function statusToHtml(status) {
+            if (status === 'Peak') return '<span class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">Giờ cao điểm (Peak)</span>';
+            if (status === 'Night') return '<span class="px-3 py-1 bg-indigo-100 text-indigo-600 text-xs font-bold rounded-full">Giờ ăn đêm (Night)</span>';
+            return '<span class="px-3 py-1 bg-green-100 text-green-600 text-xs font-bold rounded-full">Giờ thấp điểm</span>';
+        }
+
+        // ===========================
+        // FLAVOR EXPLORE PANEL
+        // ===========================
+        let _cachedAllFoods = null;
+        let _selectedFlavorCard = null;
+
+        async function selectFlavor(card) {
+            const panel = document.getElementById('flavor-result-panel');
+            const grid = document.getElementById('flavor-result-grid');
+            const title = document.getElementById('flavor-panel-title');
+            const count = document.getElementById('flavor-panel-count');
+
+            // Toggle: nhấn lại cùng card → đóng panel
+            if (_selectedFlavorCard === card) {
+                closeFlavorsPanel();
+                return;
+            }
+
+            // Highlight card được chọn, bỏ highlight các card khác
+            document.querySelectorAll('.flavor-card').forEach(c => {
+                c.classList.remove('ring-2', 'ring-offset-2', 'scale-[1.03]');
+                c.classList.add('opacity-60');
+                const chk = c.querySelector('.flavor-check');
+                if (chk) { chk.style.opacity = '0'; chk.style.transform = 'scale(0.75)'; }
+            });
+            card.classList.remove('opacity-60');
+            card.classList.add('scale-[1.03]');
+            const chk = card.querySelector('.flavor-check');
+            if (chk) { chk.style.opacity = '1'; chk.style.transform = 'scale(1)'; }
+            _selectedFlavorCard = card;
+
+            const label = card.dataset.label || 'Khẩu vị';
+            const tasteKeys = (card.dataset.taste || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            title.textContent = `Món ăn: ${label}`;
+            count.textContent = '';
+            grid.innerHTML = `<div class="col-span-3 text-center py-8 animate-pulse text-outline">Đang tìm món phù hợp...</div>`;
+
+            // Mở panel
+            panel.style.maxHeight = '900px';
+            panel.style.opacity = '1';
+            panel.style.marginTop = '2rem';
+
+            // Cuộn nhẹ xuống để panel hiển thị
+            setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+
+            // Lấy dữ liệu (cache lần đầu)
+            if (!_cachedAllFoods) {
+                try {
+                    const res = await fetch('/api/foods/all');
+                    const data = await res.json();
+                    _cachedAllFoods = data.foods || [];
+                } catch {
+                    grid.innerHTML = '<div class="col-span-3 text-center py-8 text-red-500">Lỗi tải dữ liệu món ăn.</div>';
+                    return;
+                }
+            }
+
+            // Lọc theo taste keywords (khớp bất kỳ taste tag, tags, hoặc category nào)
+            const matched = _cachedAllFoods.filter(food => {
+                const foodTastes = (food.taste || food.Taste || []).map(t => t.toLowerCase());
+                const foodTags = (food.tags || food.Tags || []).map(t => t.toLowerCase());
+                const foodCat = (food.category || food.Category || '').toLowerCase();
+                const combined = [...foodTastes, ...foodTags, foodCat];
+                return tasteKeys.some(key => combined.some(t => t.includes(key)));
+            });
+
+            // Sắp xếp theo rating, lấy top 3
+            const top3 = matched
+                .sort((a, b) => (b.rating || b.Rating || 0) - (a.rating || a.Rating || 0))
+                .slice(0, 3);
+
+            count.textContent = matched.length > 0 ? `(${matched.length} món tìm thấy)` : '';
+
+            if (top3.length === 0) {
+                grid.innerHTML = `<div class="col-span-3 text-center py-8 text-outline">
+                    <span class="material-symbols-outlined text-4xl block mb-2">sentiment_dissatisfied</span>
+                    Không tìm thấy món nào phù hợp với "<strong>${label}</strong>" trong hệ thống.
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = '';
+            top3.forEach(food => {
+                const fId = food.id ?? food._id ?? '';
+                const fName = food.name ?? food.Name ?? '';
+                const fImg = food.imageUrl ?? food.ImageUrl ?? 'https://via.placeholder.com/400';
+                const fRating = food.rating ?? food.Rating ?? '4.5';
+                const fRestaurant = food.restaurant ?? food.Restaurant ?? 'Nhà hàng đối tác';
+                const fDesc = food.description ?? food.Description ?? '';
+                const coop = Number(food.currentPrice?.coopmart ?? food.currentPrice?.Coopmart ?? food.basePrice?.coopmart ?? food.basePrice?.Coopmart ?? 0);
+                const bhx  = Number(food.currentPrice?.bachhoaxanh ?? food.currentPrice?.Bachhoaxanh ?? food.basePrice?.bachhoaxanh ?? food.basePrice?.Bachhoaxanh ?? 0);
+                const tasteList = (food.taste || food.Taste || []).slice(0, 3);
+                const tasteHtml = tasteList.map(t => `<span class="px-3 py-1 bg-sky-100 text-sky-800 rounded-full text-[11px] font-bold capitalize">${t}</span>`).join('');
+
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-sky-50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="relative h-48">
+                            <img src="${fImg}" alt="${fName}" class="w-full h-full object-cover" />
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2.5 py-1 rounded-full text-xs font-black text-primary flex items-center gap-1 shadow">
+                                <span class="material-symbols-outlined text-sm text-yellow-500" style="font-variation-settings:'FILL' 1">star</span>
+                                ${fRating}
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <h5 class="text-lg font-black text-sky-950 line-clamp-1 mb-1">${fName}</h5>
+                            <p class="text-xs text-slate-500 font-medium mb-3 line-clamp-1">${fRestaurant}</p>
+                            ${fDesc ? `<p class="text-xs text-outline mb-3 line-clamp-2">${fDesc}</p>` : ''}
+                            <div class="flex flex-wrap gap-1.5 mb-4">${tasteHtml}</div>
+
+                            <div class="flex gap-2">
+                                <button class="fav-btn flex-none w-10 h-10 flex items-center justify-center rounded-full bg-sky-50 hover:bg-red-50 transition-all text-outline-variant hover:text-red-500"
+                                    id="fav-btn-fp-${fId}"
+                                    title="Thêm vào yêu thích"
+                                    onclick="toggleFavorite(this, {id:'${fId}', name:'${fName.replace(/'/g,"\\'").replace(/"/g,'&quot;')}'})">
+                                    <span class="material-symbols-outlined text-lg">favorite</span>
+                                </button>
+                                <button class="flex-1 py-2.5 bg-sky-50 text-primary font-bold rounded-full hover:bg-primary hover:text-on-primary transition-all text-sm"
+                                    onclick="window.location.href='/Home/CookMode?id=${fId}'">
+                                    Xem chi tiết
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                // Khôi phục trạng thái yêu thích
+                const fpBtn = document.getElementById(`fav-btn-fp-${fId}`);
+                if (fpBtn) applyFavoriteState(fpBtn, fId);
+            });
+        }
+
+        function closeFlavorsPanel() {
+            const panel = document.getElementById('flavor-result-panel');
+            panel.style.maxHeight = '0';
+            panel.style.opacity = '0';
+            panel.style.marginTop = '0';
+            _selectedFlavorCard = null;
+
+            // Bỏ highlight tất cả cards
+            document.querySelectorAll('.flavor-card').forEach(c => {
+                c.classList.remove('scale-[1.03]', 'opacity-60');
+                const chk = c.querySelector('.flavor-check');
+                if (chk) { chk.style.opacity = '0'; chk.style.transform = 'scale(0.75)'; }
+            });
+        }
+    </script>
+}

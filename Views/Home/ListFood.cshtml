@@ -1,0 +1,439 @@
+@{
+    ViewData["Title"] = "Tất cả món ăn";
+}
+
+<div class="pt-24 px-8 pb-12 flex gap-8">
+    <!-- Inner Sidebar Filter Section -->
+    <aside class="w-72 flex-shrink-0">
+        <div class="bg-surface-container-lowest rounded-xl p-6 sticky top-28 shadow-sm">
+            <h2 class="text-lg font-extrabold text-on-surface mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">filter_list</span>
+                Bộ lọc tìm kiếm
+            </h2>
+            <!-- Price Range -->
+            <div class="mb-8">
+                <label class="block text-sm font-bold text-on-surface-variant mb-4">Khoảng giá (VNĐ)</label>
+                <div class="space-y-4">
+                    <div class="flex gap-2">
+                        <input id="price-min"
+                            class="w-1/2 bg-surface-container-low border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20"
+                            placeholder="Từ" type="number" />
+                        <input id="price-max"
+                            class="w-1/2 bg-surface-container-low border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20"
+                            placeholder="Đến" type="number" />
+                    </div>
+                    <input id="price-range" min="0" max="500000" step="10000" value="500000"
+                        class="w-full accent-primary h-1.5 bg-surface-container-high rounded-full appearance-none cursor-pointer"
+                        type="range" />
+                </div>
+            </div>
+            <!-- Taste Filter -->
+            <div class="mb-8">
+                <label class="block text-sm font-bold text-on-surface-variant mb-4">Khẩu vị</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer group bg-surface-container-low p-2.5 rounded-xl border border-transparent hover:border-primary/30 hover:bg-surface-container transition-all">
+                        <input value="chua" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer taste-checkbox" type="checkbox" />
+                        <span class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Chua</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group bg-surface-container-low p-2.5 rounded-xl border border-transparent hover:border-primary/30 hover:bg-surface-container transition-all">
+                        <input value="cay" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer taste-checkbox" type="checkbox" />
+                        <span class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Cay</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group bg-surface-container-low p-2.5 rounded-xl border border-transparent hover:border-primary/30 hover:bg-surface-container transition-all">
+                        <input value="mặn" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer taste-checkbox" type="checkbox" />
+                        <span class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Mặn</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer group bg-surface-container-low p-2.5 rounded-xl border border-transparent hover:border-primary/30 hover:bg-surface-container transition-all">
+                        <input value="ngọt" class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer taste-checkbox" type="checkbox" />
+                        <span class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Ngọt</span>
+                    </label>
+                </div>
+            </div>
+            <button id="btn-apply-filter"
+                class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-full font-bold text-sm transition-transform hover:scale-[1.02] active:scale-95">
+                Áp dụng bộ lọc
+            </button>
+            <button id="btn-clear-filter" class="w-full py-3 mt-2 text-sky-600 font-bold text-sm hover:underline">
+                Xóa tất cả
+            </button>
+        </div>
+    </aside>
+    <!-- Product Grid Area -->
+    <div class="flex-1">
+        <!-- Featured Banner (Bento Style) -->
+        <div class="grid grid-cols-3 gap-6 mb-10">
+            <div
+                class="col-span-2 relative h-64 rounded-xl overflow-hidden group cursor-pointer shadow-lg shadow-sky-100">
+                <img alt="Healthy salad bowl"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    data-alt="Vibrant healthy salad bowl with salmon, avocado, and kale shot from above with natural morning light"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWaciownqds8Ysg15U0UDf6jIqworEbOngdz2zksqmWWQr8Jkc4QwPT2y5CvCO6dpD7W-pGYSirZhFvWo7KAxgQAw-PVgnPrFGtEK0sTLTPOIWI6Krf2dPnsKdl4BT_YYqhyKptyBfzisdhqZtnzE5u2JatR9Nly-Md5oT3oI3T17VEK6vrJ6dOpWAE2BgWLyqE6ANDpDzcBHnUMmLr82bh706XxGPd7cv4hd935bjthafIb8qwHUbuK6-lJq5ZCB0hICjqX3arQ" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-6 left-8">
+                    <span
+                        class="bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold mb-3 inline-block">GỢI Ý HÔM NAY</span>
+                    <h3 class="text-white text-3xl font-extrabold tracking-tight">Thực Đơn Xanh Mướt</h3>
+                    <p class="text-white/80 font-medium">Khám phá các món Salad thanh mát, tốt cho sức khỏe</p>
+                </div>
+            </div>
+            <div
+                class="bg-primary text-on-primary rounded-xl p-8 flex flex-col justify-center items-center text-center shadow-lg shadow-sky-200">
+                <span class="material-symbols-outlined text-5xl mb-4"
+                    style="font-variation-settings: 'FILL' 1;">restaurant_menu</span>
+                <h4 class="text-xl font-bold mb-2">Gợi ý riêng cho bạn</h4>
+                <p class="text-sm opacity-90 mb-6">Dựa trên những món bạn đã thích tuần qua</p>
+                <a href="/Home/IngredSuggestion">
+                    <button
+                        class="bg-white text-primary px-6 py-2.5 rounded-full font-bold text-sm hover:bg-sky-50 transition-colors">Khám
+                        phá ngay</button>
+                </a>
+            </div>
+        </div>
+        <!-- Product Header -->
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h1 class="text-3xl font-black text-sky-900 tracking-tight">Tất cả sản phẩm</h1>
+                <p class="text-sky-600 font-medium">Tìm thấy <span id="total-items">0</span> món ăn phù hợp</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="btn-sort-taste" class="px-4 py-2 bg-white border border-sky-100 rounded-full text-sky-700 font-bold text-sm shadow-sm hover:border-primary/50 transition-all flex items-center gap-2 active:scale-95">
+                    <span class="material-symbols-outlined text-[18px]">favorite</span> Khẩu vị
+                </button>
+                <button id="btn-sort-asc" class="px-4 py-2 bg-white border border-sky-100 rounded-full text-sky-700 font-bold text-sm shadow-sm hover:border-primary/50 transition-all flex items-center gap-2 active:scale-95">
+                    <span class="material-symbols-outlined text-[18px]">trending_down</span> Giá thấp
+                </button>
+                <button id="btn-sort-desc" class="px-4 py-2 bg-white border border-sky-100 rounded-full text-sky-700 font-bold text-sm shadow-sm hover:border-primary/50 transition-all flex items-center gap-2 active:scale-95">
+                    <span class="material-symbols-outlined text-[18px]">trending_up</span> Giá cao
+                </button>
+            </div>
+        </div>
+        <!-- Grid -->
+        <div id="food-grid-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            <!-- Data will be loaded here dynamically -->
+            <div class="col-span-full text-center py-10 text-sky-600 font-bold">
+                <span class="material-symbols-outlined animate-spin text-4xl mb-4">refresh</span>
+                <p>Đang tải danh sách món ăn...</p>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="mt-12 flex justify-center items-center gap-3" id="pagination-container">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let allFoods = [];
+        let userHasPreferences = false;
+
+        // Hàm ước tính giá dựa theo nguyên liệu (giống FoodDetail)
+        const basePricePerGram = {
+            'bò': 280, 'gà': 120, 'heo': 150, 'lợn': 150, 'cá': 180, 'tôm': 300, 'cua': 400, 'mực': 250,
+            'rau': 40, 'nấm': 150, 'hành': 50, 'tỏi': 80, 'tiêu': 200, 'ớt': 80,
+            'gạo': 30, 'phở': 40, 'bún': 30, 'mì': 35,
+            'đường': 25, 'mắm': 50, 'muối': 10, 'dầu': 60, 'sữa': 45, 'trứng': 60
+        };
+        function parseGrams(qty) {
+            const num = parseFloat(qty) || 1;
+            if (/kg|lít|l/.test(qty)) return num * 1000;
+            if (/g|ml/.test(qty)) return num;
+            if (/muỗng|thìa/.test(qty)) return num * 15;
+            if (/quả|trái/.test(qty)) return num * 50;
+            if (/tép/.test(qty)) return num * 5;
+            return 100;
+        }
+        function extractQty(name) {
+            const m = name.match(/(\d+(?:\.\d+)?)\s*(g|kg|ml|l|muỗng|thìa|quả|trái|tép|gr)/i);
+            return m ? m[0] : '100g';
+        }
+        function estimatePrice(food) {
+            const ingredients = food.ingredients || food.Ingredients || [];
+            let total = 0;
+            ingredients.forEach(ing => {
+                const qty = extractQty(ing);
+                const grams = parseGrams(qty);
+                const lower = ing.toLowerCase();
+                let ppg = 50;
+                for (const [key, val] of Object.entries(basePricePerGram)) {
+                    if (lower.includes(key)) { ppg = val; break; }
+                }
+                total += grams * ppg;
+            });
+            // Nếu không tính được từ nguyên liệu, fallback về giá DB
+            if (total < 1000) {
+                const dbPrice = food.currentPrice?.coopmart || food.basePrice?.coopmart || 0;
+                return dbPrice;
+            }
+            const currentHour = new Date().getHours();
+            const fluctuation = 1 + Math.sin(currentHour) * 0.05;
+            return Math.round(total * 1.05 * fluctuation / 1000) * 1000;
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('food-grid-container');
+            const totalItemsEl = document.querySelector('.flex.justify-between.items-end.mb-8 p.text-sky-600');
+            
+            // Tham chiếu các thẻ input bộ lọc
+            const priceMinInput = document.getElementById('price-min');
+            const priceMaxInput = document.getElementById('price-max');
+            const priceRangeInput = document.getElementById('price-range');
+            const tasteCheckboxes = document.querySelectorAll('.taste-checkbox');
+            const btnApplyFilter = document.getElementById('btn-apply-filter');
+            const btnClearFilter = document.getElementById('btn-clear-filter');
+            const btnSortAsc = document.getElementById('btn-sort-asc');
+            const btnSortDesc = document.getElementById('btn-sort-desc');
+            const btnSortTaste = document.getElementById('btn-sort-taste');
+
+            let currentSortMode = 'none';
+            
+            // Lấy userId từ localStorage
+            const userId = localStorage.getItem('userId');
+
+            if (btnSortAsc && btnSortDesc) {
+                btnSortAsc.addEventListener('click', () => {
+                    currentSortMode = currentSortMode === 'price-asc' ? 'none' : 'price-asc';
+                    btnSortAsc.classList.toggle('ring-2', currentSortMode === 'price-asc');
+                    btnSortAsc.classList.toggle('ring-primary', currentSortMode === 'price-asc');
+                    btnSortDesc.classList.remove('ring-2', 'ring-primary');
+                    btnSortTaste.classList.remove('ring-2', 'ring-primary');
+                    applyFilters();
+                });
+                btnSortDesc.addEventListener('click', () => {
+                    currentSortMode = currentSortMode === 'price-desc' ? 'none' : 'price-desc';
+                    btnSortDesc.classList.toggle('ring-2', currentSortMode === 'price-desc');
+                    btnSortDesc.classList.toggle('ring-primary', currentSortMode === 'price-desc');
+                    btnSortAsc.classList.remove('ring-2', 'ring-primary');
+                    btnSortTaste.classList.remove('ring-2', 'ring-primary');
+                    applyFilters();
+                });
+            }
+
+            // Thêm listener cho nút sắp xếp theo khẩu vị
+            if (btnSortTaste) {
+                btnSortTaste.addEventListener('click', () => {
+                    if (!userHasPreferences) {
+                        alert('Vui lòng hoàn thành khẩu vị cá nhân để sử dụng tính năng này!');
+                        return;
+                    }
+                    currentSortMode = currentSortMode === 'taste' ? 'none' : 'taste';
+                    btnSortTaste.classList.toggle('ring-2', currentSortMode === 'taste');
+                    btnSortTaste.classList.toggle('ring-primary', currentSortMode === 'taste');
+                    btnSortAsc.classList.remove('ring-2', 'ring-primary');
+                    btnSortDesc.classList.remove('ring-2', 'ring-primary');
+                    applyFilters();
+                });
+            }
+
+            // Cập nhật text input khi kéo thanh range
+            priceRangeInput.addEventListener('input', (e) => {
+                priceMaxInput.value = e.target.value;
+            });
+
+            const renderFoods = (foodsToRender) => {
+                if (foodsToRender && foodsToRender.length > 0) {
+                    container.innerHTML = '';
+                    if (totalItemsEl) {
+                        totalItemsEl.innerText = `Tìm thấy ${foodsToRender.length} món ăn phù hợp`;
+                    }
+                    foodsToRender.forEach(food => {
+                        const currentCoop = food.currentPrice?.coopmart || food.basePrice?.coopmart || 0;
+                        const currentBHX = food.currentPrice?.bachhoaxanh || food.basePrice?.bachhoaxanh || 0;
+                        const tagsList = food.tags ? (typeof food.tags === 'string' ? food.tags.split(',') : food.tags) : [];
+                        const tagsHtml = tagsList.slice(0, 2).map(tag =>
+                            `<span class="bg-sky-200/60 text-sky-800 px-3 py-1 rounded-full text-xs font-bold">${tag.trim()}</span>`
+                        ).join('');
+                        
+                        // Hiển thị badge khẩu vị nếu có
+                        const tasteMatchBadge = food.matchPercent !== null && food.matchPercent !== undefined 
+                            ? `<div class="absolute top-4 left-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+                                    <span class="text-sm font-black">${food.matchPercent}% khớp</span>
+                                </div>`
+                            : '';
+                        
+                        // Hiển thị badge nguồn giá
+                        const priceSourceBadge = food.priceSource === 'GoogleGrounding' 
+                            ? `<div class="absolute bottom-4 left-4 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
+                                    ✓ Giá thực
+                                </div>`
+                            : `<div class="absolute bottom-4 left-4 bg-orange-400 text-white px-2 py-1 rounded-full text-xs font-bold shadow-sm">
+                                    ~ Giá ước tính
+                                </div>`;
+
+                        const cardHtml = `
+                        <div class="bg-white rounded-[2.5rem] p-4 shadow-sm border border-sky-50 group hover:shadow-xl transition-all">
+                            <div class="relative h-48 mb-4">
+                                <img alt="${food.name}" class="w-full h-full object-cover rounded-[2rem] transition-transform duration-300 group-hover:scale-[1.02]" src="${food.imageUrl || 'https://via.placeholder.com/500'}" />
+                                ${tasteMatchBadge}
+                                ${priceSourceBadge}
+                                <div class="absolute top-4 right-4 bg-white px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+                                    <span class="text-yellow-400 text-sm">★</span>
+                                    <span class="text-xs font-black text-sky-900">${food.rating || '4.8'}</span>
+                                </div>
+                            </div>
+                            <div class="px-2">
+                                <div class="flex justify-between items-start mb-1">
+                                    <div class="pr-4">
+                                        <h3 class="text-xl font-black text-sky-950 line-clamp-1" title="${food.name}">${food.name}</h3>
+                                        <p class="text-xs font-medium text-slate-500 mt-1">${food.category || 'Món ngon'}</p>
+                                    </div>
+                                    <button class="fav-btn text-sky-300 hover:text-red-500 transition-all duration-300 mt-1"
+                                        id="fav-btn-${food._id || food.id}"
+                                        title="Thêm vào yêu thích"
+                                        onclick="toggleFavorite(this, {id:'${food._id || food.id}', name:'${(food.name||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}'})">
+                                        <span class="material-symbols-outlined text-2xl">favorite</span>
+                                    </button>
+                                </div>
+
+                                ${tagsHtml ? `<div class="flex gap-2 mt-4">${tagsHtml}</div>` : ''}
+                                <button class="w-full mt-6 py-3.5 bg-[#e5f4fc] text-[#006080] rounded-full font-bold transition-all hover:bg-sky-200 active:scale-95 text-sm ring-1 ring-sky-100"
+                                    onclick="window.location.href='/Home/FoodDetail?id=${food.id}'">
+                                    Chi tiết món ăn
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                        container.insertAdjacentHTML('beforeend', cardHtml);
+                        // Khôi phục trạng thái yêu thích
+                        const fBtn = document.getElementById(`fav-btn-${food._id || food.id}`);
+                        if (fBtn) applyFavoriteState(fBtn, food._id || food.id);
+                    });
+                } else {
+                    container.innerHTML = '<div class="col-span-full text-center py-10 font-medium text-sky-700">Không tìm thấy món ăn nào phù hợp với bộ lọc.</div>';
+                    if (totalItemsEl) totalItemsEl.innerText = `Tìm thấy 0 món ăn phù hợp`;
+                }
+            };
+
+            const applyFilters = () => {
+                let filtered = [...allFoods];
+
+                // Global search query
+                const searchInput = document.getElementById("global-search-input");
+                if (searchInput && searchInput.value.trim() !== '') {
+                    const query = searchInput.value.trim().toLowerCase();
+                    filtered = filtered.filter(f => {
+                        // Search by name
+                        if (f.name && f.name.toLowerCase().includes(query)) return true;
+                        // Search by taste
+                        if (f.taste && f.taste.some(t => t.toLowerCase().includes(query))) return true;
+                        // Search by category
+                        if (f.category && f.category.toLowerCase().includes(query)) return true;
+                        // Search by tags
+                        if (f.tags) {
+                           const tagsList = typeof f.tags === 'string' ? f.tags.split(',') : f.tags;
+                           if (tagsList.some(t => t.toLowerCase().includes(query))) return true;
+                        }
+                        return false;
+                    });
+                }
+
+                // Lọc theo khoảng giá ước tính từ nguyên liệu
+                const min = parseInt(priceMinInput.value);
+                const max = parseInt(priceMaxInput.value);
+
+                if (!isNaN(min) || !isNaN(max)) {
+                    filtered = filtered.filter(f => {
+                        const price = f.estimatedPrice || 0;
+                        if (!isNaN(min) && price < min) return false;
+                        if (!isNaN(max) && price > max) return false;
+                        return true;
+                    });
+                }
+
+                // Lọc theo khẩu vị
+                const selectedTastes = Array.from(tasteCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+                if (selectedTastes.length > 0) {
+                    filtered = filtered.filter(f => {
+                       if (!f.taste) return false;
+                       return selectedTastes.some(taste => 
+                           f.taste.some(t => t.toLowerCase().includes(taste.toLowerCase()))
+                       );
+                    });
+                }
+
+                // Sắp xếp theo khẩu vị hoặc giá ước tính
+                if (currentSortMode === 'taste') {
+                    // Sắp xếp giảm dần theo % khẩu vị khớp
+                    filtered.sort((a, b) => {
+                        const aMatch = a.matchPercent || 0;
+                        const bMatch = b.matchPercent || 0;
+                        return bMatch - aMatch;
+                    });
+                } else if (currentSortMode !== 'none') {
+                    filtered.sort((a, b) => {
+                        const pa = a.estimatedPrice || 0;
+                        const pb = b.estimatedPrice || 0;
+                        if (currentSortMode === 'price-asc') return pa - pb;
+                        if (currentSortMode === 'price-desc') return pb - pa;
+                        return 0;
+                    });
+                }
+
+                // Cập nhật text số lượng
+                const totalText = document.getElementById('total-items');
+                if (totalText) totalText.innerText = filtered.length;
+
+                renderFoods(filtered);
+            };
+            
+            // Expose applyFilters to window so _Layout.cshtml can call it
+            window.applyFilters = applyFilters;
+
+            btnApplyFilter.addEventListener('click', applyFilters);
+
+            btnClearFilter.addEventListener('click', () => {
+                priceMinInput.value = '';
+                priceMaxInput.value = '';
+                priceRangeInput.value = '500000';
+                tasteCheckboxes.forEach(cb => cb.checked = false);
+                const searchInput = document.getElementById("global-search-input");
+                if (searchInput) searchInput.value = '';
+                // Cập nhật lại URL nếu có param search
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.delete('search');
+                window.history.pushState({}, '', newUrl);
+                
+                applyFilters(); // reset and apply
+            });
+
+            try {
+                // Gọi API với userId nếu có
+                const apiUrl = userId ? `/api/foods/all?userId=${userId}` : '/api/foods/all';
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+                if (data.foods && data.foods.length > 0) {
+                    // Tính sẵn giá ước tính cho từng món
+                    allFoods = data.foods.map(f => ({ ...f, estimatedPrice: estimatePrice(f) }));
+                    
+                    // Kiểm tra xem user có preferences hay không (nếu có matchPercent)
+                    userHasPreferences = allFoods.some(f => f.matchPercent !== null && f.matchPercent !== undefined);
+                    
+                    // Nếu user có preferences, enable nút sort taste
+                    if (userHasPreferences && btnSortTaste) {
+                        btnSortTaste.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                    
+                    applyFilters(); // Apply initial filters (like search query from URL)
+                } else {
+                    container.innerHTML = '<div class="col-span-full text-center py-10 font-medium text-sky-700">Chưa có sản phẩm nào.</div>';
+                }
+            } catch (err) {
+                console.error("Lỗi:", err);
+            }
+
+            const sse = new EventSource('/api/foods/realtime-prices');
+            sse.onmessage = (event) => {
+                const updatedFoods = JSON.parse(event.data);
+                updatedFoods.forEach(food => {
+                    const coopEl = document.getElementById(`coop-price-${food.id}`);
+                    const bhxEl = document.getElementById(`bhx-price-${food.id}`);
+                    if (coopEl && bhxEl) {
+                        coopEl.innerText = food.coopmartPrice.toLocaleString("vi-VN") + "đ";
+                        bhxEl.innerText = food.bachhoaxanhPrice.toLocaleString("vi-VN") + "đ";
+                    }
+                });
+            };
+        });
+    </script>
+}

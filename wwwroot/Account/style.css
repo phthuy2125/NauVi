@@ -1,0 +1,417 @@
+/* ============================================================
+   1. SETUP CHUNG & FONT
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Quicksand', sans-serif;
+    background-color: #f0f7ff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ============================================================
+   2. HIỆU ỨNG ICON BAY Ở NỀN (DECOR)
+   ============================================================ */
+.food-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.food-bg span {
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.12;
+    animation: float 12s infinite ease-in-out;
+}
+
+/* Tọa độ ngẫu nhiên cho các icon */
+.food-bg span:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+.food-bg span:nth-child(2) { top: 25%; left: 80%; animation-delay: 2s; }
+.food-bg span:nth-child(3) { top: 70%; left: 15%; animation-delay: 4s; }
+.food-bg span:nth-child(4) { top: 85%; left: 75%; animation-delay: 1s; }
+.food-bg span:nth-child(5) { top: 45%; left: 5%; animation-delay: 3s; }
+.food-bg span:nth-child(6) { top: 10%; left: 45%; animation-delay: 5s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(15deg); }
+}
+
+/* ============================================================
+   3. CONTAINER CHÍNH (GLASSMORPHISM)
+   ============================================================ */
+.container {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 35px 40px;
+    border-radius: 30px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(79, 172, 254, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    z-index: 10;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.container:hover {
+    transform: translateY(-8px);
+}
+
+h2 { margin: 0 0 8px 0; color: #4facfe; font-weight: 700; font-size: 26px; }
+
+.subtitle { font-size: 13px; color: #8da6b5; margin-bottom: 25px; display: block; }
+
+p { color: #5c7c8a; font-size: 14px; margin: 18px 0 10px 0; font-weight: 700; text-align: left; }
+
+/* ============================================================
+   4. Ô NHẬP LIỆU (INPUT)
+   ============================================================ */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    margin: 5px 0;
+    border: 2px solid #eef6fb;
+    border-radius: 15px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+input:focus {
+    border-color: #4facfe;
+    outline: none;
+    box-shadow: 0 0 12px rgba(79, 172, 254, 0.15);
+    background-color: #fff;
+}
+
+/* ============================================================
+   5. CHỌN KHẨU VỊ (CHIA 2 CỘT ĐỀU NHAU)
+   ============================================================ */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Chia 2 cột 2/2 */
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.checkbox-group label {
+    cursor: pointer;
+    width: 100%;
+}
+
+.checkbox-group input[type="checkbox"] {
+    display: none; /* Ẩn checkbox mặc định */
+}
+
+.checkbox-group span {
+    display: block;
+    padding: 12px;
+    background: #fff;
+    border: 2px solid #eef6fb;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #8da6b5;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* Khi được chọn */
+.checkbox-group input[type="checkbox"]:checked + span {
+    background: #4facfe;
+    color: #fff;
+    border-color: #4facfe;
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+    transform: scale(1.02);
+}
+
+/* ============================================================
+   6. CHỌN LOẠI MÓN (RADIO CHIA ĐÔI)
+   ============================================================ */
+.type-selector {
+    display: flex;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+.type-selector input[type="radio"] { display: none; }
+
+.type-selector label {
+    flex: 1;
+    padding: 14px;
+    background: #fff;
+    border: 2px solid #eef6fb;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: #8da6b5;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.type-selector input[type="radio"]:checked + label {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+}
+
+/* ============================================================
+   7. NÚT BẤM HOÀN TẤT / TIẾP TỤC
+   ============================================================ */
+button {
+    width: 100%;
+    padding: 16px;
+    margin-top: 25px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+}
+
+button:hover {
+    box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* ============================================================
+   8. THÔNG BÁO LỖI (SHAKE & TOAST)
+   ============================================================ */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
+.shake {
+    animation: shake 0.4s ease-in-out;
+    border-color: #ff4d4d !important;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.2) !important;
+}
+
+.toast {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: #ff4d4d;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(255, 77, 77, 0.2);
+    z-index: 9999;
+    font-weight: 600;
+    font-size: 14px;
+    transform: translateX(150%); /* Đẩy ra ngoài lề phải */
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.success {
+    background: #2ecc71;
+    box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2);
+}
+
+/* TEXT DƯỚI CÙNG */
+.footer-text {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #7f8c8d;
+    text-align: center;
+}
+
+.footer-text a {
+    color: #4facfe;
+    text-decoration: none;
+    font-weight: 700;
+}
+/* ============================================================
+   9. GIAO DIỆN TRANG CHỦ (INDEX PAGE)
+   ============================================================ */
+
+/* Reset lại body cho trang chủ để cho phép cuộn */
+.home-page {
+    display: block; 
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.logo span {
+    color: #4facfe;
+}
+
+.search-bar {
+    display: flex;
+    flex: 0 1 400px;
+    gap: 10px;
+}
+
+.search-bar input {
+    margin: 0; /* Ghi đè margin của input chung */
+}
+
+.search-bar button {
+    width: auto;
+    margin: 0;
+    padding: 10px 20px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#user-name {
+    font-weight: 600;
+    color: #555;
+}
+
+.btn-logout {
+    background: #ff4d4d;
+    padding: 8px 15px;
+    margin: 0;
+    width: auto;
+    font-size: 13px;
+    box-shadow: none;
+}
+
+/* --- CONTENT SECTION --- */
+.content {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.recommend-section h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* --- FOOD GRID & CARDS --- */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.food-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #f0f0f0;
+}
+
+.food-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(79, 172, 254, 0.2);
+}
+
+.food-tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4facfe;
+    z-index: 2;
+}
+
+.food-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: crop;
+    transition: transform 0.5s;
+}
+
+.food-card:hover img {
+    transform: scale(1.1);
+}
+
+.food-info {
+    padding: 20px;
+}
+
+.food-info h4 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #2d3436;
+}
+
+.price {
+    color: #2ecc71;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.btn-view {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+    background: #f8fbff;
+    color: #4facfe;
+    border: 1px solid #4facfe;
+    box-shadow: none;
+}
+
+.btn-view:hover {
+    background: #4facfe;
+    color: white;
+}

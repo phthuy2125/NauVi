@@ -1,0 +1,406 @@
+@{
+    ViewData["Title"] = "Yêu thích";
+}
+
+<section class="px-8 pb-8 pt-28 md:px-12 md:pb-12 md:pt-32 space-y-10">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-2">
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface">
+                Món Ăn <span class="text-primary italic">Yêu Thích</span>
+            </h2>
+            <p class="text-on-surface-variant font-medium" id="fav-subtitle">
+                Đang tải danh sách yêu thích...
+            </p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <button id="btn-select-mode"
+                class="hidden px-6 py-2 bg-surface-container-high text-on-surface hover:bg-surface-container-highest rounded-full font-semibold text-sm transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">checklist</span>
+                <span id="select-mode-text">Chọn nhiều</span>
+            </button>
+            <button id="btn-bulk-delete"
+                class="hidden px-6 py-2 bg-red-500 text-white hover:bg-red-600 rounded-full font-bold text-sm transition-all shadow-md flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">delete</span>
+                Xóa (<span id="selected-count">0</span>)
+            </button>
+            <button id="btn-clear-all"
+                class="hidden px-6 py-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-full font-semibold text-sm transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">delete_sweep</span>
+                Xóa tất cả
+            </button>
+            <a href="/Home/ListFood" id="btn-explore-more">
+                <button class="px-6 py-2 bg-primary text-on-primary rounded-full font-semibold text-sm transition-all hover:shadow-md">
+                    Khám phá thêm
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Favorites Grid (dynamic) -->
+    <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Populated by JS -->
+        <div class="col-span-full text-center py-10 text-outline animate-pulse">
+            Đang tải...
+        </div>
+    </div>
+
+    <!-- Empty State (hidden by default) -->
+    <div id="empty-state" class="hidden text-center py-20">
+        <div class="inline-flex flex-col items-center gap-6">
+            <div class="w-28 h-28 rounded-full bg-surface-container-low flex items-center justify-center">
+                <span class="material-symbols-outlined text-6xl text-outline" style="font-variation-settings:'FILL' 0">favorite</span>
+            </div>
+            <div>
+                <h3 class="text-2xl font-black text-on-surface mb-2">Chưa có món yêu thích</h3>
+                <p class="text-on-surface-variant font-medium max-w-sm mx-auto">
+                    Nhấn vào biểu tượng ❤️ trên bất kỳ món ăn nào để lưu vào đây.
+                </p>
+            </div>
+            <a href="/Home/ListFood">
+                <button class="mt-2 px-8 py-3.5 bg-primary text-on-primary rounded-full font-bold shadow-lg hover:shadow-xl hover:shadow-primary/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined">explore</span>
+                    Khám phá món ăn
+                </button>
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+<script>
+    let _isSelectionMode = false;
+    let _selectedItems = new Set();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const userId = localStorage.getItem('userId');
+        const emptyState = document.getElementById('empty-state');
+        const grid = document.getElementById('favorites-grid');
+        const subtitle = document.getElementById('fav-subtitle');
+        const clearAllBtn = document.getElementById('btn-clear-all');
+        const selectModeBtn = document.getElementById('btn-select-mode');
+        const bulkDeleteBtn = document.getElementById('btn-bulk-delete');
+        
+        if (!userId) {
+            grid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            if (clearAllBtn) clearAllBtn.classList.add('hidden');
+            if (selectModeBtn) selectModeBtn.classList.add('hidden');
+            subtitle.textContent = 'Vui lòng đăng nhập để xem danh sách yêu thích.';
+            return;
+        }
+
+        loadFavorites(userId);
+
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', () => clearAllFavorites(userId));
+        }
+
+        if (selectModeBtn) {
+            selectModeBtn.addEventListener('click', toggleSelectionMode);
+        }
+
+        if (bulkDeleteBtn) {
+            bulkDeleteBtn.addEventListener('click', () => removeBulkFavorites(userId));
+        }
+    });
+
+    function toggleSelectionMode() {
+        _isSelectionMode = !_isSelectionMode;
+        _selectedItems.clear();
+        updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+        const selectModeText = document.getElementById('select-mode-text');
+        const btnClearAll = document.getElementById('btn-clear-all');
+        const btnBulkDelete = document.getElementById('btn-bulk-delete');
+        const btnExplore = document.getElementById('btn-explore-more');
+        const checkboxes = document.querySelectorAll('.fav-card-checkbox');
+        const countSpan = document.getElementById('selected-count');
+
+        if (_isSelectionMode) {
+            selectModeText.textContent = 'Hủy chọn';
+            document.getElementById('btn-select-mode').classList.replace('bg-surface-container-high', 'bg-sky-100');
+            document.getElementById('btn-select-mode').classList.replace('text-on-surface', 'text-sky-800');
+            
+            btnClearAll.classList.add('hidden');
+            btnExplore.classList.add('hidden');
+            btnBulkDelete.classList.remove('hidden');
+            
+            checkboxes.forEach(cb => {
+                cb.classList.remove('hidden', 'opacity-0', 'scale-0');
+                cb.checked = false;
+            });
+            countSpan.textContent = "0";
+        } else {
+            selectModeText.textContent = 'Chọn nhiều';
+            document.getElementById('btn-select-mode').classList.replace('bg-sky-100', 'bg-surface-container-high');
+            document.getElementById('btn-select-mode').classList.replace('text-sky-800', 'text-on-surface');
+            
+            btnClearAll.classList.remove('hidden');
+            btnExplore.classList.remove('hidden');
+            btnBulkDelete.classList.add('hidden');
+            
+            checkboxes.forEach(cb => {
+                cb.classList.add('hidden', 'opacity-0', 'scale-0');
+            });
+        }
+    }
+
+    function handleCheckboxToggle(foodId, checkbox) {
+        if (checkbox.checked) {
+            _selectedItems.add(foodId);
+        } else {
+            _selectedItems.delete(foodId);
+        }
+        document.getElementById('selected-count').textContent = _selectedItems.size;
+    }
+
+    async function removeBulkFavorites(userId) {
+        if (_selectedItems.size === 0) {
+            showFavToast('Vui lòng chọn ít nhất 1 sản phẩm để xóa.');
+            return;
+        }
+
+        if (!confirm(`Bạn có chắc muốn xóa ${_selectedItems.size} sản phẩm đã chọn không?`)) {
+            return;
+        }
+
+        const foodIds = Array.from(_selectedItems);
+
+        try {
+            const res = await fetch(`/api/users/${userId}/favorites/remove-bulk`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ foodIds: foodIds })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                showFavToast(data.message || `Đã xóa ${foodIds.length} món ăn`);
+                
+                // Cập nhật DOM
+                foodIds.forEach(id => {
+                    const card = document.getElementById(`fav-card-${id}`);
+                    if (card) card.remove();
+                    
+                    if (typeof _userFavIds !== 'undefined' && typeof _userFavIds.delete === 'function') {
+                        _userFavIds.delete(id);
+                    }
+                });
+
+                // Kiểm tra lại grid
+                const grid = document.getElementById('favorites-grid');
+                if (grid.children.length === 0) {
+                    grid.classList.add('hidden');
+                    document.getElementById('empty-state').classList.remove('hidden');
+                    document.getElementById('btn-clear-all').classList.add('hidden');
+                    document.getElementById('btn-select-mode').classList.add('hidden');
+                    document.getElementById('btn-bulk-delete').classList.add('hidden');
+                    document.getElementById('btn-explore-more').classList.remove('hidden');
+                    document.getElementById('fav-subtitle').textContent = 'Hãy thêm món ăn yêu thích để xem tại đây.';
+                    _isSelectionMode = false;
+                } else {
+                    toggleSelectionMode(); // tự động thoát chế độ chọn
+                }
+
+            } else {
+                throw new Error('API failed');
+            }
+        } catch (e) {
+            console.error(e);
+            showFavToast('Lỗi khi xóa nhiều sản phẩm!');
+            loadFavorites(userId);
+        }
+    }
+
+    async function clearAllFavorites(userId) {
+        if (!confirm('Bạn có chắc muốn xóa toàn bộ danh sách món ăn yêu thích không? Hành động này không thể hoàn tác.')) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/users/${userId}/favorites/clear`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                showFavToast(data.message || 'Đã xóa toàn bộ danh sách yêu thích!');
+                
+                // Cập nhật lại UI
+                document.getElementById('favorites-grid').innerHTML = '';
+                document.getElementById('favorites-grid').classList.add('hidden');
+                document.getElementById('empty-state').classList.remove('hidden');
+                document.getElementById('btn-clear-all').classList.add('hidden');
+                document.getElementById('fav-subtitle').textContent = 'Hãy thêm món ăn yêu thích để xem tại đây.';
+                
+                // Clear local memory cache
+                if (typeof _userFavIds !== 'undefined' && typeof _userFavIds.clear === 'function') {
+                    _userFavIds.clear();
+                }
+            } else {
+                throw new Error('API failed');
+            }
+        } catch (err) {
+            console.error(err);
+            showFavToast('Lỗi khi xóa! Vui lòng thử lại.');
+        }
+    }
+
+    async function loadFavorites(userId) {
+        const grid = document.getElementById('favorites-grid');
+        const emptyState = document.getElementById('empty-state');
+        const subtitle = document.getElementById('fav-subtitle');
+        const clearAllBtn = document.getElementById('btn-clear-all');
+
+        const selectModeBtn = document.getElementById('btn-select-mode');
+
+        try {
+            const res = await fetch(`/api/users/${userId}/favorites`);
+            if (!res.ok) throw new Error('Failed to load');
+            
+            const data = await res.json();
+            const favs = data.foods || [];
+
+            if (favs.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                if (clearAllBtn) clearAllBtn.classList.add('hidden');
+                if (selectModeBtn) selectModeBtn.classList.add('hidden');
+                subtitle.textContent = 'Hãy thêm món ăn yêu thích để xem tại đây.';
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.classList.remove('hidden');
+            if (clearAllBtn) clearAllBtn.classList.remove('hidden');
+            if (selectModeBtn) selectModeBtn.classList.remove('hidden');
+            document.getElementById('btn-bulk-delete').classList.add('hidden');
+            document.getElementById('btn-explore-more').classList.remove('hidden');
+            
+            _isSelectionMode = false;
+            subtitle.textContent = `${favs.length} món ăn đã lưu vào yêu thích`;
+
+            grid.innerHTML = '';
+            favs.forEach(food => {
+                const fId = food.id ?? '';
+                const fName = food.name ?? 'Món ăn';
+                const fImg = food.imageUrl ?? 'https://via.placeholder.com/400';
+                const fRating = food.rating ?? '4.5';
+                const fRestaurant = food.restaurant ?? 'Nhà hàng đối tác';
+                
+                // Mặc định DB hiện tại chưa lưu ngày trong sub-item yêu thích, 
+                // nhưng nếu cần ta có thể ẩn phần thời gian này hoặc gán cứng.
+                const savedDate = ''; 
+                
+                const tagsArr = food.tags ?? [];
+                let tagsHtml = '';
+                if(Array.isArray(tagsArr)) {
+                     tagsHtml = tagsArr.slice(0,3).map(t =>
+                        `<span class="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-[11px] font-bold capitalize">${t}</span>`
+                    ).join('');
+                } else if(typeof tagsArr === 'string') {
+                    // fall back string convert
+                    tagsHtml = tagsArr.split(',').slice(0,3).map(t =>
+                        `<span class="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-[11px] font-bold capitalize">${t.trim()}</span>`
+                    ).join('');
+                }
+
+                const cardHtml = `
+                    <div class="group relative bg-surface-container-lowest rounded-2xl p-4 transition-all hover:bg-white hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 duration-300"
+                        id="fav-card-${fId}">
+                        <div class="relative aspect-[4/3] rounded-xl overflow-hidden mb-5">
+                            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+                                src="${fImg}" alt="${fName}" onclick="if(_isSelectionMode) { document.getElementById('cb-${fId}').click(); }" />
+                            
+                            <!-- Multiselect Checkbox -->
+                            <input type="checkbox" id="cb-${fId}" 
+                                class="fav-card-checkbox absolute top-4 left-4 w-6 h-6 rounded-md border-0 ring-2 ring-white/50 text-blue-500 shadow-xl cursor-pointer hidden opacity-0 scale-0 transition-all duration-300 z-10"
+                                onchange="handleCheckboxToggle('${fId}', this)" />
+
+                            <!-- Rating badge -->
+                            <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-2.5 py-1 rounded-full text-xs font-black text-primary flex items-center gap-1 shadow">
+                                <span class="material-symbols-outlined text-sm text-yellow-500" style="font-variation-settings:'FILL' 1">star</span>
+                                ${fRating}
+                            </div>
+                            <!-- Remove heart button -->
+                            <button
+                                class="absolute top-3 right-3 bg-white/90 backdrop-blur-md w-10 h-10 flex items-center justify-center rounded-full text-red-500 shadow hover:bg-red-50 hover:scale-110 transition-all duration-300 z-10"
+                                title="Xóa khỏi yêu thích"
+                                onclick="removeFavorite('${fId}', '${fName.replace(/'/g,"\\\\'")}')" >
+                                <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">favorite</span>
+                            </button>
+                        </div>
+                        <div class="px-1" onclick="if(_isSelectionMode) { document.getElementById('cb-${fId}').click(); }">
+                            <h3 class="text-xl font-bold text-on-surface mb-1 line-clamp-1">${fName}</h3>
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-on-surface-variant text-sm font-medium line-clamp-1">${fRestaurant}</p>
+                                ${savedDate ? `<span class="text-[11px] text-outline font-medium">${savedDate}</span>` : ''}
+                            </div>
+                            ${tagsHtml ? `<div class="flex flex-wrap gap-1.5 mb-4">${tagsHtml}</div>` : ''}
+                            <button class="w-full py-3 bg-surface-container-low text-primary font-bold rounded-full hover:bg-primary hover:text-on-primary transition-all text-sm">
+                                Xem chi tiết
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        } catch (err) {
+            console.error('Error loading favorites:', err);
+            subtitle.textContent = 'Đã có lỗi xảy ra khi tải dữ liệu.';
+            grid.innerHTML = '<div class="col-span-full py-10 text-center text-red-500">Lỗi kết nối.</div>';
+        }
+    }
+
+    async function removeFavorite(foodId, foodName) {
+        const userId = localStorage.getItem('userId');
+        if (!userId) return;
+
+        const card = document.getElementById(`fav-card-${foodId}`);
+        if (card) {
+            // Optimistic UI hiding
+            card.style.transition = 'opacity 0.3s, transform 0.3s';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                 card.remove(); 
+                 // Tắt trên local memory Set 
+                 if (typeof _userFavIds !== 'undefined' && typeof _userFavIds.delete === 'function') {
+                     _userFavIds.delete(foodId);
+                 }
+                 
+                 // Kiểm tra nếu rỗng
+                 const grid = document.getElementById('favorites-grid');
+                 if(grid.children.length === 0) {
+                     grid.classList.add('hidden');
+                     document.getElementById('empty-state').classList.remove('hidden');
+                     document.getElementById('fav-subtitle').textContent = 'Hãy thêm món ăn yêu thích để xem tại đây.';
+                 }
+            }, 300);
+
+            try {
+                const res = await fetch('/api/users/toggle-favorite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, foodId })
+                });
+                
+                if (res.ok) {
+                    showFavToast(`Đã xóa "${foodName}" khỏi yêu thích`);
+                } else {
+                    throw new Error('Khóa fail');
+                }
+            } catch(e) {
+                console.error(e);
+                showFavToast('Lỗi! Vui lòng thử lại.');
+                // Re-fetch toàn bộ nếu dính lỗi để đồng bộ lại
+                loadFavorites(userId);
+            }
+        }
+    }
+</script>
+}

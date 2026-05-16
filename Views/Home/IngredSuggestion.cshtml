@@ -1,0 +1,385 @@
+@{
+    ViewData["Title"] = "Gợi ý món ăn theo nguyên liệu";
+}
+
+@section Styles {
+    <style>
+        .ingredient-card.selected {
+            border-color: var(--primary);
+            background-color: var(--primary-container);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @@keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .ai-dish-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .ai-dish-card:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+            transform: translateY(-4px);
+        }
+        .ai-dish-header {
+            background: linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(168,85,247,0.15) 100%);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .ai-step {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            padding: 0.6rem 0;
+        }
+        .ai-step-num {
+            min-width: 1.5rem;
+            height: 1.5rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+        .btn-ai-chef {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(99,102,241,0.35);
+            margin-top: 0.75rem;
+        }
+        .btn-ai-chef:hover { filter: brightness(1.12); transform: translateY(-1px); }
+        .btn-ai-chef:active { transform: scale(0.97); }
+        .btn-ai-chef:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+        @@keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .ai-loading-shimmer {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 0.75rem;
+        }
+    </style>
+}
+
+<div class="px-4 md:px-8 pb-32 pt-28">
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div>
+            <h2 class="text-3xl font-800 text-on-surface tracking-tight mb-1">Gợi ý theo nguyên liệu</h2>
+            <p class="text-on-surface-variant">Chọn nguyên liệu bạn muốn ăn, FoodWise sẽ tính tiền và gợi ý món tốt nhất!</p>
+        </div>
+        <div class="flex gap-2 bg-surface-container-high p-1 rounded-full border border-outline-variant/30">
+            <div class="bg-primary text-on-primary px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2">
+                <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                GIÁ THỜI GIAN THỰC
+            </div>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left: Ingredient Selection -->
+        <div class="lg:col-span-8 space-y-8">
+            <!-- Categories -->
+            <div id="ingredient-categories" class="space-y-8">
+                <div class="animate-pulse flex flex-col gap-4">
+                    <div class="h-6 bg-surface-container-high rounded w-1/4"></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="h-24 bg-surface-container-high rounded-xl"></div>
+                        <div class="h-24 bg-surface-container-high rounded-xl"></div>
+                        <div class="h-24 bg-surface-container-high rounded-xl"></div>
+                        <div class="h-24 bg-surface-container-high rounded-xl"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Summary & Suggestions -->
+        <div class="lg:col-span-4 space-y-8">
+            <!-- Price Calculator Card -->
+            <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-xl border border-outline-variant/20 sticky top-28">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">calculate</span>
+                    Tổng chi phí dự kiến
+                </h3>
+                <div class="space-y-4 mb-8">
+                    <div class="bg-blue-50 dark:bg-blue-950/20 p-5 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-blue-700 dark:text-blue-400 font-bold flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex justify-center items-center text-[10px] font-bold">C</div>
+                                Coopmart
+                            </span>
+                            <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-[10px] px-2 py-0.5 rounded-full font-bold">NHANH</span>
+                        </div>
+                        <p class="text-2xl font-800 text-blue-800 dark:text-blue-300" id="total-coop">0đ</p>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-950/20 p-5 rounded-2xl border border-green-100 dark:border-green-900/30">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-green-700 dark:text-green-400 font-bold flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-green-500 text-white flex justify-center items-center text-[10px] font-bold">B</div>
+                                Bách Hóa Xanh
+                            </span>
+                            <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-[10px] px-2 py-0.5 rounded-full font-bold">RẺ HƠN</span>
+                        </div>
+                        <p class="text-2xl font-800 text-green-800 dark:text-green-300" id="total-bhx">0đ</p>
+                    </div>
+                </div>
+                <div id="selected-list" class="space-y-2 mb-6 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                    <p class="text-on-surface-variant text-sm text-center italic">Chưa chọn nguyên liệu nào</p>
+                </div>
+                <button onclick="getSuggestions()" id="btn-suggest"
+                    class="w-full py-4 bg-primary text-on-primary rounded-2xl font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-3 active:scale-95 transition-all">
+                    Xem món ăn gợi ý
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                </button>
+                <button onclick="callAIChef()" id="btn-ai-chef" class="btn-ai-chef">
+                    <span style="font-size:1.1rem">🤖</span>
+                    Hỏi AI Đầu Bếp
+                    <span class="material-symbols-outlined" style="font-size:1rem">cooking</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Section -->
+    <section id="result-section" class="mt-16 hidden">
+        <h3 class="text-2xl font-800 mb-8 flex items-center gap-3">
+            <span class="material-symbols-outlined text-secondary">flare</span>
+            Món ăn dành cho bạn
+        </h3>
+        <div id="foods-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- AI Chef Result Section -->
+    <section id="ai-result-section" class="mt-16 hidden">
+        <div class="flex items-center gap-4 mb-10">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, #6366f1, #a855f7)">🤖</div>
+            <div>
+                <h3 class="text-2xl font-800 text-on-surface">AI Đầu Bếp Gợi Ý</h3>
+                <p class="text-sm text-on-surface-variant">Công thức được tạo riêng cho nguyên liệu của bạn</p>
+            </div>
+        </div>
+        <div id="ai-used-ingreds" class="mb-8 p-4 rounded-2xl flex flex-wrap gap-2 items-center" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2)">
+            <span class="text-xs font-bold text-primary">🧺 Nguyên liệu đã chọn:</span>
+        </div>
+        <div id="ai-foods-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-6"></div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        let allIngredients = [];
+        let selectedNames = new Set();
+        const categories = { "Proteins": "Chất đạm", "Carbs": "Tinh bột", "Vegetables": "Rau củ", "Spices": "Gia vị", "Others": "Khác" };
+        const userId = localStorage.getItem("userId");
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchIngredients();
+        });
+
+        async function fetchIngredients() {
+            try {
+                const res = await fetch("/api/foods/ingredients");
+                const data = await res.json();
+                allIngredients = data.ingredients;
+                renderIngredients();
+            } catch (err) { console.error(err); }
+        }
+
+        function renderIngredients() {
+            const container = document.getElementById("ingredient-categories");
+            container.innerHTML = "";
+            Object.keys(categories).forEach(catKey => {
+                const catIngreds = allIngredients.filter(ing => ing.category === catKey);
+                if (catIngreds.length === 0) return;
+                const section = document.createElement("div");
+                section.className = "space-y-4";
+                section.innerHTML = `
+                    <h4 class="text-lg font-bold flex items-center gap-2 text-on-surface-variant">
+                        <span class="w-2 h-6 bg-primary rounded-full"></span>
+                        ${categories[catKey]}
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        ${catIngreds.map(ing => {
+                            return `
+                                <div onclick="toggleIngredient('${ing.name}')" id="ing-${ing.name}" 
+                                     class="ingredient-card bg-surface-container p-4 rounded-2xl border-2 border-transparent cursor-pointer hover:border-primary/30 transition-all flex flex-col items-center gap-2 group">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                                        ${getEmojiForIngredient(ing.name)}
+                                    </div>
+                                    <div class="text-center">
+                                        <span class="text-sm font-bold">${ing.name}</span>
+                                        ${ing.unit ? `<p class="text-[10px] text-slate-400 mt-0.5">${ing.unit}</p>` : ''}
+                                    </div>
+                                </div>`;
+                        }).join("")}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        function toggleIngredient(name) {
+            const card = document.getElementById(`ing-${name}`);
+            if (selectedNames.has(name)) {
+                selectedNames.delete(name);
+                card.classList.remove("selected", "shadow-lg", "shadow-primary/10");
+            } else {
+                selectedNames.add(name);
+                card.classList.add("selected", "shadow-lg", "shadow-primary/10");
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const listContainer = document.getElementById("selected-list");
+            const totalCoopEl = document.getElementById("total-coop");
+            const totalBHXEl = document.getElementById("total-bhx");
+            if (selectedNames.size === 0) {
+                listContainer.innerHTML = `<p class="text-on-surface-variant text-sm text-center italic">Chưa chọn nguyên liệu nào</p>`;
+                totalCoopEl.innerText = "0đ";
+                totalBHXEl.innerText = "0đ";
+                return;
+            }
+            let totalCoop = 0, totalBHX = 0, html = "";
+            selectedNames.forEach(name => {
+                const ing = allIngredients.find(i => i.name === name);
+                if (ing) {
+                    totalCoop += ing.currentPrice.coopmart;
+                    totalBHX += ing.currentPrice.bachhoaxanh;
+                    html += `<div class="flex items-center justify-between bg-surface-container-high/50 p-3 rounded-xl"><span class="text-sm font-medium">${getEmojiForIngredient(name)} ${name}</span><button onclick="toggleIngredient('${name}'); event.stopPropagation();" class="text-error"><span class="material-symbols-outlined text-sm">close</span></button></div>`;
+                }
+            });
+            listContainer.innerHTML = html;
+            totalCoopEl.innerText = formatPrice(totalCoop);
+            totalBHXEl.innerText = formatPrice(totalBHX);
+        }
+
+        async function getSuggestions() {
+            if (selectedNames.size === 0) { alert("Chọn nguyên liệu!"); return; }
+            const btn = document.getElementById("btn-suggest");
+            btn.disabled = true;
+            btn.innerHTML = `<span class="animate-spin material-symbols-outlined">progress_activity</span>`;
+            try {
+                const res = await fetch("/api/foods/suggest-by-ingredients", {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ selectedIngredientNames: Array.from(selectedNames) })
+                });
+                const data = await res.json();
+                renderFoods(data.suggestedFoods);
+                document.getElementById("result-section").classList.remove("hidden");
+                window.scrollTo({ top: document.getElementById("result-section").offsetTop - 100, behavior: 'smooth' });
+            } catch (err) { console.error(err); }
+            btn.disabled = false;
+            btn.innerHTML = `Xem món ăn gợi ý <span class="material-symbols-outlined">auto_awesome</span>`;
+        }
+
+        async function callAIChef() {
+            if (selectedNames.size === 0) { alert("Chọn nguyên liệu!"); return; }
+            const btn = document.getElementById("btn-ai-chef");
+            btn.disabled = true;
+            const aiSection = document.getElementById("ai-result-section");
+            const aiGrid = document.getElementById("ai-foods-grid");
+            aiSection.classList.remove("hidden");
+            aiGrid.innerHTML = [1,2,3].map(() => `<div class="ai-loading-shimmer" style="height:400px"></div>`).join("");
+            aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            try {
+                const res = await fetch("/api/ai/suggest-from-ingredients", {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ selectedIngredients: Array.from(selectedNames) })
+                });
+                const data = await res.json();
+                if (data.suggestions) {
+                    document.getElementById("ai-used-ingreds").innerHTML = `<span class="text-xs font-bold text-primary">🧺 Nguyên liệu:</span> ${data.selectedIngredients.map(s => `<span class="px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(99,102,241,0.1);color:#6366f1">${getEmojiForIngredient(s)} ${s}</span>`).join("")}`;
+                    renderAISuggestions(data.suggestions);
+                }
+            } catch (err) { console.error(err); }
+            btn.disabled = false;
+        }
+
+        function renderFoods(foods) {
+            const grid = document.getElementById("foods-grid");
+            grid.innerHTML = (foods || []).map(food => `
+                <div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-md border border-outline-variant/10 group hover:shadow-xl transition-all">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${food.imageUrl || 'https://via.placeholder.com/400x300'}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-5">
+                        <h4 class="font-bold text-lg mb-2">${food.name}</h4>
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            ${food.ingredients.map(ing => `<span class="bg-surface-container-high px-2 py-0.5 rounded text-[10px]">${ing}</span>`).join("")}
+                        </div>
+                        <button onclick="window.location.href='/Home/CookMode?id=${food.id}'" class="w-full py-2 bg-primary text-on-primary rounded-xl text-sm font-bold transition-all hover:brightness-110 active:scale-95">Chi tiết</button>
+                    </div>
+                </div>`).join("");
+        }
+
+        function renderAISuggestions(suggestions) {
+            const grid = document.getElementById("ai-foods-grid");
+            grid.innerHTML = (suggestions || []).map((dish, idx) => {
+                const hasDbId = dish.db_id && dish.db_id !== "null" && dish.db_id !== "";
+                return `
+                <div class="ai-dish-card p-5 space-y-4 flex flex-col h-full">
+                    <div class="flex-1 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-xl font-black text-white">${dish.name}</h4>
+                            ${hasDbId ? '<span class="bg-primary text-[10px] text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">Hệ thống</span>' : ''}
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">${dish.description}</p>
+                        <div class="space-y-2">
+                            ${(dish.huong_dan_nau || []).slice(0, 3).map((step, i) => `
+                                <div class="flex gap-2">
+                                    <div class="w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center text-[10px] text-white shrink-0">${i + 1}</div>
+                                    <p class="text-[11px] text-slate-300 line-clamp-1">${step}</p>
+                                </div>`).join("")}
+                        </div>
+                    </div>
+                    ${hasDbId ? `
+                        <button onclick="window.location.href='/Home/FoodDetail?id=${dish.db_id}'" 
+                                class="w-full py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
+                            Xem chi tiết hệ thống
+                        </button>
+                    ` : ""}
+                </div>`;
+            }).join("");
+        }
+
+        function formatPrice(price) { return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price); }
+        function getEmojiForIngredient(name) {
+            const map = { 
+                "Thịt bò": "🥩", "Thịt gà": "🍗", "Thịt heo": "🥓", "Tôm": "🍤", "Trứng": "🥚",  "Mực": "🦑", "Cá": "🐟", "Đậu phụ": "⬛",
+                "Cơm": "🍚", "Bún": "🍜", "Phở": "🥣", "Mì tôm": "🍝", "Mì Ý": "🍝", "Bánh mì": "🥖", "Miến": "🍜",
+                "Cà chua": "🍅", "Dưa leo": "🥒", "Cà rốt": "🥕", "Khoai tây": "🥔", "Khoai lang": "🍠",
+                "Xà lách": "🥬", "Nấm": "🍄", "Giá đỗ": "🌱", "Rau dền": "🫜", "Đậu Hà Lan": "🫛",
+                "Xúp lơ xanh": "🥦", "Ớt chuông": "🫑", "Bí đỏ": "🎃", "Bí ngòi": "🫑", "Bắp": "🌽",
+                "Rau cải": "🥬", "Hành tây": "🧅", "Hành lá": "🌿", "Ớt": "🌶️", "Tỏi": "🧄", "Gừng": "🫚",
+                "Hành tím": "🧅", "Sả": "🌾", "Lá chanh": "🍋", "Rau mùi (ngò)": "🌿", "Húng quế": "🪴"
+            };
+            return map[name] || "📦";
+        }
+    </script>
+}

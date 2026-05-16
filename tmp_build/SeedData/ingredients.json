@@ -1,0 +1,353 @@
+[
+  {
+    "name": "Thịt bò",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 45000,
+      "bachhoaxanh": 43000
+    },
+    "unit": "khay 200g"
+  },
+  {
+    "name": "Thịt gà",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 35000,
+      "bachhoaxanh": 34000
+    },
+    "unit": "khay 200g"
+  },
+  {
+    "name": "Thịt heo",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 30000,
+      "bachhoaxanh": 29000
+    },
+    "unit": "khay 200g"
+  },
+  {
+    "name": "Tôm",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 55000,
+      "bachhoaxanh": 52000
+    },
+    "unit": "khay 200g"
+  },
+  {
+    "name": "Trứng",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 5000,
+      "bachhoaxanh": 4500
+    },
+    "unit": "quả"
+  },
+  {
+    "name": "Đậu phụ",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 10000,
+      "bachhoaxanh": 9000
+    },
+    "unit": "miếng"
+  },
+  {
+    "name": "Mực",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 65000,
+      "bachhoaxanh": 60000
+    },
+    "unit": "con/khay"
+  },
+  {
+    "name": "Cá",
+    "category": "Proteins",
+    "basePrice": {
+      "coopmart": 120000,
+      "bachhoaxanh": 115000
+    },
+    "unit": "con/khay"
+  },
+  {
+    "name": "Rau cải",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 8000,
+      "bachhoaxanh": 7500
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Xà lách",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 7000,
+      "bachhoaxanh": 6500
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Cà chua",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 6000,
+      "bachhoaxanh": 5500
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Nấm",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 15000,
+      "bachhoaxanh": 14000
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Cà rốt",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 5000,
+      "bachhoaxanh": 4800
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Giá đỗ",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 3000,
+      "bachhoaxanh": 2800
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Dưa leo",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 4000,
+      "bachhoaxanh": 3500
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Khoai tây",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 9000,
+      "bachhoaxanh": 8500
+    },
+    "unit": "củ/trái"
+  },
+  {
+    "name": "Khoai lang",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 10000,
+      "bachhoaxanh": 9500
+    },
+    "unit": "củ/trái"
+  },
+  {
+    "name": "Rau dền",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 5000,
+      "bachhoaxanh": 4500
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Xúp lơ xanh",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 15000,
+      "bachhoaxanh": 14000
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Ớt chuông",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 12000,
+      "bachhoaxanh": 11000
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Bí đỏ",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 10000,
+      "bachhoaxanh": 9000
+    },
+    "unit": "củ/trái"
+  },
+  {
+    "name": "Bắp",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 5000,
+      "bachhoaxanh": 4500
+    },
+    "unit": "củ/trái"
+  },
+  {
+    "name": "Hành tây",
+    "category": "Vegetables",
+    "basePrice": {
+      "coopmart": 7000,
+      "bachhoaxanh": 6500
+    },
+    "unit": "bó 500g"
+  },
+  {
+    "name": "Cơm",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 10000,
+      "bachhoaxanh": 9000
+    },
+    "unit": "phần"
+  },
+  {
+    "name": "Bún",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 8000,
+      "bachhoaxanh": 7000
+    },
+    "unit": "phần"
+  },
+  {
+    "name": "Phở",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 12000,
+      "bachhoaxanh": 11000
+    },
+    "unit": "phần"
+  },
+  {
+    "name": "Mì tôm",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 5000,
+      "bachhoaxanh": 4500
+    },
+    "unit": "gói"
+  },
+  {
+    "name": "Mì Ý",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 15000,
+      "bachhoaxanh": 14000
+    },
+    "unit": "gói"
+  },
+  {
+    "name": "Bánh mì",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 5000,
+      "bachhoaxanh": 4500
+    },
+    "unit": "ổ"
+  },
+  {
+    "name": "Miến",
+    "category": "Carbs",
+    "basePrice": {
+      "coopmart": 10000,
+      "bachhoaxanh": 9000
+    },
+    "unit": "phần"
+  },
+  {
+    "name": "Hành lá",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 2000,
+      "bachhoaxanh": 1800
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Ớt",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 1000,
+      "bachhoaxanh": 800
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Tỏi",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 2000,
+      "bachhoaxanh": 1500
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Gừng",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 3000,
+      "bachhoaxanh": 2500
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Hành tím",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 4000,
+      "bachhoaxanh": 3500
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Sả",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 2000,
+      "bachhoaxanh": 1800
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Lá chanh",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 1000,
+      "bachhoaxanh": 800
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Rau mùi (ngò)",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 3000,
+      "bachhoaxanh": 2500
+    },
+    "unit": "gói/bó nhỏ"
+  },
+  {
+    "name": "Húng quế",
+    "category": "Spices",
+    "basePrice": {
+      "coopmart": 3000,
+      "bachhoaxanh": 2500
+    },
+    "unit": "gói/bó nhỏ"
+  }
+]

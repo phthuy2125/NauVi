@@ -1,0 +1,591 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+
+<html class="light" lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#b2e4ff",
+                        "secondary-container": "#ffc78e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#693d00",
+                        "on-error-container": "#570008",
+                        "on-secondary": "#fff0e5",
+                        "primary-dim": "#00576a",
+                        "on-background": "#003345",
+                        "error-container": "#fb5151",
+                        "on-tertiary": "#ffefef",
+                        "surface-tint": "#006479",
+                        "secondary-fixed": "#ffc78e",
+                        "on-surface": "#003345",
+                        "on-primary-fixed": "#002a34",
+                        "error-dim": "#9f0519",
+                        "tertiary": "#b60d3d",
+                        "tertiary-fixed": "#ff909c",
+                        "secondary-fixed-dim": "#ffb462",
+                        "surface": "#eef8ff",
+                        "outline": "#4f7d93",
+                        "on-tertiary-container": "#68001e",
+                        "surface-bright": "#eef8ff",
+                        "tertiary-fixed-dim": "#ff7989",
+                        "primary-fixed-dim": "#28c0e4",
+                        "surface-container-low": "#e1f3ff",
+                        "secondary": "#854f00",
+                        "on-tertiary-fixed": "#39000c",
+                        "secondary-dim": "#744400",
+                        "inverse-surface": "#001018",
+                        "on-error": "#ffefee",
+                        "on-primary-container": "#00414f",
+                        "primary": "#006479",
+                        "tertiary-dim": "#a20033",
+                        "surface-container-high": "#c0e8ff",
+                        "tertiary-container": "#ff909c",
+                        "surface-container": "#cdedff",
+                        "background": "#eef8ff",
+                        "primary-fixed": "#40cef3",
+                        "on-primary-fixed-variant": "#004a5a",
+                        "outline-variant": "#86b3cc",
+                        "error": "#b31b25",
+                        "on-tertiary-fixed-variant": "#780024",
+                        "surface-dim": "#9bddff",
+                        "primary-container": "#40cef3",
+                        "on-secondary-fixed-variant": "#764500",
+                        "inverse-primary": "#40cef3",
+                        "on-surface-variant": "#326177",
+                        "surface-variant": "#b2e4ff",
+                        "on-secondary-fixed": "#4e2c00",
+                        "on-primary": "#e0f6ff",
+                        "inverse-on-surface": "#76a3bb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .emoji-pattern-bg {
+            background-image: radial-gradient(#86b3cc 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.1;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #fb5151;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #00c853;
+        }
+    </style>
+</head>
+
+<body class="bg-surface min-h-screen flex overflow-hidden">
+    <!-- Emoji Pattern Background Overlay -->
+    <div class="fixed inset-0 emoji-pattern-bg pointer-events-none"></div>
+    <!-- SideNavBar (đồng bộ với các trang Home) -->
+    <aside
+        class="fixed left-0 top-0 h-full flex flex-col p-6 h-screen w-64 border-r-0 bg-sky-50/70 dark:bg-sky-950/70 backdrop-blur-xl z-50">
+        <div class="mb-10 px-4">
+            <h1 class="text-2xl font-black text-sky-900 dark:text-sky-100 tracking-tighter">FoodWise</h1>
+            <p class="text-[10px] uppercase tracking-widest text-primary font-bold mt-1">Gợi ý món ăn theo sở thích của
+                bạn</p>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a class="flex items-center gap-3 text-sky-600 dark:text-sky-400 px-4 py-3 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors rounded-full active:scale-95 duration-150"
+                href="/Home/Index">
+                <span class="material-symbols-outlined">home</span>
+                <span class="font-medium text-sm">Trang chủ</span>
+            </a>
+            <a class="flex items-center gap-3 text-sky-600 dark:text-sky-400 px-4 py-3 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors rounded-full transition-all active:scale-95 duration-150"
+                href="/Home/ListFood">
+                <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Tất cả món ăn</span>
+            </a>
+            <a class="flex items-center gap-3 text-sky-600 dark:text-sky-400 px-4 py-3 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors rounded-full active:scale-95 duration-150"
+                href="/Home/TasteProfile">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="font-medium text-sm">Khẩu vị cá nhân</span>
+            </a>
+            <a class="flex items-center gap-3 text-sky-600 dark:text-sky-400 px-4 py-3 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors rounded-full active:scale-95 duration-150"
+                href="/Home/Favorites">
+                <span class="material-symbols-outlined">favorite</span>
+                <span class="font-medium text-sm">Yêu thích</span>
+            </a>
+            <a class="flex items-center gap-3 text-sky-600 dark:text-sky-400 px-4 py-3 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors rounded-full active:scale-95 duration-150"
+                href="/Home/History">
+                <span class="material-symbols-outlined">history</span>
+                <span class="font-medium text-sm">Lịch sử</span>
+            </a>
+            <a class="flex items-center gap-3 text-sky-600 dark:text-sky-400 px-4 py-3 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors rounded-full transition-all active:scale-95 duration-150"
+                href="/Home/IngredSuggestion">
+                <span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
+                <span class="font-plus-jakarta-sans font-medium text-sm">Gợi ý nguyên liệu</span>
+            </a>
+        </nav>
+        <div class="mt-auto">
+            <div class="mt-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-surface-container-low">
+                <img alt="Avatar" class="w-10 h-10 rounded-full object-cover"
+                    id="sidebar-avatar"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc-oaHadaAgXfNPAU1uKHh-1ERTSvsO2mPHDZFxAKBhuFtWTQA1_pDt9GpeQytfJFS1n9FukXgO7UCpPsZepxyUdHyBwRQDFoa-hsWDOpGUcF7i_XMx9fHJlRTcS3ZzDJb_os1eK9_Q1UHzeFzleVKBQx4vK3aEbN0HF4BggWE-6vHezu63aoofKQ19Y7azRVQd8CxA7fYx5BZNpUvBS-m4DkVfP3hGZw69X0lz11527IODR5Z85fYBQWlemMD8_mmZk7jjc_uqA" />
+                <div>
+                    <p class="text-xs font-bold" id="sidebar-username">Đang tải...</p>
+                    <p class="text-[10px] text-outline">Chuyên gia hương vị</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- Main Content Canvas -->
+    <main class="flex-1 h-screen overflow-y-auto relative z-10 px-4 md:px-12 py-8">
+        <!-- Header Section -->
+        <header class="max-w-4xl mx-auto mb-12">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface tracking-tight mb-2">Chỉnh sửa tài khoản</h2>
+            <p class="text-on-surface-variant body-lg">Cập nhật thông tin cá nhân và tinh chỉnh khẩu vị ẩm thực của bạn
+                để nhận đề xuất tốt nhất.</p>
+        </header>
+        <!-- Form Bento Layout -->
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 mb-24">
+            <!-- Section 1: Tài khoản & Bảo mật -->
+            <section class="md:col-span-12 lg:col-span-5 flex flex-col gap-6">
+                <div
+                    class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_32px_rgba(0,51,69,0.04)] backdrop-blur-xl bg-white/70">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="p-3 bg-primary-container/30 text-primary rounded-full">
+                            <span class="material-symbols-outlined">lock_person</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-on-surface">Tài khoản &amp; Bảo mật</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-on-surface-variant ml-4">Tên đăng
+                                nhập</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">person</span>
+                                <input id="edit-username"
+                                    class="w-full pl-12 pr-4 py-3 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary-fixed-dim/30 transition-all text-on-surface font-medium"
+                                    type="text" value="" disabled />
+                            </div>
+                        </div>
+                        
+                        <!-- Password section - show only for non-Google users -->
+                        <div id="password-section" style="display: none;">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-on-surface-variant ml-4">Mật khẩu hiện
+                                    tại</label>
+                                <div class="relative group">
+                                    <span
+                                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">lock_open</span>
+                                    <input id="current-password"
+                                        class="w-full pl-12 pr-12 py-3 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary-fixed-dim/30 transition-all text-on-surface"
+                                        placeholder="Nhập mật khẩu hiện tại..." type="password" />
+                                    <button type="button" onclick="togglePassword('current-password', this)"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined">visibility_off</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-on-surface-variant ml-4">Mật khẩu mới</label>
+                                <div class="relative group">
+                                    <span
+                                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">lock</span>
+                                    <input id="edit-password"
+                                        class="w-full pl-12 pr-12 py-3 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary-fixed-dim/30 transition-all text-on-surface"
+                                        placeholder="••••••••••••" type="password" />
+                                    <button type="button" onclick="togglePassword('edit-password', this)"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined">visibility_off</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Google login info -->
+                        <div id="google-info-section" style="display: none;" class="p-4 bg-primary-container/20 rounded-lg border-l-4 border-primary">
+                            <p class="text-xs text-on-primary-container leading-relaxed">
+                                <span class="font-bold">ℹ️ Tài khoản Google:</span> Bạn đang sử dụng đăng nhập Google. Để đặt mật khẩu mới, vui lòng nhập mật khẩu bạn muốn sử dụng.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-secondary-container/20 rounded-lg border-l-4 border-secondary">
+                            <p class="text-xs text-on-secondary-fixed leading-relaxed">
+                                <span class="font-bold">Mẹo:</span> Sử dụng mật khẩu có ít nhất 8 ký tự bao gồm chữ cái
+                                và chữ số để tăng tính bảo mật.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Section 2: Ảnh đại diện -->
+            <section class="md:col-span-12 lg:col-span-7 flex flex-col gap-6">
+                <div
+                    class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_32px_rgba(0,51,69,0.04)] backdrop-blur-xl bg-white/70 h-full flex flex-col justify-center items-center relative overflow-hidden group">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-tertiary-container/30 pointer-events-none">
+                    </div>
+                    <div class="z-10 flex flex-col items-center w-full">
+                        <div class="flex items-center gap-3 mb-6 mr-auto">
+                            <div class="p-3 bg-tertiary-container/30 text-tertiary rounded-full">
+                                <span class="material-symbols-outlined">account_circle</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-on-surface">Ảnh đại diện</h3>
+                        </div>
+
+                        <div class="relative group cursor-pointer mb-6"
+                            onclick="document.getElementById('avatar-upload').click()">
+                            <img id="avatar-preview"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc-oaHadaAgXfNPAU1uKHh-1ERTSvsO2mPHDZFxAKBhuFtWTQA1_pDt9GpeQytfJFS1n9FukXgO7UCpPsZepxyUdHyBwRQDFoa-hsWDOpGUcF7i_XMx9fHJlRTcS3ZzDJb_os1eK9_Q1UHzeFzleVKBQx4vK3aEbN0HF4BggWE-6vHezu63aoofKQ19Y7azRVQd8CxA7fYx5BZNpUvBS-m4DkVfP3hGZw69X0lz11527IODR5Z85fYBQWlemMD8_mmZk7jjc_uqA"
+                                alt="Avatar preview"
+                                class="w-48 h-48 rounded-full object-cover shadow-2xl border-4 border-white transition-transform duration-500 group-hover:scale-105 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
+                            <div
+                                class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <span class="material-symbols-outlined text-white text-4xl">photo_camera</span>
+                            </div>
+                        </div>
+
+                        <input type="file" id="avatar-upload" class="hidden" accept="image/*"
+                            onchange="previewAvatar(event)">
+
+                        <div class="text-center mb-6">
+                            <h4 class="text-lg font-bold text-on-surface mb-1">Cập nhật diện mạo</h4>
+                            <p class="text-sm text-outline font-medium">Định dạng JPEG, PNG. Kích thước tối đa 5MB.</p>
+                        </div>
+
+                        <button type="button" onclick="document.getElementById('avatar-upload').click()"
+                            class="px-8 py-3 rounded-full bg-tertiary-container text-on-tertiary-container font-bold hover:bg-tertiary hover:text-on-tertiary transition-all active:scale-95 flex items-center gap-2 shadow-md hover:shadow-lg">
+                            <span class="material-symbols-outlined text-sm">cloud_upload</span>
+                            Tải ảnh lên
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Sticky Bottom Actions -->
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-6 pb-12 sticky bottom-0 z-30 pt-6">
+            <button onclick="window.history.back()"
+                class="flex items-center gap-2 px-8 py-4 rounded-full bg-surface-container-highest/80 backdrop-blur-md text-on-surface font-bold hover:bg-surface-container-highest transition-all active:scale-95">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Quay lại
+            </button>
+            <button onclick="saveProfile()"
+                class="flex-1 md:flex-none flex items-center justify-center gap-2 px-12 py-4 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-extrabold shadow-[0_12px_24px_rgba(0,100,121,0.25)] hover:shadow-[0_16px_32px_rgba(0,100,121,0.35)] transition-all active:scale-95">
+                Lưu thay đổi
+                <span class="material-symbols-outlined">save</span>
+            </button>
+        </div>
+    </main>
+    <!-- Mobile Bottom NavBar (Visible only on small screens) -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 right-0 bg-sky-50/70 backdrop-blur-xl px-6 py-4 flex justify-between items-center z-50">
+        <div class="flex flex-col items-center gap-1 text-sky-600">
+            <span class="material-symbols-outlined">explore</span>
+            <span class="text-[10px]">Khám phá</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-sky-600">
+            <span class="material-symbols-outlined">favorite</span>
+            <span class="text-[10px]">Yêu thích</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-sky-900 font-bold">
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-[10px]">Tài khoản</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-sky-600">
+            <span class="material-symbols-outlined">shield_lock</span>
+            <span class="text-[10px]">Bảo mật</span>
+        </div>
+    </nav>
+
+    <script>
+        // Global variable to store current user data
+        let currentUser = {
+            isGoogle: false,
+            userId: null,
+            username: null,
+            avatar: null
+        };
+        let selectedAvatarFile = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+        });
+
+        // Load user profile from API
+        async function loadUserProfile() {
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+
+            if (!userId || !token) {
+                showToast('Vui lòng đăng nhập lại!', 'error');
+                setTimeout(() => { window.location.href = '/Account/Login'; }, 1500);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/users/profile/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Không thể tải thông tin tài khoản');
+                }
+
+                const data = await response.json();
+
+                // Store user data
+                currentUser.userId = userId;
+                currentUser.username = data.username || username;
+                currentUser.avatar = data.avatar;
+
+                // Check if user is Google login
+                currentUser.isGoogle = data.googleId ? true : false;
+
+                // Update UI
+                document.getElementById('edit-username').value = currentUser.username;
+                document.getElementById('sidebar-username').textContent = currentUser.username;
+
+                if (currentUser.avatar) {
+                    document.getElementById('avatar-preview').src = currentUser.avatar;
+                    document.getElementById('sidebar-avatar').src = currentUser.avatar;
+                }
+
+                // Show/hide password section based on login type
+                if (currentUser.isGoogle) {
+                    document.getElementById('password-section').style.display = 'none';
+                    document.getElementById('google-info-section').style.display = 'block';
+                } else {
+                    document.getElementById('password-section').style.display = 'block';
+                    document.getElementById('google-info-section').style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showToast('Lỗi tải thông tin tài khoản: ' + error.message, 'error');
+            }
+        }
+
+        // Preview avatar before upload
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Kích thước ảnh không được vượt quá 5MB!', 'error');
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showToast('Vui lòng chọn file ảnh!', 'error');
+                return;
+            }
+
+            // Store file for later upload
+            selectedAvatarFile = file;
+
+            // Preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatar-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            showToast('Ảnh đã sẵn sàng. Nhấn "Lưu thay đổi" để cập nhật!', 'success');
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('.material-symbols-outlined');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        // Save all profile changes
+        async function saveProfile() {
+            const userId = currentUser.userId;
+            const token = localStorage.getItem('token');
+
+            if (!userId || !token) {
+                showToast('Vui lòng đăng nhập lại!', 'error');
+                return;
+            }
+
+            try {
+                // Upload avatar if selected
+                if (selectedAvatarFile) {
+                    await uploadAvatar(userId, token);
+                }
+
+                // Update password if provided
+                const newPassword = document.getElementById('edit-password').value;
+                if (newPassword) {
+                    await updatePassword(userId, token, newPassword);
+                }
+
+                // If nothing changed
+                if (!selectedAvatarFile && !newPassword) {
+                    showToast('Không có thay đổi nào để lưu!', 'error');
+                    return;
+                }
+
+                showToast('✓ Cập nhật tài khoản thành công!', 'success');
+                setTimeout(() => {
+                    // Reset form
+                    document.getElementById('edit-password').value = '';
+                    document.getElementById('current-password').value = '';
+                    selectedAvatarFile = null;
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showToast('Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Upload avatar
+        async function uploadAvatar(userId, token) {
+            const formData = new FormData();
+            formData.append('UserId', userId);
+            formData.append('Avatar', selectedAvatarFile);
+
+            const response = await fetch('/api/users/update-avatar', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Lỗi upload ảnh');
+            }
+
+            // Update avatar in sidebar
+            if (data.avatarUrl) {
+                document.getElementById('sidebar-avatar').src = data.avatarUrl;
+                currentUser.avatar = data.avatarUrl;
+            }
+
+            showToast('✓ Cập nhật ảnh đại diện thành công!', 'success');
+        }
+
+        // Update password
+        async function updatePassword(userId, token, newPassword) {
+            const currentPassword = document.getElementById('current-password').value;
+
+            // Validate
+            if (newPassword.length < 6) {
+                throw new Error('Mật khẩu phải có ít nhất 6 ký tự!');
+            }
+
+            // For non-Google users, current password is required
+            if (!currentUser.isGoogle && !currentPassword) {
+                throw new Error('Vui lòng nhập mật khẩu hiện tại!');
+            }
+
+            const response = await fetch('/api/users/update-password', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    UserId: userId,
+                    CurrentPassword: currentPassword || null,
+                    NewPassword: newPassword
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Lỗi đổi mật khẩu');
+            }
+
+            showToast('✓ Đổi mật khẩu thành công!', 'success');
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'success' : ''}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
