@@ -55,7 +55,7 @@ dotnet run
 dotnet run -- --seed-all
 dotnet run -- --seed-foods
 dotnet run -- --seed-ingredients
-dotnet run -- --seed-prices (Lấy giá thực từ Gemini Grounding)
+dotnet run -- --seed-prices (Lấy giá thực từ Microsoft Copilot)
 dotnet run -- --list-models
 ```
 
