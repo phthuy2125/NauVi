@@ -1,0 +1,375 @@
+@{
+    ViewData["Title"] = "Nhận diện món ăn qua hình ảnh";
+}
+
+<div class="pt-24 pb-16 px-4 md:px-8 max-w-6xl mx-auto font-body">
+    <!-- Header Hero -->
+    <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100 dark:bg-sky-900/60 text-sky-800 dark:text-sky-200 text-xs font-bold uppercase tracking-wider mb-3">
+            <span class="material-symbols-outlined text-sm">photo_camera</span>
+            AI Food Recognition
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black text-sky-950 dark:text-sky-50 tracking-tight">
+            Chụp hoặc Tải Ảnh Món Ăn
+        </h1>
+        <p class="text-slate-600 dark:text-slate-300 text-sm md:text-base max-w-2xl mx-auto mt-3">
+            Hệ thống AI sẽ phân tích hình ảnh và nhận diện top-3 món ăn gần đúng nhất, kết nối ngay đến công thức và ước tính giá nguyên liệu thực tế.
+        </p>
+    </div>
+
+    <!-- Main Grid: Upload Area & Results -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Upload & Preview (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-5">
+            <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-sky-100 dark:border-sky-800/50 rounded-3xl p-6 shadow-xl shadow-sky-950/5">
+                <h2 class="text-lg font-bold text-sky-950 dark:text-sky-100 mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-xl">upload_file</span>
+                    Tải ảnh món ăn
+                </h2>
+
+                <!-- Dropzone / Input wrapper -->
+                <div id="dropzone"
+                     onclick="document.getElementById('foodImageInput').click()"
+                     ondragover="handleDragOver(event)"
+                     ondragleave="handleDragLeave(event)"
+                     ondrop="handleDrop(event)"
+                     class="relative border-2 border-dashed border-sky-300 dark:border-sky-700 hover:border-primary transition-all duration-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer min-h-[260px] bg-sky-50/50 dark:bg-sky-950/30 group">
+                    
+                    <!-- Hidden File Input supporting Camera on Mobile -->
+                    <input type="file"
+                           id="foodImageInput"
+                           accept="image/jpeg,image/png,image/webp"
+                           capture="environment"
+                           class="hidden"
+                           onchange="handleImageSelected(event)" />
+
+                    <!-- Placeholder view -->
+                    <div id="placeholderView" class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-sky-100 dark:bg-sky-900/80 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">add_a_photo</span>
+                        </div>
+                        <p class="font-bold text-sky-900 dark:text-sky-100 text-sm mb-1">
+                            Nhấn để chọn ảnh hoặc chụp bằng camera
+                        </p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                            Hỗ trợ JPG, PNG, WEBP (tối đa 5MB)
+                        </p>
+                    </div>
+
+                    <!-- Image Preview View (hidden by default) -->
+                    <div id="previewContainer" class="hidden w-full relative">
+                        <img id="imagePreview" alt="Ảnh xem trước" class="w-full h-64 object-cover rounded-xl shadow-md border border-sky-100" />
+                        <button type="button"
+                                onclick="event.stopPropagation(); removeSelectedImage();"
+                                class="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 transition-all shadow-lg"
+                                title="Xóa ảnh">
+                            <span class="material-symbols-outlined text-sm">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="mt-5">
+                    <button id="btnPredict"
+                            disabled
+                            onclick="submitPrediction()"
+                            class="w-full py-3.5 px-6 rounded-2xl font-bold text-sm bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 text-white shadow-lg shadow-sky-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2">
+                        <span id="btnIcon" class="material-symbols-outlined text-lg">image_search</span>
+                        <span id="btnText">Nhận diện món ăn</span>
+                    </button>
+                </div>
+
+                <!-- Guidance Notes -->
+                <div class="mt-4 text-[12px] text-slate-500 dark:text-slate-400 flex items-start gap-2">
+                    <span class="material-symbols-outlined text-sm text-sky-600 shrink-0 mt-0.5">info</span>
+                    <span>Để có kết quả chuẩn xác nhất, hãy chụp cận cảnh đĩa/tô thức ăn với ánh sáng đầy đủ và góc nhìn trực diện.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Results Section (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-5">
+            <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-sky-100 dark:border-sky-800/50 rounded-3xl p-6 shadow-xl shadow-sky-950/5 min-h-[400px] flex flex-col">
+                
+                <div class="flex items-center justify-between border-b border-sky-100 dark:border-sky-800 pb-4 mb-4">
+                    <h2 class="text-lg font-bold text-sky-950 dark:text-sky-100 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-xl">auto_awesome</span>
+                        Kết quả dự đoán (Top 3)
+                    </h2>
+                    <span id="resultCountBadge" class="hidden text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300">
+                        3 món
+                    </span>
+                </div>
+
+                <!-- Uncertain Warning Alert Banner -->
+                <div id="uncertainAlert" class="hidden mb-4 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex items-start gap-3">
+                    <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-xl shrink-0 mt-0.5">warning</span>
+                    <div>
+                        <h3 class="text-sm font-bold text-amber-900 dark:text-amber-200">Độ tin cậy chưa cao</h3>
+                        <p class="text-xs text-amber-700 dark:text-amber-300 mt-0.5">
+                            Hệ thống chưa chắc chắn về ảnh món này (độ tin cậy dưới 50%). Bạn hãy thử chụp lại góc rõ hơn hoặc kiểm tra các món gợi ý bên dưới nhé!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Error Message Banner -->
+                <div id="errorAlert" class="hidden mb-4 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 flex items-start gap-3">
+                    <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-xl shrink-0 mt-0.5">error</span>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-bold text-red-900 dark:text-red-200">Không thể nhận diện</h3>
+                        <p id="errorMessage" class="text-xs text-red-700 dark:text-red-300 mt-0.5"></p>
+                    </div>
+                </div>
+
+                <!-- Empty State: Waiting for upload -->
+                <div id="emptyResultsState" class="flex-1 flex flex-col items-center justify-center text-center p-8 text-slate-400 dark:text-slate-500">
+                    <div class="w-16 h-16 rounded-full bg-sky-50 dark:bg-sky-950 flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-3xl text-sky-400">restaurant</span>
+                    </div>
+                    <p class="text-sm font-medium">Chưa có ảnh nào được gửi</p>
+                    <p class="text-xs text-slate-400 mt-1">Chọn hoặc chụp ảnh món ăn ở khung bên trái để xem gợi ý.</p>
+                </div>
+
+                <!-- Loading Spinner State -->
+                <div id="loadingState" class="hidden flex-1 flex flex-col items-center justify-center text-center p-10">
+                    <div class="w-12 h-12 border-4 border-sky-200 border-t-primary rounded-full animate-spin mb-4"></div>
+                    <p class="text-sm font-bold text-sky-900 dark:text-sky-100">AI đang phân tích món ăn...</p>
+                    <p class="text-xs text-slate-400 mt-1">Quá trình này mất khoảng 1 - 2 giây.</p>
+                </div>
+
+                <!-- Results List -->
+                <div id="resultsList" class="hidden space-y-4">
+                    <!-- Dynamic Top-3 items injected via JS -->
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let currentSelectedFile = null;
+
+    function handleImageSelected(event) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        processFile(file);
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        document.getElementById('dropzone').classList.add('border-primary', 'bg-sky-100/50');
+    }
+
+    function handleDragLeave(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        document.getElementById('dropzone').classList.remove('border-primary', 'bg-sky-100/50');
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        document.getElementById('dropzone').classList.remove('border-primary', 'bg-sky-100/50');
+        const file = event.dataTransfer?.files?.[0];
+        if (file) {
+            processFile(file);
+        }
+    }
+
+    function processFile(file) {
+        // Validate MIME type
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!file.type.startsWith('image/') && !validTypes.includes(file.type)) {
+            showError("Vui lòng chỉ chọn tập tin hình ảnh (JPG, PNG hoặc WEBP).");
+            return;
+        }
+
+        // Validate max 5MB
+        const maxBytes = 5 * 1024 * 1024;
+        if (file.size > maxBytes) {
+            showError("Dung lượng ảnh vượt quá giới hạn 5MB. Vui lòng chọn ảnh nhỏ hơn.");
+            return;
+        }
+
+        currentSelectedFile = file;
+
+        // Preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('placeholderView').classList.add('hidden');
+            document.getElementById('previewContainer').classList.remove('hidden');
+            document.getElementById('btnPredict').disabled = false;
+            hideError();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeSelectedImage() {
+        currentSelectedFile = null;
+        document.getElementById('foodImageInput').value = '';
+        document.getElementById('imagePreview').src = '';
+        document.getElementById('previewContainer').classList.add('hidden');
+        document.getElementById('placeholderView').classList.remove('hidden');
+        document.getElementById('btnPredict').disabled = true;
+        resetResults();
+    }
+
+    function resetResults() {
+        document.getElementById('emptyResultsState').classList.remove('hidden');
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('resultsList').classList.add('hidden');
+        document.getElementById('uncertainAlert').classList.add('hidden');
+        document.getElementById('errorAlert').classList.add('hidden');
+        document.getElementById('resultCountBadge').classList.add('hidden');
+    }
+
+    function showError(msg) {
+        document.getElementById('errorMessage').innerText = msg;
+        document.getElementById('errorAlert').classList.remove('hidden');
+    }
+
+    function hideError() {
+        document.getElementById('errorAlert').classList.add('hidden');
+    }
+
+    async function submitPrediction() {
+        if (!currentSelectedFile) return;
+
+        // UI Loading State
+        resetResults();
+        document.getElementById('emptyResultsState').classList.add('hidden');
+        document.getElementById('loadingState').classList.remove('hidden');
+        
+        const btn = document.getElementById('btnPredict');
+        btn.disabled = true;
+        document.getElementById('btnText').innerText = "Đang nhận diện...";
+        document.getElementById('btnIcon').innerText = "hourglass_top";
+
+        const formData = new FormData();
+        formData.append("image", currentSelectedFile);
+
+        const token = localStorage.getItem("token");
+        const headers = {};
+        if (token) {
+            headers["Authorization"] = "Bearer " + token;
+        }
+
+        try {
+            const response = await fetch('/api/foods/predict-image', {
+                method: 'POST',
+                headers: headers,
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const message = data.message || `Lỗi từ máy chủ (${response.status})`;
+                showError(message);
+                document.getElementById('emptyResultsState').classList.remove('hidden');
+                return;
+            }
+
+            // Render Results
+            renderResults(data);
+
+        } catch (err) {
+            showError("Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.");
+            document.getElementById('emptyResultsState').classList.remove('hidden');
+        } finally {
+            document.getElementById('loadingState').classList.add('hidden');
+            btn.disabled = false;
+            document.getElementById('btnText').innerText = "Nhận diện món ăn";
+            document.getElementById('btnIcon').innerText = "image_search";
+        }
+    }
+
+    function renderResults(data) {
+        const listContainer = document.getElementById('resultsList');
+        listContainer.innerHTML = '';
+
+        if (data.uncertain) {
+            document.getElementById('uncertainAlert').classList.remove('hidden');
+        } else {
+            document.getElementById('uncertainAlert').classList.add('hidden');
+        }
+
+        if (!data.top3 || data.top3.length === 0) {
+            showError("Không tìm thấy kết quả phù hợp cho bức ảnh này.");
+            document.getElementById('emptyResultsState').classList.remove('hidden');
+            return;
+        }
+
+        document.getElementById('resultCountBadge').classList.remove('hidden');
+
+        data.top3.forEach((item, index) => {
+            const confidencePercent = Math.round(item.confidence * 100);
+            const rankLabel = `#${index + 1}`;
+            
+            // Badge color based on rank
+            let rankBg = "bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200";
+            if (index === 0) rankBg = "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200";
+
+            const card = document.createElement('div');
+            card.className = "p-5 rounded-2xl border transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 " +
+                (item.foodId ? "bg-white dark:bg-slate-800/80 border-sky-100 dark:border-sky-800 hover:shadow-lg hover:border-sky-300" 
+                             : "bg-slate-50/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800");
+
+            const hasRecipe = !!item.foodId;
+
+            card.innerHTML = `
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-black ${rankBg}">
+                            ${rankLabel}
+                        </span>
+                        <h3 class="text-lg font-bold text-sky-950 dark:text-sky-50">
+                            ${escapeHtml(item.name)}
+                        </h3>
+                    </div>
+
+                    <!-- Confidence bar -->
+                    <div class="flex items-center gap-3 mt-2 max-w-xs">
+                        <div class="flex-1 bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full rounded-full transition-all duration-500" style="width: ${confidencePercent}%"></div>
+                        </div>
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">
+                            ${confidencePercent}%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    ${hasRecipe ? `
+                        <a href="/Home/FoodDetail?id=${item.foodId}"
+                           class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-primary hover:bg-sky-700 text-white shadow-md shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 no-underline">
+                            <span>Xem công thức</span>
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    ` : `
+                        <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-700/50">
+                            <span class="material-symbols-outlined text-xs">restaurant_menu</span>
+                            Chưa có trong thực đơn
+                        </span>
+                    `}
+                </div>
+            `;
+
+            listContainer.appendChild(card);
+        });
+
+        listContainer.classList.remove('hidden');
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+</script>
+}

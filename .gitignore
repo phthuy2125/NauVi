@@ -480,3 +480,12 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Python virtual environment & cache
+venv/
+.venv/
+ai_service/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/

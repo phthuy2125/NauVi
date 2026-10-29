@@ -19,17 +19,23 @@ public sealed class FoodsController : ControllerBase
     private readonly JwtService _jwtService;
     private readonly GeminiService _geminiService;
     private readonly IWebHostEnvironment _environment;
+    private readonly IFoodImagePredictionService _predictionService;
+    private readonly IConfiguration _configuration;
 
     public FoodsController(
         MongoDbContext dbContext,
         JwtService jwtService,
         GeminiService geminiService,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IFoodImagePredictionService predictionService,
+        IConfiguration configuration)
     {
         _dbContext = dbContext;
         _jwtService = jwtService;
         _geminiService = geminiService;
         _environment = environment;
+        _predictionService = predictionService;
+        _configuration = configuration;
     }
     [Authorize]
     [HttpGet("recommend")]
@@ -713,9 +719,8 @@ KHÔNG giải thích thêm, chỉ trả về mảng JSON.
             : "foodwise-scraper-key";
 
         // Đọc key từ config thông qua HttpContext
-        var configKey = HttpContext.RequestServices
-            .GetService<IConfiguration>()
-            ?["FoodWise:ScraperApiKey"] ?? "foodwise-scraper-key";
+            var cfg = HttpContext.RequestServices.GetService<IConfiguration>();
+            var configKey = cfg?["NauVi:ScraperApiKey"] ?? cfg?["FoodWise:ScraperApiKey"] ?? "nauvi-scraper-key";
 
         if (string.IsNullOrWhiteSpace(scraperKey) || scraperKey != configKey)
         {
@@ -837,6 +842,127 @@ KHÔNG giải thích thêm, chỉ trả về mảng JSON.
         {
             return StatusCode(500, new { error = ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Nhận diện món ăn từ hình ảnh tải lên và gợi ý top-3 món ăn kèm độ tin cậy.
+    /// </summary>
+    [HttpPost("predict-image")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> PredictImage(IFormFile? image)
+    {
+        // 1. Kiểm tra file không rỗng
+        if (image == null || image.Length == 0)
+        {
+            return BadRequest(new { message = "Vui lòng chọn ảnh món ăn để nhận diện." });
+        }
+
+        // 2. Kiểm tra kích thước tối đa 5MB
+        const long maxSizeBytes = 5 * 1024 * 1024;
+        if (image.Length > maxSizeBytes)
+        {
+            return BadRequest(new { message = "Kích thước ảnh tối đa là 5MB. Vui lòng chọn ảnh có dung lượng nhỏ hơn." });
+        }
+
+        // 3. Kiểm tra ContentType bắt đầu bằng "image/"
+        if (string.IsNullOrWhiteSpace(image.ContentType) || !image.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new { message = "Tập tin tải lên phải là hình ảnh (ContentType image/*)." });
+        }
+
+        // 4. Kiểm tra định dạng đuôi file: jpg, jpeg, png, webp
+        var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+        if (!allowedExtensions.Contains(extension))
+        {
+            return BadRequest(new { message = "Hệ thống chỉ hỗ trợ định dạng ảnh JPG, JPEG, PNG hoặc WEBP." });
+        }
+
+        // 5. Gọi dịch vụ Python AI
+        PythonPredictResponse aiResult;
+        try
+        {
+            using var stream = image.OpenReadStream();
+            aiResult = await _predictionService.PredictAsync(
+                stream,
+                image.FileName,
+                image.ContentType,
+                HttpContext.RequestAborted);
+        }
+        catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
+        {
+            return StatusCode(503, new
+            {
+                message = "Dịch vụ AI nhận diện ảnh hiện đang không khả dụng hoặc phản hồi quá thời gian cho phép. Vui lòng kiểm tra dịch vụ AI hoặc thử lại sau."
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = $"Đã xảy ra lỗi trong quá trình xử lý ảnh: {ex.Message}"
+            });
+        }
+
+        // 6. Ánh xạ nhãn trả về sang món trong collection foods (không phân biệt hoa thường và dấu)
+        var allFoods = await _dbContext.Foods.Find(Builders<Food>.Filter.Empty).ToListAsync();
+        var top3Results = new List<object>();
+        var top3LogItems = new List<PredictionFoodItem>();
+
+        foreach (var item in aiResult.Top3.Take(3))
+        {
+            var matchedFood = VietnameseTextNormalizer.FindMatchingFood(item.Label, allFoods);
+            var foodId = matchedFood?.Id;
+            var displayName = matchedFood != null ? matchedFood.Name : item.Label;
+
+            top3Results.Add(new
+            {
+                name = displayName,
+                confidence = Math.Round(item.Confidence, 4),
+                foodId = foodId
+            });
+
+            top3LogItems.Add(new PredictionFoodItem
+            {
+                Name = displayName,
+                Confidence = Math.Round(item.Confidence, 4),
+                FoodId = foodId
+            });
+        }
+
+        // 7. Kiểm tra ngưỡng tin cậy (uncertain)
+        var uncertainThreshold = _configuration.GetValue<double>("AiImageService:UncertainThreshold", 0.5);
+        var top1Confidence = aiResult.Top3.FirstOrDefault()?.Confidence ?? 0.0;
+        var isUncertain = top1Confidence < uncertainThreshold;
+
+        // 8. Ghi log mỗi lần dự đoán vào collection prediction_logs
+        try
+        {
+            var userId = _jwtService.GetUserId(User);
+            var log = new PredictionLog
+            {
+                UserId = userId,
+                FileName = image.FileName,
+                ImageUrl = null, // Không lưu ảnh nếu chưa cần
+                Top3 = top3LogItems,
+                Confidence = Math.Round(top1Confidence, 4),
+                ModelVersion = aiResult.ModelVersion,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _dbContext.PredictionLogs.InsertOneAsync(log);
+        }
+        catch
+        {
+            // Không làm gián đoạn response nếu ghi log thất bại
+        }
+
+        // 9. Trả kết quả response theo yêu cầu
+        return Ok(new
+        {
+            top3 = top3Results,
+            uncertain = isUncertain
+        });
     }
 }
 

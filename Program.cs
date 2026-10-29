@@ -19,6 +19,7 @@ builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<GoogleAuthService>();
 builder.Services.AddHttpClient<GeminiService>();
 builder.Services.AddHttpClient<CopilotService>();
+builder.Services.AddHttpClient<IFoodImagePredictionService, FoodImagePredictionService>();
 
 builder.Services.AddSingleton<DatabaseSeeder>();
 
@@ -76,7 +77,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapControllers();
 
-if (builder.Configuration.GetValue<bool>("FoodWise:SeedOnStartup"))
+if (builder.Configuration.GetValue<bool>("NauVi:SeedOnStartup")
+    || builder.Configuration.GetValue<bool>("FoodWise:SeedOnStartup"))
 {
     using var startupScope = app.Services.CreateScope();
     var startupSeeder = startupScope.ServiceProvider.GetRequiredService<DatabaseSeeder>();

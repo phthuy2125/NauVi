@@ -1,4 +1,4 @@
-# FoodWise AI - bản chuyển sang C#
+# NauVi AI - Hệ thống gợi ý món ăn theo giá thực tế (C# & ASP.NET Core)
 
 Mình đã chuyển phần **backend Node.js/Express/MongoDB** trong file ZIP sang **ASP.NET Core Web API + MongoDB Driver**.
 
@@ -33,6 +33,7 @@ Mình đã chuyển phần **backend Node.js/Express/MongoDB** trong file ZIP sa
 - `POST /api/foods/ai-match`
 - `GET /api/foods/ingredients`
 - `POST /api/foods/suggest-by-ingredients`
+- `POST /api/foods/predict-image` (Mới: Nhận diện món ăn từ hình ảnh qua AI)
 
 ### AI
 - `POST /api/ai/chat`
@@ -44,9 +45,32 @@ Mình đã chuyển phần **backend Node.js/Express/MongoDB** trong file ZIP sa
 
 ## Cách chạy
 
+### 1. Dịch vụ Python AI (Nhận diện món ăn):
+```bash
+cd ai_service
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --host 127.0.0.1 --port 8001 --reload
+```
+
+### 2. Backend ASP.NET Core:
 ```bash
 dotnet restore
 dotnet run
+```
+
+## Kiểm thử tự động (Testing)
+
+- **Backend xUnit:**
+```bash
+dotnet test
+```
+
+- **Python AI Pytest:**
+```bash
+cd ai_service
+pytest
 ```
 
 ## Lệnh tiện ích tương đương file JS cũ
@@ -55,7 +79,7 @@ dotnet run
 dotnet run -- --seed-all
 dotnet run -- --seed-foods
 dotnet run -- --seed-ingredients
-dotnet run -- --seed-prices (Lấy giá thực từ Microsoft Copilot)
+dotnet run -- --seed-copilot (Lấy giá thực từ Microsoft Copilot)
 dotnet run -- --list-models
 ```
 

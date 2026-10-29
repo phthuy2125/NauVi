@@ -10,6 +10,7 @@ namespace FoodWiseAi.Api.Controllers
         public IActionResult Favorites() => View();
         public IActionResult History() => View();
         public IActionResult IngredSuggestion() => View();
+        public IActionResult FoodRecognition() => View();
         public IActionResult FoodDetail(string id)
         {
             ViewBag.FoodId = id;
