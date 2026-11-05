@@ -11,7 +11,6 @@ Tên đề tài (Eng):Developing NauVi - A Food Discovery and Sharing Platform R
 |---|---|---|---|---|---|
 | **Top-3 accuracy** của mô hình nhận diện món ăn | Chạy mô hình trên tập ảnh kiểm thử đã gán nhãn; tính tỉ lệ ảnh có nhãn đúng nằm trong 3 dự đoán có xác suất cao nhất | Chưa đo (baseline: mô hình cơ sở) | --- | W1 - W2 và W8 | Bảng kết quả đánh giá trên tập kiểm thử, confusion matrix, nhật ký chạy mô hình |
 | **Thời gian tìm thông tin và công thức từ ảnh món ăn** | Bấm giờ từ lúc bắt đầu tìm đến khi tìm được công thức phù hợp | ~35 giấy | Giảm dự kiến ít nhất 30% so với trước | W1 - W2 và W8 | Bảng ghi kết quả thử nghiệm |
-
 ---
 
 ## 🚀 Hướng dẫn cài đặt và chạy dự án
@@ -77,6 +76,7 @@ dotnet run
 Ứng dụng sẽ khởi động tại: **http://localhost:5062**
 
 ---
+<<<<<<< HEAD
 
 ## 📁 Cấu trúc dự án
 
@@ -105,3 +105,5 @@ NauVi/
 - 🔐 **Đăng nhập Google** — xác thực OAuth2 qua Google
 
 
+=======
+>>>>>>> origin/main
