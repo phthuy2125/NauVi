@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -31,9 +32,13 @@ public interface IFoodImagePredictionService
         CancellationToken cancellationToken = default);
 }
 
+/// <summary>
+/// Dịch vụ kết nối đến AI Service Python (FastAPI) qua HTTP Client.
+/// </summary>
 public sealed class FoodImagePredictionService : IFoodImagePredictionService
 {
     private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
     private readonly ILogger<FoodImagePredictionService> _logger;
 
     public FoodImagePredictionService(
@@ -42,14 +47,8 @@ public sealed class FoodImagePredictionService : IFoodImagePredictionService
         ILogger<FoodImagePredictionService> logger)
     {
         _httpClient = httpClient;
+        _configuration = configuration;
         _logger = logger;
-
-        var baseUrl = configuration["AiImageService:BaseUrl"] ?? "http://127.0.0.1:8001";
-        if (!baseUrl.EndsWith("/")) baseUrl += "/";
-        _httpClient.BaseAddress = new Uri(baseUrl);
-
-        var timeoutSeconds = configuration.GetValue<int>("AiImageService:TimeoutSeconds", 10);
-        _httpClient.Timeout = TimeSpan.FromSeconds(timeoutSeconds > 0 ? timeoutSeconds : 10);
     }
 
     public async Task<PythonPredictResponse> PredictAsync(
@@ -58,47 +57,57 @@ public sealed class FoodImagePredictionService : IFoodImagePredictionService
         string contentType,
         CancellationToken cancellationToken = default)
     {
-        using var content = new MultipartFormDataContent();
-        var streamContent = new StreamContent(imageStream);
-        streamContent.Headers.ContentType = new MediaTypeHeaderValue(
-            string.IsNullOrWhiteSpace(contentType) ? "image/jpeg" : contentType);
+        // 1. Đọc URL và cấu hình Timeout từ appsettings
+        // Mặc định 45 giây: Gemini Vision cần retry qua nhiều model khi cao tải
+        var baseUrl = (_configuration["AiImageService:BaseUrl"] ?? "http://127.0.0.1:8001").TrimEnd('/');
+        var timeoutSeconds = _configuration.GetValue<int>("AiImageService:TimeoutSeconds", 45);
 
-        content.Add(streamContent, "file", fileName);
+        // 2. Thiết lập token hủy khi quá thời gian chờ (Timeout)
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
 
-        HttpResponseMessage response;
         try
         {
-            response = await _httpClient.PostAsync("predict", content, cancellationToken);
+            // 3. Đóng gói file ảnh dưới dạng MultipartFormDataContent
+            using var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(imageStream);
+
+            var validContentType = string.IsNullOrWhiteSpace(contentType) ? "image/jpeg" : contentType;
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(validContentType);
+
+            var validFileName = string.IsNullOrWhiteSpace(fileName) ? "food.jpg" : fileName;
+            content.Add(streamContent, "file", validFileName);
+
+            // 4. Gửi HTTP POST sang Dịch vụ Python FastAPI (/predict)
+            var requestUrl = $"{baseUrl}/predict";
+            var response = await _httpClient.PostAsync(requestUrl, content, cts.Token);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorBody = await response.Content.ReadAsStringAsync(cts.Token);
+                _logger.LogWarning("Dịch vụ AI Python trả về mã {StatusCode}: {Body}", response.StatusCode, errorBody);
+                throw new HttpRequestException($"Dịch vụ AI phản hồi lỗi: {response.StatusCode} - {errorBody}");
+            }
+
+            // 5. Đọc kết quả Top 3 và Model Version từ JSON phản hồi
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var result = await response.Content.ReadFromJsonAsync<PythonPredictResponse>(jsonOptions, cts.Token);
+            return result ?? new PythonPredictResponse();
         }
-        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            _logger.LogError(ex, "Timeout khi gọi dịch vụ Python AI sau {Timeout}s", _httpClient.Timeout.TotalSeconds);
-            throw new TimeoutException("Dịch vụ nhận diện AI không phản hồi kịp thời.", ex);
+            // Quá thời gian quy định TimeoutSeconds
+            _logger.LogError("Yêu cầu nhận diện ảnh tới {BaseUrl} bị quá thời gian ({Timeout}s).", baseUrl, timeoutSeconds);
+            throw new TimeoutException($"Dịch vụ AI không phản hồi sau {timeoutSeconds} giây.");
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Lỗi kết nối tới dịch vụ Python AI");
+            _logger.LogError(ex, "Không thể kết nối đến dịch vụ AI tại {BaseUrl}.", baseUrl);
             throw;
         }
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogWarning("Dịch vụ AI trả về mã lỗi {StatusCode}: {ErrorBody}", response.StatusCode, errorBody);
-            throw new HttpRequestException($"Dịch vụ AI trả về lỗi: {response.StatusCode} - {errorBody}", null, response.StatusCode);
-        }
-
-        var json = await response.Content.ReadAsStringAsync(cancellationToken);
-        var result = JsonSerializer.Deserialize<PythonPredictResponse>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (result == null || result.Top3 == null)
-        {
-            throw new InvalidOperationException("Dịch vụ AI trả về kết quả rỗng hoặc không đúng định dạng.");
-        }
-
-        return result;
     }
 }

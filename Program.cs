@@ -8,6 +8,23 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 
+// ─── Đọc file .env (nếu có) và nạp vào biến môi trường ───────────────────────
+var envFile = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(envFile))
+{
+    foreach (var line in File.ReadAllLines(envFile))
+    {
+        var trimmed = line.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith('#')) continue;
+        var eqIdx = trimmed.IndexOf('=');
+        if (eqIdx < 1) continue;
+        var key = trimmed[..eqIdx].Trim();
+        var value = trimmed[(eqIdx + 1)..].Trim();
+        Environment.SetEnvironmentVariable(key, value);
+    }
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Fix lỗi hiển thị tiếng Việt trên Console Windows

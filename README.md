@@ -11,7 +11,7 @@ Tên đề tài (Eng):Developing NauVi - A Food Discovery and Sharing Platform R
 |---|---|---|---|---|---|
 | **Top-3 accuracy** của mô hình nhận diện món ăn | Chạy mô hình trên tập ảnh kiểm thử đã gán nhãn; tính tỉ lệ ảnh có nhãn đúng nằm trong 3 dự đoán có xác suất cao nhất | Chưa đo (baseline: mô hình cơ sở) | --- | W1 - W2 và W8 | Bảng kết quả đánh giá trên tập kiểm thử, confusion matrix, nhật ký chạy mô hình |
 | **Thời gian tìm thông tin và công thức từ ảnh món ăn** | Bấm giờ từ lúc bắt đầu tìm đến khi tìm được công thức phù hợp | ~35 giấy | Giảm dự kiến ít nhất 30% so với trước | W1 - W2 và W8 | Bảng ghi kết quả thử nghiệm |
---
+---
 
 ## 🚀 Hướng dẫn cài đặt và chạy dự án
 
@@ -76,3 +76,34 @@ dotnet run
 Ứng dụng sẽ khởi động tại: **http://localhost:5062**
 
 ---
+<<<<<<< HEAD
+
+## 📁 Cấu trúc dự án
+
+```
+NauVi/
+├── Controllers/        # API endpoints (Foods, AI, Auth, ...)
+├── Services/           # Business logic (Gemini, JWT, ...)
+├── Models/             # MongoDB document models
+├── Data/               # MongoDB context & seeder
+├── Views/              # Razor views (MVC)
+├── wwwroot/            # Frontend (HTML/CSS/JS)
+├── SeedData/           # Dữ liệu mẫu JSON
+├── appsettings.example.json  # File cấu hình mẫu (cần copy → appsettings.json)
+└── .env                # API keys (KHÔNG được commit)
+```
+
+---
+
+## ✨ Tính năng chính
+
+- 📸 **Nhận diện món ăn từ ảnh** — dùng Gemini Vision AI phân tích top-3 món ăn trong ảnh
+- 🤖 **Chatbot AI** — gợi ý món ăn, tư vấn dinh dưỡng theo sở thích cá nhân
+- 🥗 **Gợi ý theo nguyên liệu** — chọn nguyên liệu có sẵn, hệ thống gợi ý món phù hợp
+- 💰 **Giá nguyên liệu thực tế** — cập nhật giá từ Coopmart và Bách Hoá Xanh
+- 👤 **Hệ thống tài khoản** — đăng ký, đăng nhập, lưu lịch sử nấu ăn, khẩu vị cá nhân
+- 🔐 **Đăng nhập Google** — xác thực OAuth2 qua Google
+
+
+=======
+>>>>>>> origin/main

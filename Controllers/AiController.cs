@@ -17,9 +17,9 @@ public sealed class AiController : ControllerBase
 
     private static readonly string[] ModelsToTry =
     {
-        "gemini-2.0-flash",
         "gemini-2.5-flash",
-        "gemini-2.0-flash-lite"
+        "gemini-1.5-flash",
+        "gemini-1.5-flash-8b"
     };
 
     private string GetSystemPrompt(IEnumerable<Food> dbFoods, int dailyCalories = 0)
