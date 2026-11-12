@@ -31,12 +31,31 @@ var builder = WebApplication.CreateBuilder(args);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));
+builder.Services.Configure<SmtpSettings>(options =>
+{
+    builder.Configuration.GetSection("SmtpSettings").Bind(options);
+
+    // Hỗ trợ đọc từ biến môi trường hoặc .env nếu có
+    var envUser = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? Environment.GetEnvironmentVariable("SMTP_USER");
+    if (!string.IsNullOrWhiteSpace(envUser)) options.UserName = envUser;
+
+    var envPass = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? Environment.GetEnvironmentVariable("SMTP_PASS");
+    if (!string.IsNullOrWhiteSpace(envPass)) options.Password = envPass;
+
+    var envSender = Environment.GetEnvironmentVariable("SMTP_SENDER_EMAIL");
+    if (!string.IsNullOrWhiteSpace(envSender)) options.SenderEmail = envSender;
+});
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddSingleton<GoogleAuthService>();
 builder.Services.AddHttpClient<GeminiService>();
 builder.Services.AddHttpClient<CopilotService>();
 builder.Services.AddHttpClient<IFoodImagePredictionService, FoodImagePredictionService>();
+
+// Đăng ký dịch vụ tra cứu món ăn & gửi email công thức
+builder.Services.AddScoped<IFoodService, FoodService>();
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+builder.Services.AddSingleton<IRecipeEmailRateLimiter, RecipeEmailRateLimiter>();
 
 builder.Services.AddSingleton<DatabaseSeeder>();
 

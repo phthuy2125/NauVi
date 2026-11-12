@@ -149,6 +149,63 @@
     </div>
 </div>
 
+<!-- Modal Gửi công thức qua Email -->
+<div id="modalSendRecipeEmail" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-2xl border border-sky-100 dark:border-sky-800/60">
+        <div class="flex items-center justify-between pb-3 border-b border-sky-100 dark:border-sky-800/60 mb-4">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-2xl">mark_email_read</span>
+                <h3 class="text-base font-bold text-sky-950 dark:text-sky-50">Gửi công thức qua Email</h3>
+            </div>
+            <button type="button" onclick="closeSendEmailModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-full">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+
+        <p class="text-xs text-slate-600 dark:text-slate-300 mb-4">
+            Nhập email của bạn để nhận chi tiết công thức món <strong id="modalFoodName" class="text-primary font-bold"></strong> (nguyên liệu, cách nấu).
+        </p>
+
+        <!-- Alert thông báo trạng thái -->
+        <div id="modalEmailAlert" class="hidden mb-3 p-3 rounded-xl text-xs flex items-center gap-2">
+            <span id="modalAlertIcon" class="material-symbols-outlined text-base shrink-0"></span>
+            <span id="modalAlertText"></span>
+        </div>
+
+        <form id="formSendRecipeEmail" onsubmit="submitSendRecipeEmail(event)" class="space-y-4">
+            <input type="hidden" id="modalFoodId" value="" />
+            <div>
+                <label for="inputRecipientEmail" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Địa chỉ Email của bạn
+                </label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-lg">mail</span>
+                    <input type="email"
+                           id="inputRecipientEmail"
+                           required
+                           placeholder="vidu@gmail.com"
+                           class="w-full pl-10 pr-3 py-2.5 text-sm rounded-xl border border-sky-200 dark:border-sky-800 dark:bg-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" />
+                </div>
+                <p id="emailValidationMsg" class="hidden text-[11px] text-red-500 mt-1">Vui lòng nhập địa chỉ email hợp lệ (ví dụ: ten@gmail.com).</p>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button"
+                        onclick="closeSendEmailModal()"
+                        class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    Đóng
+                </button>
+                <button type="submit"
+                        id="btnSubmitEmail"
+                        class="px-5 py-2.5 rounded-xl text-xs font-bold bg-primary hover:bg-sky-700 text-white shadow-md shadow-primary/20 transition flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="btnSubmitEmailIcon" class="material-symbols-outlined text-sm">send</span>
+                    <span id="btnSubmitEmailText">Gửi công thức</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @section Scripts {
 <script>
     let currentSelectedFile = null;
@@ -347,6 +404,13 @@
 
                 <div class="flex items-center gap-2 shrink-0">
                     ${hasRecipe ? `
+                        <button type="button"
+                                onclick="openSendEmailModal('${item.foodId}', '${escapeHtml(item.name).replace(/'/g, "\\'")}')"
+                                class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-sky-100 dark:bg-sky-900/60 hover:bg-sky-200 dark:hover:bg-sky-800 text-sky-800 dark:text-sky-200 transition-all shadow-sm"
+                                title="Gửi công thức qua email">
+                            <span class="material-symbols-outlined text-sm">mail</span>
+                            <span>Gửi email</span>
+                        </button>
                         <a href="/Home/FoodDetail?id=${item.foodId}"
                            class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-primary hover:bg-sky-700 text-white shadow-md shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 no-underline">
                             <span>Xem công thức</span>
@@ -370,6 +434,104 @@
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // --- Modal Gửi công thức qua Email ---
+    function openSendEmailModal(foodId, foodName) {
+        document.getElementById('modalFoodId').value = foodId;
+        document.getElementById('modalFoodName').innerText = foodName;
+        document.getElementById('inputRecipientEmail').value = '';
+        document.getElementById('emailValidationMsg').classList.add('hidden');
+        hideModalAlert();
+        document.getElementById('modalSendRecipeEmail').classList.remove('hidden');
+        setTimeout(() => document.getElementById('inputRecipientEmail').focus(), 100);
+    }
+
+    function closeSendEmailModal() {
+        document.getElementById('modalSendRecipeEmail').classList.add('hidden');
+    }
+
+    function showModalAlert(type, message) {
+        const box = document.getElementById('modalEmailAlert');
+        const icon = document.getElementById('modalAlertIcon');
+        const text = document.getElementById('modalAlertText');
+        box.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200', 'border');
+        if (type === 'error') {
+            box.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
+            icon.innerText = 'error';
+        } else {
+            box.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+            icon.innerText = 'check_circle';
+        }
+        text.innerText = message;
+    }
+
+    function hideModalAlert() {
+        document.getElementById('modalEmailAlert').classList.add('hidden');
+    }
+
+    function isClientEmailValid(email) {
+        if (!email) return false;
+        var atIdx = email.indexOf('@@');
+        if (atIdx < 1) return false;
+        var dotIdx = email.lastIndexOf('.');
+        if (dotIdx <= atIdx + 1 || dotIdx >= email.length - 1) return false;
+        return !email.includes(' ');
+    }
+
+    async function submitSendRecipeEmail(event) {
+        event.preventDefault();
+        const foodId = document.getElementById('modalFoodId').value;
+        const email = document.getElementById('inputRecipientEmail').value.trim();
+
+        // Kiểm tra định dạng phía trình duyệt
+        if (!isClientEmailValid(email)) {
+            document.getElementById('emailValidationMsg').classList.remove('hidden');
+            return;
+        }
+        document.getElementById('emailValidationMsg').classList.add('hidden');
+
+        const btn = document.getElementById('btnSubmitEmail');
+        const btnText = document.getElementById('btnSubmitEmailText');
+        const btnIcon = document.getElementById('btnSubmitEmailIcon');
+
+        btn.disabled = true;
+        btnText.innerText = 'Đang gửi...';
+        btnIcon.innerText = 'hourglass_top';
+        hideModalAlert();
+
+        try {
+            const res = await fetch(`/api/foods/${encodeURIComponent(foodId)}/send-recipe-email`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                showModalAlert('success', data.message || 'Đã gửi công thức vào hòm thư thành công!');
+                btnText.innerText = 'Đã gửi!';
+                btnIcon.innerText = 'check';
+                setTimeout(() => {
+                    closeSendEmailModal();
+                    btn.disabled = false;
+                    btnText.innerText = 'Gửi công thức';
+                    btnIcon.innerText = 'send';
+                }, 2000);
+            } else {
+                showModalAlert('error', data.message || 'Không thể gửi email. Vui lòng thử lại sau.');
+                btn.disabled = false;
+                btnText.innerText = 'Thử lại';
+                btnIcon.innerText = 'send';
+            }
+        } catch (err) {
+            showModalAlert('error', 'Lỗi kết nối đến máy chủ. Vui lòng kiểm tra mạng.');
+            btn.disabled = false;
+            btnText.innerText = 'Thử lại';
+            btnIcon.innerText = 'send';
+        }
     }
 </script>
 }
