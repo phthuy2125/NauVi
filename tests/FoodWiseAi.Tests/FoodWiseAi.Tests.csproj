@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FoodWiseAi.csproj" />
+    <ProjectReference Include="..\..\NauVi.csproj" />
   </ItemGroup>
 
 </Project>
