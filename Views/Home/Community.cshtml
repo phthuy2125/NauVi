@@ -1,0 +1,501 @@
+@{
+    ViewData["Title"] = "Cộng đồng nấu ăn";
+}
+
+<div class="pt-28 px-4 md:px-10 max-w-6xl mx-auto pb-20">
+    <!-- Hero / Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-sky-100">
+        <div>
+            <span class="px-3 py-1 bg-sky-100 text-sky-800 text-xs font-bold rounded-full uppercase tracking-wider">Cộng đồng NauVi</span>
+            <h1 class="text-3xl md:text-4xl font-black text-sky-950 tracking-tight mt-2">Món ngon mỗi ngày</h1>
+            <p class="text-slate-500 text-sm mt-1">Những thành phẩm nấu ăn tuyệt vời từ cộng đồng người dùng NauVi.</p>
+        </div>
+        <div>
+            <a href="/Home/CreatePost" 
+               class="inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 text-white rounded-full font-bold text-sm shadow-xl shadow-sky-600/25 transition-all hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-lg">add_a_photo</span>
+                <span>Chia sẻ món bạn nấu</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Posts Feed Container -->
+    <div id="posts-loading" class="text-center py-20">
+        <span class="material-symbols-outlined text-4xl text-sky-400 animate-spin">progress_activity</span>
+        <p class="text-sm text-slate-400 mt-3 font-medium">Đang tải các bài viết mới nhất...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="posts-empty" class="hidden text-center py-20 bg-white rounded-3xl border border-sky-100 p-10">
+        <div class="w-20 h-20 mx-auto rounded-full bg-sky-50 text-sky-400 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-4xl">photo_library</span>
+        </div>
+        <h3 class="text-lg font-bold text-sky-950">Chưa có bài viết nào được đăng</h3>
+        <p class="text-sm text-slate-400 mt-1 max-w-sm mx-auto">Hãy là người đầu tiên chia sẻ thành quả nấu ăn của mình với cộng đồng!</p>
+        <a href="/Home/CreatePost" class="mt-6 inline-block px-6 py-2.5 bg-sky-600 text-white rounded-full text-xs font-bold hover:bg-sky-700 transition-colors">
+            Đăng bài ngay
+        </a>
+    </div>
+
+    <!-- Posts Grid -->
+    <div id="posts-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Load More Button -->
+    <div id="load-more-container" class="hidden text-center mt-12">
+        <button id="load-more-btn" onclick="loadMorePosts()" 
+                class="px-8 py-3 bg-white border border-sky-200 text-sky-700 rounded-full font-bold text-sm hover:bg-sky-50 transition-colors shadow-sm inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">expand_more</span>
+            Xem thêm bài viết
+        </button>
+    </div>
+</div>
+
+<!-- Modal xác nhận xóa bài -->
+<div id="delete-modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
+        <div class="w-14 h-14 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-3xl">delete_forever</span>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-slate-900">Xóa bài đăng này?</h3>
+            <p class="text-xs text-slate-500 mt-1">Hành động này không thể hoàn tác. Bài viết và hình ảnh sẽ bị gỡ bỏ vĩnh viễn.</p>
+        </div>
+        <div class="flex gap-3 pt-2">
+            <button onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors">
+                Hủy bỏ
+            </button>
+            <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition-colors shadow-lg shadow-red-600/30">
+                Xác nhận xóa
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let _allFoodsMap = new Map();
+    let _currentPage = 1;
+    const _pageSize = 9;
+    let _hasMore = true;
+    let _currentUserId = localStorage.getItem("userId") || "";
+    let _currentUserRole = "";
+    let _postToDeleteId = null;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Lấy thông tin role người dùng hiện tại
+        const token = localStorage.getItem("token");
+        if (_currentUserId && token) {
+            try {
+                const res = await fetch(`/api/users/profile/${_currentUserId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    _currentUserRole = (data.role || "").toLowerCase();
+                }
+            } catch (_) {}
+        }
+
+        // Tải danh mục món ăn trước để ánh xạ tên và link
+        try {
+            const res = await fetch("/api/foods/all");
+            if (res.ok) {
+                const data = await res.json();
+                (data.foods || []).forEach(f => {
+                    const id = f.id || f._id;
+                    _allFoodsMap.set(id, f);
+                });
+            }
+        } catch (err) {
+            console.error("Lỗi tải món:", err);
+        }
+
+        // Tải bài viết trang 1
+        await loadPosts(1);
+    });
+
+    async function loadPosts(page) {
+        try {
+            const res = await fetch(`/api/posts?page=${page}&pageSize=${_pageSize}`);
+            document.getElementById("posts-loading").classList.add("hidden");
+
+            if (!res.ok) throw new Error("Lỗi tải danh sách bài");
+
+            const posts = await res.json();
+
+            if (page === 1 && posts.length === 0) {
+                document.getElementById("posts-empty").classList.remove("hidden");
+                return;
+            }
+
+            document.getElementById("posts-grid").classList.remove("hidden");
+            renderPosts(posts, page > 1);
+
+            if (posts.length < _pageSize) {
+                _hasMore = false;
+                document.getElementById("load-more-container").classList.add("hidden");
+            } else {
+                _hasMore = true;
+                document.getElementById("load-more-container").classList.remove("hidden");
+            }
+        } catch (err) {
+            console.error(err);
+            document.getElementById("posts-loading").innerHTML = `
+                <p class="text-sm text-red-500 font-medium">Không thể tải bài viết: ${err.message}</p>
+            `;
+        }
+    }
+
+    function renderPosts(posts, append) {
+        const grid = document.getElementById("posts-grid");
+        const html = posts.map(post => {
+            const food = _allFoodsMap.get(post.foodId) || {};
+            const foodName = food.name || "Món ăn ẩm thực";
+            const foodCategory = food.category || "Ẩm thực";
+            const foodCalories = food.calories ? `${food.calories} calo` : "";
+            const detailUrl = `/Home/FoodDetail?id=${post.foodId}`;
+            const timeAgo = formatTimeAgo(post.createdAt);
+
+            const authorName = post.authorName || "Đầu bếp NauVi";
+            const authorAvatar = post.authorAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=0284c7&color=fff`;
+
+            // Kiểm tra quyền xóa bài (tác giả hoặc Admin)
+            const canDelete = (_currentUserId && _currentUserId === post.userId) || _currentUserRole === "admin";
+
+            // Kiểm tra trạng thái đã thích bài viết chưa
+            const likesList = post.likes || [];
+            const isLiked = _currentUserId && likesList.includes(_currentUserId);
+            const commentsList = post.comments || [];
+
+            // Làm sạch nội dung cảm nhận, giải mã an toàn chống lỗi chèn ký tự lạ & chống XSS
+            const cleanContent = decodeAndSanitizeText(post.content);
+
+            return `
+                <div id="post-card-${post.id}" class="bg-white rounded-3xl overflow-hidden shadow-lg shadow-sky-950/5 border border-sky-100/80 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-sky-950/10">
+                    
+                    <!-- Header bài đăng: Tác giả & Nút Xóa (nếu có quyền) -->
+                    <div class="p-4 px-6 flex items-center justify-between border-b border-slate-50">
+                        <div class="flex items-center gap-3">
+                            <img src="${authorAvatar}" alt="${escapeHtml(authorName)}" 
+                                 class="w-9 h-9 rounded-full object-cover border border-sky-100" />
+                            <div>
+                                <h4 class="text-xs font-bold text-sky-950">${escapeHtml(authorName)}</h4>
+                                <span class="text-[10px] text-slate-400 font-medium">${timeAgo}</span>
+                            </div>
+                        </div>
+
+                        ${canDelete ? `
+                            <button onclick="openDeleteModal('${post.id}')" title="Xóa bài viết này"
+                                    class="text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-colors">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <!-- Ảnh món ăn do người dùng chụp -->
+                    <div class="relative aspect-4/3 bg-slate-100 overflow-hidden">
+                        <img src="${post.imageUrl}" alt="${foodName}" 
+                             class="w-full h-full object-cover"
+                             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'" />
+                        
+                        <div class="absolute top-3 right-3">
+                            <span class="px-3 py-1 bg-white/90 backdrop-blur-md text-sky-900 rounded-full text-[11px] font-bold shadow-sm">
+                                ${foodCategory}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Thân bài viết -->
+                    <div class="p-6 pb-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <!-- Thẻ món ăn được gắn -->
+                            <a href="${detailUrl}" 
+                               class="inline-flex items-center gap-2 p-2.5 px-3 bg-sky-50/80 hover:bg-sky-100 rounded-2xl border border-sky-100 transition-colors mb-3 w-full group/mon">
+                                <span class="material-symbols-outlined text-sky-600 text-lg">restaurant</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-xs font-extrabold text-sky-950 truncate group-hover/mon:text-sky-700">${foodName}</div>
+                                    ${foodCalories ? `<div class="text-[10px] text-slate-400 font-medium">${foodCalories}</div>` : ''}
+                                </div>
+                                <span class="material-symbols-outlined text-sky-400 group-hover/mon:translate-x-0.5 transition-transform text-sm">arrow_forward</span>
+                            </a>
+
+                            <!-- Lời bình cảm nhận (hiển thị tiếng Việt tự nhiên không lỗi ký tự) -->
+                            <p class="text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                                ${cleanContent}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Thanh tương tác: Like, Comment & Xem công thức -->
+                    <div class="px-6 py-3 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-4">
+                            <!-- Nút Thả tim / Thích -->
+                            <button onclick="toggleLike('${post.id}')" id="like-btn-${post.id}"
+                                    class="inline-flex items-center gap-1.5 font-bold transition-all active:scale-90 ${isLiked ? 'text-red-500' : 'text-slate-500 hover:text-red-500'}">
+                                <span class="material-symbols-outlined text-base" style="${isLiked ? "font-variation-settings:'FILL' 1;" : ""}">favorite</span>
+                                <span id="like-count-${post.id}">${likesList.length}</span>
+                            </button>
+
+                            <!-- Nút Bình luận (Bật/tắt ngăn cmt) -->
+                            <button onclick="toggleComments('${post.id}')" 
+                                    class="inline-flex items-center gap-1.5 text-slate-500 hover:text-sky-600 font-bold transition-colors">
+                                <span class="material-symbols-outlined text-base">chat_bubble</span>
+                                <span id="comment-count-${post.id}">${commentsList.length}</span>
+                            </button>
+                        </div>
+
+                        <a href="${detailUrl}" class="font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1">
+                            Xem công thức
+                            <span class="material-symbols-outlined text-xs">menu_book</span>
+                        </a>
+                    </div>
+
+                    <!-- Ngăn Bình luận (Comments Drawer) -->
+                    <div id="comments-section-${post.id}" class="hidden p-6 pt-3 bg-slate-50 border-t border-slate-100 space-y-4">
+                        <!-- Danh sách bình luận -->
+                        <div id="comments-list-${post.id}" class="space-y-3 max-h-56 overflow-y-auto pr-1">
+                            ${commentsList.length === 0 ? `
+                                <p class="text-xs text-slate-400 italic text-center py-2" id="no-comment-${post.id}">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+                            ` : commentsList.map(c => renderCommentItem(c)).join('')}
+                        </div>
+
+                        <!-- Ô nhập bình luận mới -->
+                        <form onsubmit="submitComment(event, '${post.id}')" class="flex gap-2 items-center">
+                            <input type="text" id="comment-input-${post.id}" maxlength="500" autocomplete="off"
+                                   placeholder="Viết bình luận cho món này..." 
+                                   class="flex-1 bg-white border border-slate-200 rounded-full px-4 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none" />
+                            <button type="submit" class="p-2 bg-sky-600 hover:bg-sky-700 text-white rounded-full flex items-center justify-center transition-colors shadow">
+                                <span class="material-symbols-outlined text-sm">send</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        if (append) {
+            grid.insertAdjacentHTML('beforeend', html);
+        } else {
+            grid.innerHTML = html;
+        }
+    }
+
+    function renderCommentItem(comment) {
+        const cAvatar = comment.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.username || 'User')}&background=0284c7&color=fff`;
+        const cTime = formatTimeAgo(comment.createdAt);
+        const cContent = decodeAndSanitizeText(comment.content);
+
+        return `
+            <div class="flex gap-2.5 items-start text-xs bg-white p-2.5 rounded-2xl border border-slate-100 shadow-sm">
+                <img src="${cAvatar}" alt="${escapeHtml(comment.username)}" class="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-slate-100 mt-0.5" />
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="font-bold text-sky-950 truncate">${escapeHtml(comment.username || 'Người dùng')}</span>
+                        <span class="text-[9px] text-slate-400 font-medium">${cTime}</span>
+                    </div>
+                    <p class="text-slate-700 mt-0.5 leading-snug break-words whitespace-pre-wrap">${cContent}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // ===== Thả tim / Thích bài viết =====
+    async function toggleLike(postId) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Vui lòng đăng nhập để thả cảm xúc cho bài viết!");
+            window.location.href = "/Account/Login";
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/posts/${postId}/like`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (!res.ok) throw new Error("Không thể tương tác");
+
+            const data = await res.json();
+            const btn = document.getElementById(`like-btn-${postId}`);
+            const countEl = document.getElementById(`like-count-${postId}`);
+
+            countEl.textContent = data.likeCount;
+
+            const icon = btn.querySelector(".material-symbols-outlined");
+            if (data.liked) {
+                btn.classList.add("text-red-500");
+                btn.classList.remove("text-slate-500");
+                icon.style.fontVariationSettings = "'FILL' 1";
+            } else {
+                btn.classList.remove("text-red-500");
+                btn.classList.add("text-slate-500");
+                icon.style.fontVariationSettings = "'FILL' 0";
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // ===== Bật / Tắt Ngăn Bình luận =====
+    function toggleComments(postId) {
+        const sec = document.getElementById(`comments-section-${postId}`);
+        if (sec.classList.contains("hidden")) {
+            sec.classList.remove("hidden");
+            const input = document.getElementById(`comment-input-${postId}`);
+            if (input) input.focus();
+        } else {
+            sec.classList.add("hidden");
+        }
+    }
+
+    // ===== Gửi bình luận mới =====
+    async function submitComment(e, postId) {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Vui lòng đăng nhập để bình luận!");
+            window.location.href = "/Account/Login";
+            return;
+        }
+
+        const input = document.getElementById(`comment-input-${postId}`);
+        const content = input.value.trim();
+        if (!content) return;
+
+        input.disabled = true;
+
+        try {
+            const res = await fetch(`/api/posts/${postId}/comments`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ content })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                input.value = "";
+                // Ẩn placeholder chưa có cmt
+                const emptyMsg = document.getElementById(`no-comment-${postId}`);
+                if (emptyMsg) emptyMsg.remove();
+
+                // Thêm cmt vào danh sách
+                const list = document.getElementById(`comments-list-${postId}`);
+                list.insertAdjacentHTML("beforeend", renderCommentItem(data.comment));
+
+                // Cập nhật số lượng
+                document.getElementById(`comment-count-${postId}`).textContent = data.commentCount;
+            } else {
+                alert(data.message || "Không thể gửi bình luận.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Lỗi khi gửi bình luận.");
+        } finally {
+            input.disabled = false;
+            input.focus();
+        }
+    }
+
+    // ===== Modal xác nhận xóa bài =====
+    function openDeleteModal(postId) {
+        _postToDeleteId = postId;
+        document.getElementById("delete-modal").classList.remove("hidden");
+    }
+
+    function closeDeleteModal() {
+        _postToDeleteId = null;
+        document.getElementById("delete-modal").classList.add("hidden");
+    }
+
+    document.getElementById("confirm-delete-btn").addEventListener("click", async () => {
+        if (!_postToDeleteId) return;
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Vui lòng đăng nhập lại!");
+            return;
+        }
+
+        const btn = document.getElementById("confirm-delete-btn");
+        btn.disabled = true;
+        btn.textContent = "Đang xóa...";
+
+        try {
+            const res = await fetch(`/api/posts/${_postToDeleteId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                closeDeleteModal();
+                const card = document.getElementById(`post-card-${_postToDeleteId}`);
+                if (card) {
+                    card.style.opacity = "0";
+                    card.style.transform = "scale(0.95)";
+                    setTimeout(() => card.remove(), 250);
+                }
+            } else {
+                alert(data.message || "Không thể xóa bài đăng.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Lỗi khi xóa bài viết.");
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Xác nhận xóa";
+            closeDeleteModal();
+        }
+    });
+
+    async function loadMorePosts() {
+        _currentPage++;
+        await loadPosts(_currentPage);
+    }
+
+    function formatTimeAgo(isoDate) {
+        if (!isoDate) return "Gần đây";
+        const date = new Date(isoDate);
+        const diffSec = Math.floor((new Date() - date) / 1000);
+        if (diffSec < 60) return "Vừa xong";
+        const diffMin = Math.floor(diffSec / 60);
+        if (diffMin < 60) return `${diffMin} phút trước`;
+        const diffHour = Math.floor(diffMin / 60);
+        if (diffHour < 24) return `${diffHour} giờ trước`;
+        const diffDay = Math.floor(diffHour / 24);
+        if (diffDay < 30) return `${diffDay} ngày trước`;
+        return date.toLocaleDateString("vi-VN");
+    }
+
+    // Hàm giải mã an toàn và làm sạch ký tự (chống double encoding và XSS)
+    function decodeAndSanitizeText(str) {
+        if (!str) return '';
+        // Sử dụng DOMParser để giải mã các entity bị mã hóa lặp (ví dụ &amp;quot;, &#39;)
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(`<!doctype html><body>${str}`, 'text/html');
+        let text = dom.body.textContent || "";
+        // Nếu vẫn còn bị bọc bởi entity
+        if (text.includes('&') && (text.includes('&quot;') || text.includes('&#'))) {
+            const secondPass = parser.parseFromString(`<!doctype html><body>${text}`, 'text/html');
+            text = secondPass.body.textContent || text;
+        }
+        return escapeHtml(text);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+</script>
+}

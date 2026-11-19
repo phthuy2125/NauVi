@@ -19,11 +19,13 @@ public sealed class JwtService
 
     public string CreateToken(User user)
     {
+        var role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "Admin" : (user.Role ?? "user");
+
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.Id ?? string.Empty),
             new(ClaimTypes.NameIdentifier, user.Id ?? string.Empty),
-            new(ClaimTypes.Role, user.Role ?? "user")
+            new(ClaimTypes.Role, role)
         };
 
         var credentials = new SigningCredentials(

@@ -17,6 +17,7 @@ public class MongoDbContext
         Foods = Database.GetCollection<Food>("foods");
         Ingredients = Database.GetCollection<Ingredient>("ingredients");
         PredictionLogs = Database.GetCollection<PredictionLog>("prediction_logs");
+        Posts = Database.GetCollection<Post>("posts");
     }
 
     public virtual IMongoDatabase Database { get; } = null!;
@@ -24,4 +25,5 @@ public class MongoDbContext
     public virtual IMongoCollection<Food> Foods { get; } = null!;
     public virtual IMongoCollection<Ingredient> Ingredients { get; } = null!;
     public virtual IMongoCollection<PredictionLog> PredictionLogs { get; } = null!;
+    public virtual IMongoCollection<Post> Posts { get; } = null!;
 }

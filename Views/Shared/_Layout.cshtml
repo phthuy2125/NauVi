@@ -21,42 +21,119 @@
             <p class="text-[10px] uppercase tracking-widest text-primary font-bold mt-1">Gợi ý món ăn theo sở thích của
                 bạn</p>
         </div>
-        <nav class="flex-1 space-y-2">
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full"
+        <nav class="flex-1 space-y-1.5 overflow-y-auto pr-1 select-none">
+            <!-- MỤC CHÍNH -->
+            <a class="nav-link flex items-center gap-3 px-4 py-2.5 transition-all active:scale-95 duration-150 rounded-full text-sky-700 dark:text-sky-300 hover:bg-sky-100/80 dark:hover:bg-sky-900/50"
                 id="nav-home" href="/Home/Index">
-                <span class="material-symbols-outlined" data-icon="home">home</span>
+                <span class="material-symbols-outlined text-[20px]" data-icon="home">home</span>
                 <span class="font-plus-jakarta-sans font-medium text-sm">Trang chủ</span>
             </a>
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
+            <a class="nav-link flex items-center gap-3 px-4 py-2.5 transition-all active:scale-95 duration-150 rounded-full text-sky-700 dark:text-sky-300 hover:bg-sky-100/80 dark:hover:bg-sky-900/50"
                 id="nav-listfood" href="/Home/ListFood">
-                <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+                <span class="material-symbols-outlined text-[20px]" data-icon="restaurant_menu">restaurant_menu</span>
                 <span class="font-plus-jakarta-sans font-medium text-sm">Tất cả món ăn</span>
             </a>
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
-                id="nav-taste" href="/Home/TasteProfile">
-                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-                <span class="font-plus-jakarta-sans font-medium text-sm">Khẩu vị cá nhân</span>
-            </a>
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
-                id="nav-favorites" href="/Home/Favorites">
-                <span class="material-symbols-outlined" data-icon="favorite">favorite</span>
-                <span class="font-plus-jakarta-sans font-medium text-sm">Yêu thích</span>
-            </a>
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
-                id="nav-history" href="/Home/History">
-                <span class="material-symbols-outlined" data-icon="history">history</span>
-                <span class="font-plus-jakarta-sans font-medium text-sm">Lịch sử</span>
-            </a>
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
-                id="nav-ingred" href="/Home/IngredSuggestion">
-                <span class="material-symbols-outlined" data-icon="shopping_basket">shopping_basket</span>
-                <span class="font-plus-jakarta-sans font-medium text-sm">Gợi ý nguyên liệu</span>
-            </a>
-            <a class="nav-link flex items-center gap-3 px-4 py-3 transition-all active:scale-95 duration-150 rounded-full text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/50"
-                id="nav-recognition" href="/Home/FoodRecognition">
-                <span class="material-symbols-outlined" data-icon="photo_camera">photo_camera</span>
-                <span class="font-plus-jakarta-sans font-medium text-sm">Nhận diện ảnh</span>
-            </a>
+
+            <!-- MENUSCRIPT GROUP 1: CỘNG ĐỒNG -->
+            <div class="nav-group pt-1" id="group-community">
+                <button type="button" onclick="toggleNavGroup('group-community')"
+                    class="group-header w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sky-700 dark:text-sky-300 hover:bg-sky-100/80 dark:hover:bg-sky-900/50 transition-all font-medium text-sm">
+                    <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]">forum</span>
+                        <span>Cộng đồng</span>
+                    </span>
+                    <span class="material-symbols-outlined text-base transition-transform duration-200 group-chevron">expand_more</span>
+                </button>
+                <div class="group-content pl-6 pr-1 py-1 space-y-1 hidden">
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-community" href="/Home/Community">
+                        <span class="material-symbols-outlined text-[18px]">dynamic_feed</span>
+                        <span>Bảng tin</span>
+                    </a>
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-createpost" href="/Home/CreatePost">
+                        <span class="material-symbols-outlined text-[18px]">add_a_photo</span>
+                        <span>Đăng bài chia sẻ</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MENUSCRIPT GROUP 2: TRỢ LÝ AI -->
+            <div class="nav-group pt-1" id="group-ai">
+                <button type="button" onclick="toggleNavGroup('group-ai')"
+                    class="group-header w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sky-700 dark:text-sky-300 hover:bg-sky-100/80 dark:hover:bg-sky-900/50 transition-all font-medium text-sm">
+                    <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+                        <span>Trợ lý AI</span>
+                    </span>
+                    <span class="material-symbols-outlined text-base transition-transform duration-200 group-chevron">expand_more</span>
+                </button>
+                <div class="group-content pl-6 pr-1 py-1 space-y-1 hidden">
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-ingred" href="/Home/IngredSuggestion">
+                        <span class="material-symbols-outlined text-[18px]">shopping_basket</span>
+                        <span>Gợi ý nguyên liệu</span>
+                    </a>
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-recognition" href="/Home/FoodRecognition">
+                        <span class="material-symbols-outlined text-[18px]">photo_camera</span>
+                        <span>Nhận diện qua ảnh</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MENUSCRIPT GROUP 3: GÓC CỦA TÔI -->
+            <div class="nav-group pt-1" id="group-personal">
+                <button type="button" onclick="toggleNavGroup('group-personal')"
+                    class="group-header w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sky-700 dark:text-sky-300 hover:bg-sky-100/80 dark:hover:bg-sky-900/50 transition-all font-medium text-sm">
+                    <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]">person</span>
+                        <span>Góc của tôi</span>
+                    </span>
+                    <span class="material-symbols-outlined text-base transition-transform duration-200 group-chevron">expand_more</span>
+                </button>
+                <div class="group-content pl-6 pr-1 py-1 space-y-1 hidden">
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-taste" href="/Home/TasteProfile">
+                        <span class="material-symbols-outlined text-[18px]">analytics</span>
+                        <span>Khẩu vị</span>
+                    </a>
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-favorites" href="/Home/Favorites">
+                        <span class="material-symbols-outlined text-[18px]">favorite</span>
+                        <span>Món yêu thích</span>
+                    </a>
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-sky-600 dark:text-sky-400 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all"
+                        id="nav-history" href="/Home/History">
+                        <span class="material-symbols-outlined text-[18px]">history</span>
+                        <span>Lịch sử xem</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- MENUSCRIPT GROUP 4: QUẢN TRỊ ADMIN -->
+            <div class="nav-group pt-1 hidden" id="group-admin">
+                <button type="button" onclick="toggleNavGroup('group-admin')"
+                    class="group-header w-full flex items-center justify-between px-4 py-2.5 rounded-full text-amber-700 dark:text-amber-300 hover:bg-amber-100/80 dark:hover:bg-amber-900/50 transition-all font-medium text-sm">
+                    <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+                        <span>Quản trị viên</span>
+                    </span>
+                    <span class="material-symbols-outlined text-base transition-transform duration-200 group-chevron">expand_more</span>
+                </button>
+                <div class="group-content pl-6 pr-1 py-1 space-y-1 hidden">
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-100/80 dark:hover:bg-amber-900/40 transition-all"
+                        id="nav-admin-posts" href="/Admin/ManagePosts">
+                        <span class="material-symbols-outlined text-[18px]">fact_check</span>
+                        <span>Duyệt bài đăng</span>
+                    </a>
+                    <a class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-100/80 dark:hover:bg-amber-900/40 transition-all"
+                        id="nav-admin-addfood" href="/Admin/AddFood">
+                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        <span>Thêm món ăn</span>
+                    </a>
+                </div>
+            </div>
         </nav>
         <div class="mt-auto">
             <button onclick="toggleChat()"
@@ -345,6 +422,24 @@
     </button>
 
     <script>
+        // Toggle Menuscript Sub-menu Group
+        window.toggleNavGroup = function(groupId, forceOpen = null) {
+            const group = document.getElementById(groupId);
+            if (!group) return;
+            const content = group.querySelector('.group-content');
+            const chevron = group.querySelector('.group-chevron');
+            if (!content) return;
+
+            const willOpen = forceOpen !== null ? forceOpen : content.classList.contains('hidden');
+            if (willOpen) {
+                content.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             const path = window.location.pathname.toLowerCase();
             const links = {
@@ -355,14 +450,39 @@
                 "/home/tasteprofile": "nav-taste",
                 "/home/favorites": "nav-favorites",
                 "/home/history": "nav-history",
-                "/home/ingredsuggestion": "nav-ingred"
+                "/home/ingredsuggestion": "nav-ingred",
+                "/home/foodrecognition": "nav-recognition",
+                "/home/community": "nav-community",
+                "/home/createpost": "nav-createpost",
+                "/admin/manageposts": "nav-admin-posts",
+                "/admin/addfood": "nav-admin-addfood"
             };
+
+            const groupMapping = {
+                "nav-community": "group-community",
+                "nav-createpost": "group-community",
+                "nav-ingred": "group-ai",
+                "nav-recognition": "group-ai",
+                "nav-taste": "group-personal",
+                "nav-favorites": "group-personal",
+                "nav-history": "group-personal",
+                "nav-admin-posts": "group-admin",
+                "nav-admin-addfood": "group-admin"
+            };
+
             const activeId = links[path];
             if (activeId) {
                 const el = document.getElementById(activeId);
                 if (el) {
-                    el.classList.add("bg-sky-200", "dark:bg-sky-800", "text-sky-900", "dark:text-sky-50", "font-bold");
-                    el.classList.remove("text-sky-600", "dark:text-sky-400");
+                    el.classList.add("bg-sky-200", "dark:bg-sky-800", "text-sky-950", "dark:text-sky-50", "font-bold");
+                    el.classList.remove("text-sky-600", "dark:text-sky-400", "text-sky-700", "text-amber-700");
+                }
+                if (groupMapping[activeId]) {
+                    toggleNavGroup(groupMapping[activeId], true);
+                    const groupBtn = document.querySelector(`#${groupMapping[activeId]} .group-header`);
+                    if (groupBtn) {
+                        groupBtn.classList.add("text-sky-950", "dark:text-sky-100", "font-bold");
+                    }
                 }
             }
 
@@ -740,6 +860,12 @@
                         .then(data => {
                             if (data && data.avatar) avatarEl.src = data.avatar;
                             if (data && data.username && nameEl) nameEl.innerText = data.username;
+                            if (data && data.role && data.role.toLowerCase() === 'admin') {
+                                const groupAdmin = document.getElementById("group-admin");
+                                if (groupAdmin) groupAdmin.classList.remove("hidden");
+                                const adminNav = document.getElementById("nav-admin-posts");
+                                if (adminNav) adminNav.classList.remove("hidden");
+                            }
                         })
                         .catch(() => {});
                 }

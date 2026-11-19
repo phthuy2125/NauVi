@@ -1,0 +1,340 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NauVi Admin - Duyệt bài đăng cộng đồng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#f0f9ff] text-slate-800 min-h-screen flex">
+    <!-- Sidebar Admin (NauVi Sky Glass Theme) -->
+    <aside class="w-64 bg-sky-50/80 backdrop-blur-xl border-r border-sky-100 text-sky-950 flex flex-col hidden md:flex min-h-screen p-6 z-20">
+        <div>
+            <h1 class="text-2xl font-black text-sky-900 tracking-tighter">NauVi Admin</h1>
+            <p class="text-[10px] uppercase tracking-widest text-sky-600 font-extrabold mt-1">Hệ thống quản trị viên</p>
+        </div>
+        <nav class="flex-1 space-y-2 mt-8">
+            <a href="/Admin/ManagePosts" class="flex items-center gap-3 bg-sky-200 text-sky-950 rounded-2xl px-4 py-3 font-bold transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">fact_check</span>
+                <span>Duyệt bài đăng</span>
+            </a>
+            <a href="/Admin/AddFood" class="flex items-center gap-3 text-sky-700 hover:bg-sky-100/80 rounded-2xl px-4 py-3 font-semibold transition-all">
+                <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                <span>Thêm món ăn</span>
+            </a>
+            <a href="/Home/Community" class="flex items-center gap-3 text-sky-700 hover:bg-sky-100/80 rounded-2xl px-4 py-3 font-semibold transition-all">
+                <span class="material-symbols-outlined text-[20px]">forum</span>
+                <span>Trang cộng đồng</span>
+            </a>
+            <a href="/Home/Index" class="flex items-center gap-3 text-sky-700 hover:bg-sky-100/80 rounded-2xl px-4 py-3 font-semibold transition-all">
+                <span class="material-symbols-outlined text-[20px]">home</span>
+                <span>Về trang chủ</span>
+            </a>
+        </nav>
+        <div class="pt-6 border-t border-sky-200/60 flex items-center justify-between text-xs text-sky-600">
+            <span>NauVi v2.0 • Admin</span>
+            <button onclick="logoutAdmin()" title="Đăng xuất" class="hover:text-rose-600 transition-colors p-1 rounded-lg hover:bg-rose-50">
+                <span class="material-symbols-outlined text-base">logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="px-2.5 py-0.5 bg-sky-100 text-sky-700 rounded-full text-[11px] font-bold uppercase tracking-wider">Kiểm duyệt nội dung</span>
+                    </div>
+                    <h2 class="text-3xl font-black text-sky-950 tracking-tight">Duyệt bài đăng cộng đồng</h2>
+                    <p class="text-sky-700/80 text-sm mt-1">Xem xét các bài viết chia sẻ món ăn trước khi hiển thị công khai trên ứng dụng NauVi.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="loadPendingPosts()" class="px-4 py-2.5 bg-white border border-sky-200 text-sky-800 rounded-2xl font-bold text-xs hover:bg-sky-50 transition-all flex items-center gap-2 shadow-sm hover:shadow active:scale-95">
+                        <span class="material-symbols-outlined text-base">refresh</span>
+                        <span>Làm mới</span>
+                    </button>
+                    <span id="pending-counter" class="px-4 py-2 bg-amber-100/90 text-amber-900 border border-amber-200 rounded-full font-bold text-xs shadow-sm">
+                        Đang tải...
+                    </span>
+                </div>
+            </div>
+
+            <!-- Permission Denied Warning (nếu không phải Admin) -->
+            <div id="forbidden-box" class="hidden p-8 bg-red-50 border border-red-200 rounded-3xl text-center max-w-lg mx-auto my-12 shadow-xl shadow-red-500/5">
+                <div class="w-16 h-16 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-3xl">gpp_bad</span>
+                </div>
+                <h3 class="text-xl font-bold text-red-900">Truy cập bị từ chối (403 Forbidden)</h3>
+                <p class="text-sm text-red-700 mt-2">Hành động này yêu cầu tài khoản có vai trò <strong>Admin</strong>. Máy chủ đã từ chối yêu cầu của bạn.</p>
+                <div class="mt-6 flex justify-center gap-3">
+                    <a href="/Account/Login" class="px-5 py-2.5 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition-colors shadow-md">
+                        Đăng nhập tài khoản Admin
+                    </a>
+                    <a href="/Home/Index" class="px-5 py-2.5 bg-white border border-red-200 text-red-800 rounded-xl text-xs font-bold hover:bg-red-50 transition-colors">
+                        Về trang chủ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-20">
+                <span class="material-symbols-outlined text-4xl text-sky-600 animate-spin">progress_activity</span>
+                <p class="text-sm text-sky-700 font-medium mt-3">Đang tải danh sách bài chờ duyệt từ máy chủ...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-20 bg-white rounded-3xl border border-sky-100 p-8 shadow-xl shadow-sky-950/5">
+                <div class="w-16 h-16 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 border border-emerald-100">
+                    <span class="material-symbols-outlined text-3xl">task_alt</span>
+                </div>
+                <h3 class="text-lg font-black text-sky-950">Không có bài viết nào đang chờ duyệt!</h3>
+                <p class="text-xs text-sky-600 mt-1">Tất cả bài đăng của người dùng đã được xử lý xong.</p>
+            </div>
+
+            <!-- Posts List -->
+            <div id="posts-container" class="hidden space-y-6">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-sky-950 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-sky-800 flex items-center gap-3 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
+        <span id="toast-icon" class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+        <span id="toast-msg" class="text-xs font-semibold">Thông báo</span>
+    </div>
+
+    <script>
+        let _allFoodsMap = new Map();
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Tải danh mục món ăn để ánh xạ thông tin
+            try {
+                const res = await fetch("/api/foods/all");
+                if (res.ok) {
+                    const data = await res.json();
+                    (data.foods || []).forEach(f => {
+                        const id = f.id || f._id;
+                        _allFoodsMap.set(id, f);
+                    });
+                }
+            } catch (err) {
+                console.error("Lỗi tải món:", err);
+            }
+
+            await loadPendingPosts();
+        });
+
+        async function loadPendingPosts() {
+            const token = localStorage.getItem("token");
+            const loadingState = document.getElementById("loading-state");
+            const emptyState = document.getElementById("empty-state");
+            const postsContainer = document.getElementById("posts-container");
+            const forbiddenBox = document.getElementById("forbidden-box");
+            const counter = document.getElementById("pending-counter");
+
+            loadingState.classList.remove("hidden");
+            emptyState.classList.add("hidden");
+            postsContainer.classList.add("hidden");
+            forbiddenBox.classList.add("hidden");
+
+            if (!token) {
+                loadingState.classList.add("hidden");
+                forbiddenBox.classList.remove("hidden");
+                counter.textContent = "Chưa đăng nhập";
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/posts/pending", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                loadingState.classList.add("hidden");
+
+                if (res.status === 401 || res.status === 403) {
+                    forbiddenBox.classList.remove("hidden");
+                    counter.textContent = "Từ chối quyền (403)";
+                    return;
+                }
+
+                if (!res.ok) {
+                    throw new Error("Không thể tải danh sách bài chờ.");
+                }
+
+                const posts = await res.json();
+                counter.textContent = `${posts.length} bài chờ duyệt`;
+
+                if (posts.length === 0) {
+                    emptyState.classList.remove("hidden");
+                    return;
+                }
+
+                renderPendingPosts(posts);
+                postsContainer.classList.remove("hidden");
+            } catch (err) {
+                loadingState.classList.add("hidden");
+                alert("Lỗi: " + err.message);
+            }
+        }
+
+        function renderPendingPosts(posts) {
+            const container = document.getElementById("posts-container");
+            container.innerHTML = posts.map(post => {
+                const food = _allFoodsMap.get(post.foodId) || {};
+                const foodName = food.name || "Món ăn chưa đặt tên";
+                const foodCategory = food.category || "Ẩm thực";
+                const createdStr = new Date(post.createdAt).toLocaleString("vi-VN");
+                const authorDisplay = post.authorName || post.userId || 'Người dùng NauVi';
+
+                return `
+                    <div id="post-card-${post.id}" class="bg-white rounded-3xl p-6 md:p-7 shadow-xl shadow-sky-950/5 border border-sky-100 flex flex-col md:flex-row gap-6 transition-all hover:shadow-2xl hover:shadow-sky-950/10">
+                        <!-- Ảnh bài đăng -->
+                        <div class="w-full md:w-64 h-52 md:h-auto rounded-2xl overflow-hidden bg-sky-50 border border-sky-100 flex-shrink-0 group relative">
+                            <img src="${post.imageUrl}" alt="${foodName}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                 onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600'" />
+                        </div>
+
+                        <!-- Thông tin chi tiết -->
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-xs">hourglass_empty</span>
+                                            Chờ duyệt
+                                        </span>
+                                        <span class="text-xs text-sky-600/70 font-medium">Gửi lúc: ${createdStr}</span>
+                                    </div>
+                                    <div class="text-xs text-sky-800">
+                                        Tác giả: <span class="font-bold text-sky-950">${authorDisplay}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Món gắn kèm -->
+                                <div class="p-3.5 bg-sky-50/80 rounded-2xl border border-sky-100 mb-3.5 flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-xl bg-sky-200/70 text-sky-800 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-lg">restaurant</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-xs font-bold text-sky-950">${foodName}</span>
+                                            <span class="text-[10px] text-sky-600 ml-1 font-medium">(${foodCategory})</span>
+                                        </div>
+                                    </div>
+                                    <a href="/Home/FoodDetail?id=${post.foodId}" target="_blank" class="text-xs font-bold text-sky-600 hover:text-sky-800 hover:underline flex items-center gap-1">
+                                        Xem món <span class="material-symbols-outlined text-xs">open_in_new</span>
+                                    </a>
+                                </div>
+
+                                <!-- Nội dung bài viết -->
+                                <div class="text-sm text-sky-950 leading-relaxed font-normal bg-sky-50/40 p-4 rounded-2xl border border-sky-100/80">
+                                    ${post.content || '<em class="text-slate-400">Không có lời bình kèm theo.</em>'}
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-sky-100">
+                                <button onclick="moderatePost('${post.id}', 'reject')" 
+                                        id="btn-reject-${post.id}"
+                                        class="px-5 py-2.5 bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 rounded-2xl font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm active:scale-95">
+                                    <span class="material-symbols-outlined text-base">close</span>
+                                    <span>Từ chối</span>
+                                </button>
+                                <button onclick="moderatePost('${post.id}', 'approve')" 
+                                        id="btn-approve-${post.id}"
+                                        class="px-6 py-2.5 bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white rounded-2xl font-bold text-xs transition-all flex items-center gap-1.5 shadow-lg shadow-sky-600/20 active:scale-95">
+                                    <span class="material-symbols-outlined text-base">check</span>
+                                    <span>Duyệt bài này</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function moderatePost(postId, action) {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Vui lòng đăng nhập lại!");
+                return;
+            }
+
+            const approveBtn = document.getElementById(`btn-approve-${postId}`);
+            const rejectBtn = document.getElementById(`btn-reject-${postId}`);
+            if (approveBtn) approveBtn.disabled = true;
+            if (rejectBtn) rejectBtn.disabled = true;
+
+            const endpoint = `/api/admin/posts/${postId}/${action}`;
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast(action === 'approve' ? "Đã duyệt bài đăng thành công!" : "Đã từ chối bài đăng!");
+                    const card = document.getElementById(`post-card-${postId}`);
+                    if (card) {
+                        card.style.opacity = "0";
+                        card.style.transform = "scale(0.95)";
+                        setTimeout(() => {
+                            card.remove();
+                            // Kiểm tra xem còn bài nào không
+                            const container = document.getElementById("posts-container");
+                            if (container && container.children.length === 0) {
+                                document.getElementById("empty-state").classList.remove("hidden");
+                            }
+                        }, 300);
+                    }
+                } else if (res.status === 403) {
+                    alert("Bạn không có quyền thực hiện thao tác này (yêu cầu vai trò Admin).");
+                } else {
+                    alert(data.message || "Thao tác thất bại.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi kết nối máy chủ: " + err.message);
+            } finally {
+                if (approveBtn) approveBtn.disabled = false;
+                if (rejectBtn) rejectBtn.disabled = false;
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function logoutAdmin() {
+            localStorage.clear();
+            window.location.href = "/Account/Login";
+        }
+    </script>
+</body>
+</html>
