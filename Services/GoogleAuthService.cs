@@ -8,7 +8,13 @@ public sealed class GoogleAuthService
 
     public GoogleAuthService(IConfiguration configuration)
     {
-        _clientId = configuration["GoogleAuth:ClientId"]
+        var configClientId = configuration["GoogleAuth:ClientId"];
+        if (string.IsNullOrWhiteSpace(configClientId) || configClientId.Contains("your-google-client-id"))
+        {
+            configClientId = null;
+        }
+
+        _clientId = configClientId
             ?? Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")
             ?? "922860268029-nf97erjuv87dtfuqpdq6decjglkrs38p.apps.googleusercontent.com";
     }
@@ -20,9 +26,20 @@ public sealed class GoogleAuthService
             throw new InvalidOperationException("Thiếu Google ID token.");
         }
 
+        // Danh sách ClientId hợp lệ (bao gồm cả client id trong frontend và config)
+        var allowedAudiences = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "922860268029-nf97erjuv87dtfuqpdq6decjglkrs38p.apps.googleusercontent.com"
+        };
+
+        if (!string.IsNullOrWhiteSpace(_clientId) && !_clientId.Contains("your-google-client-id"))
+        {
+            allowedAudiences.Add(_clientId);
+        }
+
         var settings = new GoogleJsonWebSignature.ValidationSettings
         {
-            Audience = new[] { _clientId }
+            Audience = allowedAudiences.ToList()
         };
 
         return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);

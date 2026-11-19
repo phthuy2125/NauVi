@@ -5,5 +5,6 @@ namespace FoodWiseAi.Api.Controllers
     public class AdminController : Controller
     {
         public IActionResult AddFood() => View();
+        public IActionResult ManagePosts() => View();
     }
 }

@@ -57,6 +57,10 @@ builder.Services.AddScoped<IFoodService, FoodService>();
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddSingleton<IRecipeEmailRateLimiter, RecipeEmailRateLimiter>();
 
+// Đăng ký dịch vụ bài đăng cộng đồng & lưu trữ ảnh
+builder.Services.AddScoped<IPostRepository, MongoPostRepository>();
+builder.Services.AddScoped<IImageStorage, LocalImageStorage>();
+
 builder.Services.AddSingleton<DatabaseSeeder>();
 
 // Service lưu vào MongoDB collection "price_records"
@@ -143,6 +147,14 @@ if (args.Contains("--seed-ingredients", StringComparer.OrdinalIgnoreCase))
     using var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
     await seeder.SeedIngredientsAsync();
+    return;
+}
+
+if (args.Contains("--seed-posts", StringComparer.OrdinalIgnoreCase))
+{
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedPostsAsync();
     return;
 }
 

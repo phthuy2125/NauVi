@@ -1,0 +1,396 @@
+@{
+    ViewData["Title"] = "Đăng bài chia sẻ món ăn";
+}
+
+<div class="pt-28 px-6 md:px-10 max-w-4xl mx-auto pb-16">
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="/Home/Community" class="inline-flex items-center gap-2 text-sky-600 hover:text-sky-800 text-sm font-semibold mb-4 transition-colors">
+            <span class="material-symbols-outlined text-base">arrow_back</span> Quay lại Cộng đồng
+        </a>
+        <h1 class="text-3xl font-black text-sky-950 tracking-tight">Chia sẻ khoảnh khắc nấu ăn</h1>
+        <p class="text-slate-500 text-sm mt-1">Đăng ảnh món bạn vừa hoàn thành, gắn món ăn tương ứng và chia sẻ cảm nhận với cộng đồng NauVi.</p>
+    </div>
+
+    <!-- Alert chưa đăng nhập -->
+    <div id="auth-alert" class="hidden mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between">
+        <div class="flex items-center gap-3 text-amber-800 text-sm font-medium">
+            <span class="material-symbols-outlined text-amber-600">lock</span>
+            Bạn cần đăng nhập để đăng bài viết.
+        </div>
+        <a href="/Account/Login" class="px-4 py-2 bg-amber-500 text-white rounded-xl text-xs font-bold hover:bg-amber-600 transition-colors">
+            Đăng nhập ngay
+        </a>
+    </div>
+
+    <!-- Alert thông báo sau khi gửi -->
+    <div id="success-banner" class="hidden mb-6 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800">
+        <div class="flex items-start gap-4">
+            <span class="material-symbols-outlined text-emerald-600 text-3xl">check_circle</span>
+            <div class="flex-1">
+                <h4 class="font-bold text-base text-emerald-900">Bài của bạn đang chờ duyệt!</h4>
+                <p class="text-sm text-emerald-700 mt-1">Cảm ơn bạn đã chia sẻ. Quản trị viên sẽ kiểm tra nội dung và duyệt bài trong thời gian sớm nhất.</p>
+                <div class="mt-4 flex gap-3">
+                    <a href="/Home/Community" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors inline-block">
+                        Về trang cộng đồng
+                    </a>
+                    <button onclick="resetForm()" class="px-4 py-2 bg-white text-emerald-700 border border-emerald-300 rounded-xl text-xs font-bold hover:bg-emerald-100 transition-colors">
+                        Đăng bài khác
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form đăng bài -->
+    <form id="create-post-form" class="bg-white rounded-3xl p-6 md:p-10 shadow-xl shadow-sky-900/5 border border-sky-100 space-y-8">
+        
+        <!-- 1. Chọn ảnh & Xem trước ảnh -->
+        <div>
+            <label class="block text-sm font-bold text-sky-950 mb-2">
+                Ảnh món ăn <span class="text-red-500">*</span>
+                <span class="text-xs text-slate-400 font-normal ml-1">(JPG, PNG, WebP - Tối đa 5 MB)</span>
+            </label>
+
+            <div class="relative border-2 border-dashed border-sky-200 hover:border-sky-400 transition-colors rounded-2xl p-6 text-center bg-sky-50/50 cursor-pointer"
+                 id="dropzone" onclick="document.getElementById('image-file-input').click()">
+                
+                <input type="file" id="image-file-input" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="previewImage(this)" />
+                
+                <!-- Khi chưa chọn ảnh -->
+                <div id="upload-placeholder" class="space-y-3">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-sky-900">Nhấn để chọn ảnh hoặc kéo thả vào đây</p>
+                        <p class="text-xs text-slate-400 mt-1">Hỗ trợ JPG, PNG, WebP dung lượng dưới 5 MB</p>
+                    </div>
+                </div>
+
+                <!-- Khi đã chọn ảnh (Xem trước) -->
+                <div id="preview-wrapper" class="hidden relative inline-block max-w-full">
+                    <img id="image-preview" src="#" alt="Xem trước" class="max-h-72 rounded-xl object-contain mx-auto shadow-md" />
+                    <button type="button" onclick="event.stopPropagation(); removeImage();" 
+                            class="absolute top-2 right-2 w-8 h-8 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white flex items-center justify-center transition-colors shadow">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+            </div>
+            <p id="image-error" class="text-xs text-red-500 mt-2 hidden"></p>
+        </div>
+
+        <!-- 2. Gắn món ăn trong CSDL -->
+        <div class="relative">
+            <label class="block text-sm font-bold text-sky-950 mb-2">
+                Gắn món ăn tương ứng <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-sky-600">restaurant_menu</span>
+                <input type="text" id="food-search-input" autocomplete="off"
+                       placeholder="Gõ tên món để tìm (VD: Phở Bò, Bún Bò Huế, Bánh Xèo...)"
+                       class="w-full pl-12 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all"
+                       oninput="onSearchFood(this.value)" />
+                
+                <input type="hidden" id="selected-food-id" />
+
+                <!-- Badge món đã chọn -->
+                <div id="selected-food-badge" class="hidden mt-3 p-3 bg-sky-50 border border-sky-200 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img id="selected-food-img" src="" alt="" class="w-10 h-10 rounded-lg object-cover border border-sky-200" />
+                        <div>
+                            <p id="selected-food-name" class="text-sm font-bold text-sky-950"></p>
+                            <p id="selected-food-category" class="text-xs text-slate-500"></p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="clearSelectedFood()" class="text-slate-400 hover:text-slate-700 p-1">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </button>
+                </div>
+
+                <!-- Dropdown kết quả tìm kiếm -->
+                <div id="food-dropdown" class="hidden absolute top-full left-0 right-0 mt-2 max-h-60 overflow-y-auto bg-white rounded-2xl shadow-2xl border border-sky-100 z-50 divide-y divide-slate-100"></div>
+            </div>
+            <p id="food-error" class="text-xs text-red-500 mt-2 hidden"></p>
+        </div>
+
+        <!-- 3. Nội dung bài viết -->
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <label class="block text-sm font-bold text-sky-950">
+                    Cảm nhận / Bí quyết nấu ăn
+                </label>
+                <span id="char-counter" class="text-xs text-slate-400 font-mono">0 / 1000</span>
+            </div>
+            <textarea id="post-content" rows="4" maxlength="1000"
+                      placeholder="Chia sẻ trải nghiệm khi nấu món này: thời gian chuẩn bị, bí quyết nêm nếm hoặc hương vị đặc biệt..."
+                      class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all resize-none"
+                      oninput="document.getElementById('char-counter').textContent = `${this.value.length} / 1000`"></textarea>
+            <p id="content-error" class="text-xs text-red-500 mt-2 hidden"></p>
+        </div>
+
+        <!-- Nút Gửi bài -->
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-4">
+            <a href="/Home/Community" class="px-6 py-3 rounded-full text-slate-600 font-bold text-sm hover:bg-slate-100 transition-colors">
+                Hủy bỏ
+            </a>
+            <button type="submit" id="submit-btn"
+                    class="px-8 py-3.5 bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 text-white rounded-full font-bold text-sm shadow-lg shadow-sky-600/30 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined text-base">send</span>
+                <span>Gửi bài duyệt</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    let _allFoods = [];
+    let _selectedFile = null;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            document.getElementById("auth-alert").classList.remove("hidden");
+            document.getElementById("submit-btn").disabled = true;
+        }
+
+        // Tải danh sách món ăn để gợi ý
+        try {
+            const res = await fetch("/api/foods/all");
+            if (res.ok) {
+                const data = await res.json();
+                _allFoods = data.foods || [];
+            }
+        } catch (err) {
+            console.error("Lỗi tải danh sách món:", err);
+        }
+
+        // Kiểm tra xem query string có sẵn foodId không (ví dụ từ trang CookMode / FoodDetail)
+        const params = new URLSearchParams(window.location.search);
+        const prefillFoodId = params.get("foodId");
+        if (prefillFoodId && _allFoods.length > 0) {
+            const food = _allFoods.find(f => f.id === prefillFoodId || f._id === prefillFoodId);
+            if (food) selectFood(food);
+        }
+    });
+
+    function previewImage(input) {
+        const file = input.files[0];
+        const errorEl = document.getElementById("image-error");
+        errorEl.classList.add("hidden");
+
+        if (!file) return;
+
+        // Kiểm tra định dạng
+        const validTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!validTypes.includes(file.type)) {
+            errorEl.textContent = "Chỉ chấp nhận ảnh định dạng JPG, PNG hoặc WebP.";
+            errorEl.classList.remove("hidden");
+            input.value = "";
+            return;
+        }
+
+        // Kiểm tra kích thước (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            errorEl.textContent = "Kích thước ảnh tối đa là 5 MB.";
+            errorEl.classList.remove("hidden");
+            input.value = "";
+            return;
+        }
+
+        _selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("image-preview").src = e.target.result;
+            document.getElementById("upload-placeholder").classList.add("hidden");
+            document.getElementById("preview-wrapper").classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage() {
+        _selectedFile = null;
+        document.getElementById("image-file-input").value = "";
+        document.getElementById("image-preview").src = "#";
+        document.getElementById("preview-wrapper").classList.add("hidden");
+        document.getElementById("upload-placeholder").classList.remove("hidden");
+    }
+
+    function onSearchFood(query) {
+        const dropdown = document.getElementById("food-dropdown");
+        const q = query.trim().toLowerCase();
+
+        if (!q) {
+            dropdown.classList.add("hidden");
+            return;
+        }
+
+        const matches = _allFoods.filter(f => f.name && f.name.toLowerCase().includes(q)).slice(0, 8);
+
+        if (matches.length === 0) {
+            dropdown.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">Không tìm thấy món ăn phù hợp</div>';
+            dropdown.classList.remove("hidden");
+            return;
+        }
+
+        dropdown.innerHTML = matches.map(food => {
+            const img = food.imageUrl || 'https://via.placeholder.com/60';
+            const id = food.id || food._id;
+            const safeName = (food.name || '').replace(/'/g, "\\'");
+            const safeCat = (food.category || '').replace(/'/g, "\\'");
+            return `
+                <div onclick="selectFoodById('${id}')"
+                     class="flex items-center gap-3 p-3 hover:bg-sky-50 cursor-pointer transition-colors">
+                    <img src="${img}" alt="${food.name}" class="w-10 h-10 rounded-lg object-cover border border-sky-100 flex-shrink-0" />
+                    <div class="flex-1 min-width-0">
+                        <p class="text-sm font-bold text-sky-950 truncate">${food.name}</p>
+                        <p class="text-xs text-slate-400">${food.category || ''} • ${food.calories || 0} calo</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        dropdown.classList.remove("hidden");
+    }
+
+    function selectFoodById(id) {
+        const food = _allFoods.find(f => (f.id || f._id) === id);
+        if (food) selectFood(food);
+    }
+
+    function selectFood(food) {
+        const id = food.id || food._id;
+        document.getElementById("selected-food-id").value = id;
+        document.getElementById("selected-food-name").textContent = food.name;
+        document.getElementById("selected-food-category").textContent = `${food.category || ''} • ${food.calories || 0} calo`;
+        document.getElementById("selected-food-img").src = food.imageUrl || 'https://via.placeholder.com/60';
+
+        document.getElementById("food-search-input").classList.add("hidden");
+        document.getElementById("food-dropdown").classList.add("hidden");
+        document.getElementById("selected-food-badge").classList.remove("hidden");
+        document.getElementById("food-error").classList.add("hidden");
+    }
+
+    function clearSelectedFood() {
+        document.getElementById("selected-food-id").value = "";
+        document.getElementById("selected-food-badge").classList.add("hidden");
+        const searchInput = document.getElementById("food-search-input");
+        searchInput.value = "";
+        searchInput.classList.remove("hidden");
+        searchInput.focus();
+    }
+
+    // Submit form
+    document.getElementById("create-post-form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        // Ẩn các lỗi cũ
+        document.getElementById("image-error").classList.add("hidden");
+        document.getElementById("food-error").classList.add("hidden");
+        document.getElementById("content-error").classList.add("hidden");
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Vui lòng đăng nhập để thực hiện thao tác này!");
+            window.location.href = "/Account/Login";
+            return;
+        }
+
+        // Validate client-side
+        let hasError = false;
+
+        if (!_selectedFile) {
+            const err = document.getElementById("image-error");
+            err.textContent = "Vui lòng chọn ảnh món ăn.";
+            err.classList.remove("hidden");
+            hasError = true;
+        }
+
+        const foodId = document.getElementById("selected-food-id").value;
+        if (!foodId) {
+            const err = document.getElementById("food-error");
+            err.textContent = "Vui lòng chọn món ăn có trong danh mục.";
+            err.classList.remove("hidden");
+            hasError = true;
+        }
+
+        const content = document.getElementById("post-content").value.trim();
+        if (content.length > 1000) {
+            const err = document.getElementById("content-error");
+            err.textContent = "Nội dung bài đăng tối đa 1000 ký tự.";
+            err.classList.remove("hidden");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        // Chuẩn bị FormData
+        const formData = new FormData();
+        formData.append("Image", _selectedFile);
+        formData.append("FoodId", foodId);
+        formData.append("Content", content);
+
+        const submitBtn = document.getElementById("submit-btn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">refresh</span> Đang gửi...';
+
+        try {
+            const res = await fetch("/api/posts", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            // Nếu 401 Unauthorized -> Token hết hạn hoặc chưa đăng nhập
+            if (res.status === 401) {
+                alert("Phiên đăng nhập của bạn đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại!");
+                localStorage.removeItem("token");
+                window.location.href = "/Account/Login";
+                return;
+            }
+
+            // Đọc dữ liệu trả về một cách an toàn
+            let data = {};
+            try {
+                data = await res.json();
+            } catch (_) {
+                data = { message: "" };
+            }
+
+            if (res.status === 201) {
+                // Đăng bài thành công -> Chờ duyệt
+                document.getElementById("create-post-form").classList.add("hidden");
+                document.getElementById("success-banner").classList.remove("hidden");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } else if (res.status === 429) {
+                alert(data.message || "Bạn đã đăng bài quá nhiều lần. Vui lòng thử lại sau 10 phút.");
+            } else if (res.status === 400) {
+                alert(data.message || "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại ảnh hoặc món ăn đã chọn.");
+            } else if (res.status === 404) {
+                alert(data.message || "Không tìm thấy món ăn được chọn.");
+            } else {
+                alert(data.message || `Lỗi từ máy chủ (Mã: ${res.status}). Vui lòng thử lại sau.`);
+            }
+        } catch (err) {
+            console.error("Lỗi gửi bài:", err);
+            alert("Lỗi khi gửi bài: " + (err.message || "Không thể kết nối đến máy chủ."));
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span class="material-symbols-outlined text-base">send</span> <span>Gửi bài duyệt</span>';
+        }
+    });
+
+    function resetForm() {
+        document.getElementById("create-post-form").reset();
+        removeImage();
+        clearSelectedFood();
+        document.getElementById("char-counter").textContent = "0 / 1000";
+        document.getElementById("create-post-form").classList.remove("hidden");
+        document.getElementById("success-banner").classList.add("hidden");
+    }
+</script>
+}
+

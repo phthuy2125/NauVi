@@ -176,7 +176,8 @@ public sealed class UsersController : ControllerBase
             {
                 username = user.Username,
                 preferences = user.Preferences,
-                avatar = user.Avatar
+                avatar = user.Avatar,
+                role = user.Role
             });
         }
         catch (Exception ex)
