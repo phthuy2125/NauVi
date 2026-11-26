@@ -1,0 +1,15 @@
+# ===========================================================================
+# Cấu hình Gitleaks — Quét bí mật trong mã nguồn NauVi
+# ===========================================================================
+
+title = "NauVi Gitleaks Config"
+
+# Cho phép bỏ qua các file chứa giá trị giả lập mẫu (không phải khóa thật)
+[allowlist]
+  description = "Bỏ qua file chứa giá trị mẫu, không phải bí mật thật"
+  paths = [
+    '''\.env\.example$''',
+    '''appsettings\.example\.json$''',
+    '''README.*\.md$''',
+    '''\.github/workflows/.*\.yml$''',
+  ]
