@@ -1,0 +1,14 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/.env*
+appsettings.json
+appsettings.Development.json
+uploads/**
+tests/**
+ai_service/**
+*.user
+*.suo
+*.log

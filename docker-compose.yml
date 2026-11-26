@@ -1,0 +1,96 @@
+services:
+  # ----------------------------------------------------
+  # 1. Cơ sở dữ liệu MongoDB 7.0
+  # ----------------------------------------------------
+  mongo:
+    image: mongo:7.0-jammy
+    container_name: nauvi_mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - nauvi_net
+    # Không mở cổng 27017 ra host để đảm bảo an toàn, chỉ giao tiếp nội bộ trong mạng nauvi_net
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --eval 'db.adminCommand(\"ping\").ok' --quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ----------------------------------------------------
+  # 2. Dịch vụ AI nhận diện món ăn (FastAPI)
+  # ----------------------------------------------------
+  ai_service:
+    build:
+      context: ./ai_service
+      dockerfile: Dockerfile
+    container_name: nauvi_ai_service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - AI_MODE=${AI_MODE:-mock}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    networks:
+      - nauvi_net
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8001/health').getcode() == 200 else 1)\""]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # ----------------------------------------------------
+  # 3. Ứng dụng Web NauVi (ASP.NET Core 8 MVC / Web API)
+  # ----------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nauvi_web
+    restart: unless-stopped
+    ports:
+      - "${PORT:-7200}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - MongoSettings__ConnectionString=mongodb://mongo:27017
+      - MongoSettings__DatabaseName=food_system
+      - AiImageService__BaseUrl=http://ai_service:8001
+      - AiImageService__TimeoutSeconds=45
+      - AiImageService__UncertainThreshold=0.5
+      - SEED_ON_STARTUP=${SEED_ON_STARTUP:-true}
+      - Jwt__Secret=${JWT_SECRET:-NauViSuperSecretJwtKeyAtLeast32CharsLong!}
+      - GoogleAuth__ClientId=${GOOGLE_CLIENT_ID:-922860268029-nf97erjuv87dtfuqpdq6decjglkrs38p.apps.googleusercontent.com}
+      - SmtpSettings__Host=${SMTP_HOST:-smtp.gmail.com}
+      - SmtpSettings__Port=${SMTP_PORT:-587}
+      - SmtpSettings__UserName=${SMTP_USER:-}
+      - SmtpSettings__Password=${SMTP_PASS:-}
+      - SmtpSettings__SenderEmail=${SMTP_SENDER_EMAIL:-}
+      - SmtpSettings__SenderName=NauVi - Nền tảng ẩm thực
+    volumes:
+      - nauvi_uploads:/app/uploads
+    networks:
+      - nauvi_net
+    depends_on:
+      mongo:
+        condition: service_healthy
+      ai_service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  mongo_data:
+    driver: local
+  nauvi_uploads:
+    driver: local
+
+networks:
+  nauvi_net:
+    driver: bridge
