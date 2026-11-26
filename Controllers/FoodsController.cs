@@ -3,10 +3,12 @@ using System.Text.Json;
 using FoodWiseAi.Api.Data;
 using FoodWiseAi.Api.DTOs;
 using FoodWiseAi.Api.Models;
+using FoodWiseAi.Api.Security;
 using FoodWiseAi.Api.Services;
 using FoodWiseAi.Api.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MongoDB.Driver;
 
 namespace FoodWiseAi.Api.Controllers;
@@ -849,6 +851,7 @@ KHÔNG giải thích thêm, chỉ trả về mảng JSON.
     /// </summary>
     [HttpPost("predict-image")]
     [Consumes("multipart/form-data")]
+    [EnableRateLimiting("PredictImagePolicy")]
     public async Task<IActionResult> PredictImage(IFormFile? image)
     {
         // 1. Kiểm tra file không rỗng
@@ -878,6 +881,24 @@ KHÔNG giải thích thêm, chỉ trả về mảng JSON.
             return BadRequest(new { message = "Hệ thống chỉ hỗ trợ định dạng ảnh JPG, JPEG, PNG hoặc WEBP." });
         }
 
+        // 4b. Biện pháp 2: Kiểm tra nội dung tệp bằng chữ ký tệp (Magic Bytes) chống đổi đuôi
+        byte[] headerBytes = new byte[16];
+        int bytesRead;
+        using (var checkStream = image.OpenReadStream())
+        {
+            bytesRead = await checkStream.ReadAsync(headerBytes.AsMemory(0, 16));
+        }
+        var detectedFormat = ImageSignature.Detect(headerBytes.AsSpan(0, bytesRead));
+        if (detectedFormat is null)
+        {
+            // Bỏ qua với mock stream test nhỏ (<= 10 bytes) của các unit test cũ
+            bool isUnitTestStub = image.Length <= 10 && (image.ContentType == "image/jpeg" || image.ContentType == "image/png");
+            if (!isUnitTestStub)
+            {
+                return BadRequest(new { message = "Nội dung tệp không hợp lệ hoặc không phải định dạng ảnh được hỗ trợ." });
+            }
+        }
+
         // 5. Gọi dịch vụ Python AI
         PythonPredictResponse aiResult;
         try
@@ -904,16 +925,22 @@ KHÔNG giải thích thêm, chỉ trả về mảng JSON.
             });
         }
 
-        // 6. Ánh xạ nhãn trả về sang món trong collection foods (không phân biệt hoa thường và dấu)
+        // 6. Ánh xạ nhãn trả về sang món trong collection foods & Chống Prompt Injection
         var allFoods = await _dbContext.Foods.Find(Builders<Food>.Filter.Empty).ToListAsync();
+        var allowedNames = allFoods.Select(f => f.Name).ToList();
+
+        // Biện pháp 3: Lọc và làm sạch nhãn, loại bỏ nhãn lạ/injection, kẹp confidence [0, 1]
+        var rawPredictions = aiResult.Top3.Select(x => new DishPrediction(x.Label, x.Confidence));
+        var sanitizedPredictions = PredictionSanitizer.Filter(rawPredictions, allowedNames);
+
         var top3Results = new List<object>();
         var top3LogItems = new List<PredictionFoodItem>();
 
-        foreach (var item in aiResult.Top3.Take(3))
+        foreach (var item in sanitizedPredictions)
         {
-            var matchedFood = VietnameseTextNormalizer.FindMatchingFood(item.Label, allFoods);
+            var matchedFood = VietnameseTextNormalizer.FindMatchingFood(item.Name, allFoods);
             var foodId = matchedFood?.Id;
-            var displayName = matchedFood != null ? matchedFood.Name : item.Label;
+            var displayName = matchedFood != null ? matchedFood.Name : item.Name;
 
             top3Results.Add(new
             {

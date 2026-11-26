@@ -1,10 +1,13 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using MongoDB.Driver;
 using FoodWiseAi.Api.Models;
-
+using FoodWiseAi.Api.Security;
 using FoodWiseAi.Api.Data;
 using FoodWiseAi.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 
@@ -77,6 +80,70 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllersWithViews();
 
+// ─── Biện pháp 1: Hỗ trợ Reverse Proxy / Forwarded Headers ────────────────────
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // Chú ý: Trên môi trường production thực tế, cần giới hạn KnownNetworks hoặc KnownProxies
+    // để tránh bị giả mạo header X-Forwarded-For gây bypass rate limiter.
+});
+
+// ─── Biện pháp 1: Giới hạn tần suất gọi (Rate Limiting) ────────────────────────
+var rateLimitSection = builder.Configuration.GetSection("RateLimiting:PredictImage");
+int predictPermitLimit = rateLimitSection.GetValue<int>("PermitLimit", 10);
+int predictWindowMinutes = rateLimitSection.GetValue<int>("WindowMinutes", 1);
+int predictQueueLimit = rateLimitSection.GetValue<int>("QueueLimit", 0);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.ContentType = "application/json; charset=utf-8";
+        if (!context.HttpContext.Response.Headers.ContainsKey("Retry-After"))
+        {
+            context.HttpContext.Response.Headers["Retry-After"] = (predictWindowMinutes * 60).ToString();
+        }
+
+        var payload = new
+        {
+            error = "Too Many Requests",
+            message = "Bạn đã gửi quá nhiều yêu cầu nhận diện ảnh trong thời gian ngắn. Vui lòng thử lại sau.",
+            retryAfterSeconds = predictWindowMinutes * 60
+        };
+
+        await context.HttpContext.Response.WriteAsJsonAsync(payload, cancellationToken);
+    };
+
+    options.AddPolicy("PredictImagePolicy", httpContext =>
+    {
+        string partitionKey;
+        var userId = httpContext.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                     ?? httpContext.User?.FindFirst("sub")?.Value
+                     ?? httpContext.User?.FindFirst("userId")?.Value;
+
+        if (!string.IsNullOrWhiteSpace(userId))
+        {
+            partitionKey = $"user_{userId}";
+        }
+        else
+        {
+            var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+            partitionKey = $"ip_{ip}";
+        }
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey,
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = predictPermitLimit,
+                Window = TimeSpan.FromMinutes(predictWindowMinutes),
+                QueueLimit = predictQueueLimit,
+                AutoReplenishment = true
+            });
+    });
+});
+
 var jwtSecret = builder.Configuration["Jwt:Secret"]
     ?? Environment.GetEnvironmentVariable("JWT_SECRET")
     ?? "your-secret-key-very-long-random";
@@ -96,13 +163,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+
 var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "uploads");
 Directory.CreateDirectory(uploadsPath);
 
-app.UseCors("AllowAll");
 app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions

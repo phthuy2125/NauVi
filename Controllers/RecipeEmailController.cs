@@ -172,17 +172,8 @@ public class RecipeEmailController : ControllerBase
     }
 
     /// <summary>
-    /// Che giấu bớt ký tự email để ghi log an toàn (ví dụ: "la***@example.com").
+    /// Che giấu bớt ký tự email để ghi log an toàn (sử dụng LogMasker chung cho toàn hệ thống).
     /// </summary>
-    public static string MaskEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email)) return string.Empty;
-        var parts = email.Split('@');
-        if (parts.Length != 2) return "***";
-
-        var user = parts[0];
-        var domain = parts[1];
-        var visible = user.Length <= 2 ? user : user[..2];
-        return $"{visible}***@{domain}";
-    }
+    public static string MaskEmail(string email) =>
+        FoodWiseAi.Api.Security.LogMasker.MaskEmail(email);
 }
