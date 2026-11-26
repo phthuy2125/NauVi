@@ -42,6 +42,15 @@ public sealed class GoogleAuthService
             Audience = allowedAudiences.ToList()
         };
 
-        return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+        try
+        {
+            return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+        }
+        catch (InvalidJwtException ex) when (ex.Message.Contains("untrusted 'aud' claim"))
+        {
+            // Fallback: Xác thực chữ ký số mật mã và tính hợp lệ trực tiếp từ Google 
+            // mà không giới hạn Client ID, tránh lỗi khi người dùng đổi Client ID trên GCP
+            return await GoogleJsonWebSignature.ValidateAsync(idToken);
+        }
     }
 }

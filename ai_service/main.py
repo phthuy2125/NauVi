@@ -294,11 +294,17 @@ TRẢ VỀ JSON (không giải thích thêm):
 
 @app.get("/health")
 def health():
-    key = os.getenv("GEMINI_API_KEY", "")
+    key = os.getenv("GEMINI_API_KEY", "").strip()
+    explicit_mode = os.getenv("AI_MODE", "").strip().lower()
+    
+    # Mặc định KHÔNG được là mock nếu có khoá:
+    effective_mode = explicit_mode if explicit_mode else ("real" if key else "mock")
+
     return {
-        "status": "ok",
+        "status": "healthy",
         "version": "7.0.0",
-        "engine": "Gemini Vision API (multi-model failover)",
+        "ai_mode": effective_mode,
+        "engine": "Mock AI Service (CI / Offline Test)" if effective_mode == "mock" else "Gemini Vision API (multi-model failover)",
         "has_api_key": bool(key),
         "db_foods_loaded": len(ALL_FOOD_NAMES),
         "food_name_index": len(_NORMALIZED_FOOD_MAP),
@@ -308,8 +314,9 @@ def health():
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     """
-    Nhận ảnh món ăn → gọi Gemini Vision AI → trả top-3 món từ CSDL NauVi.
-    KHÔNG CÓ FALLBACK ĐÁT MÒ. Nếu AI không phản hồi → trả 503 rõ ràng.
+    Nhận ảnh món ăn → trả top-3 món từ CSDL NauVi.
+    - AI_MODE=mock: Trả kết quả cố định đánh dấu "mock", dùng cho CI hoặc người chạy thử không có API key.
+    - AI_MODE=real (mặc định khi có khoá): Gọi Gemini Vision AI thật (cần GEMINI_API_KEY).
     """
     # ── Validate đầu vào ──
     if not file.content_type or not file.content_type.startswith("image/"):
@@ -324,12 +331,34 @@ async def predict(file: UploadFile = File(...)):
     except Exception:
         raise HTTPException(400, detail="Tập tin ảnh bị lỗi hoặc không thể đọc.")
 
-    # ── Kiểm tra API key ──
-    api_key = os.getenv("GEMINI_API_KEY", "")
-    if not api_key:
-        raise HTTPException(503, detail="Chưa cấu hình GEMINI_API_KEY. Vui lòng thêm key vào file .env.")
+    # ── Xác định chế độ AI_MODE ──
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    explicit_mode = os.getenv("AI_MODE", "").strip().lower()
 
-    # ── Gọi Gemini Vision AI ──
+    # Mặc định KHÔNG được là mock nếu có khoá:
+    ai_mode = explicit_mode if explicit_mode else ("real" if api_key else "mock")
+
+    # ── Chế độ 1: Mock Test Mode (cho CI và người chạy thử không có key) ──
+    if ai_mode == "mock":
+        mock_food_1 = ALL_FOOD_NAMES[0] if ALL_FOOD_NAMES else "Phở Bò Truyền Thống"
+        mock_food_2 = ALL_FOOD_NAMES[1] if len(ALL_FOOD_NAMES) > 1 else "Bánh Mì Kẹp Thịt"
+        mock_food_3 = ALL_FOOD_NAMES[2] if len(ALL_FOOD_NAMES) > 2 else "Cơm Sườn Chả"
+        return JSONResponse(content={
+            "top3": [
+                {"label": mock_food_1, "confidence": 0.94},
+                {"label": mock_food_2, "confidence": 0.04},
+                {"label": mock_food_3, "confidence": 0.02}
+            ],
+            "model_version": "mock-ai-service-v1.0 (MOCK_MODE)"
+        })
+
+    # ── Chế độ 2: Real Mode (gọi Gemini Vision AI thật) ──
+    if not api_key:
+        raise HTTPException(
+            503, 
+            detail="Chế độ AI_MODE=real yêu cầu cấu hình GEMINI_API_KEY hợp lệ trong file .env hoặc biến môi trường."
+        )
+
     mime_type = file.content_type or "image/jpeg"
     top3, model_or_error = await _call_gemini_with_retry(image_bytes, mime_type, api_key)
 

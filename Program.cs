@@ -187,8 +187,18 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapControllers();
 
+// Endpoint kiểm tra sức khỏe dịch vụ cho Docker Healthcheck
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "healthy",
+    service = "NauVi ASP.NET Core 8 Web",
+    timestamp = DateTime.UtcNow
+}));
+
 if (builder.Configuration.GetValue<bool>("NauVi:SeedOnStartup")
-    || builder.Configuration.GetValue<bool>("FoodWise:SeedOnStartup"))
+    || builder.Configuration.GetValue<bool>("FoodWise:SeedOnStartup")
+    || builder.Configuration.GetValue<bool>("SEED_ON_STARTUP")
+    || string.Equals(Environment.GetEnvironmentVariable("SEED_ON_STARTUP"), "true", StringComparison.OrdinalIgnoreCase))
 {
     using var startupScope = app.Services.CreateScope();
     var startupSeeder = startupScope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
